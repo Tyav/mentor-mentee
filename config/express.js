@@ -5,11 +5,15 @@ const cookieParser = require('cookie-parser');
 const compress = require('compression');
 const methodOverride = require('method-override');
 const cors = require('cors');
-const httpStatus = require('http-status');
 const expressWinston = require('express-winston');
 const passport = require('passport');
 const helmet = require('helmet');
-
+const winstonInstance = require('./winston');
+const routes = require('../routes');
+const strategies = require('./passport');
+const error = require('./error');
+const { env } = require('./env');
+const swagger = require('./swagger')
 
 const app = express();
 // secure apps by setting various HTTP headers
@@ -29,8 +33,8 @@ app.use(compress());
 app.use(methodOverride());
 
 // enable detailed API logging in dev env
+//comment this code to reduce api logs
 if (env === 'development') {
-  expressWinston.requestWhitelist.push('body');
   expressWinston.responseWhitelist.push('body');
   app.use(
     expressWinston.logger({
@@ -50,6 +54,8 @@ app.use((req, res, next) => {
   next();
 });
 
+// mount swagger on app
+swagger(app)
 // mount all routes on /api path
 app.use('/api/v1', routes);
 
@@ -60,11 +66,11 @@ app.use(error.converter);
 app.use(error.notFound);
 
 if (env !== 'test') {
-  app.use(
-    expressWinston.errorLogger({
-      winstonInstance,
-    }),
-  );
+  // app.use(
+  //   expressWinston.errorLogger({
+  //     winstonInstance,
+  //   }),
+  // );
 };
 
 // error handler, send stacktrace only during development
