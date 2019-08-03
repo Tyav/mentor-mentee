@@ -1,0 +1,52 @@
+path:
+  /api/v1/users:
+    get:
+      tags:
+        - User
+      description: This should return all users
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+            example: 'Bearer xxxxxx'
+          required: true
+      responses:
+        200:
+          description: all users are retrieved.
+          schema:
+            type: object
+            properties:
+              error:
+                description: description on error if available
+                type: null
+                example: null
+              token:
+                description: jwt c ontain users id and other referrential informations
+                type: string
+                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1Y2U5YjNjZTNjZjc3YTIzMjg3NGViNTEiLCJpc0FkbWluIjpmYWxzZSwiaXNMb2dnZWQiOnRydWUsInJvbGUiOiI1Y2RjMmQ1MTQ2NWJiNDRkM2E5MGMwMmMiLCJpYXQiOjE1NTg4MTk3OTF9.NH-CzRu4JcCou7gXJ40GDUtjeJRde9pWfsQ-fL_EM1s"
+              payload:
+                type: array
+                items: 
+                  type: object
+                  properties: 
+                    name:
+                      type: string
+                      example: 'John Doe'
+                    email:
+                      type: string
+                      example: 'johndoe@email.com'
+        # 404:
+        #  description: user not found
+        #  schema:
+        #    $ref: "#/definitions/error-message"
+        # 400:
+        #  description: Bad Request
+        #  schema:
+        #    $ref: "#/definitions/error-message"
+        # 401:
+        #   description: Unauthorized User
+        #   schema:
+        #     $ref: "#/definitions/error-message"
