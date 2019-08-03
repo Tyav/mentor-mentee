@@ -6,6 +6,6 @@ app.use('/', (req, res) => {
   res.send('tested')
 })
 
-app.listen(6060, ()=> {
+app.listen(80, ()=> {
   console.log('sdsdfsdf')
 })
