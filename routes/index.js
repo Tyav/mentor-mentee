@@ -17,4 +17,4 @@ router.get("/states", (req, res) =>
 // mount user routes at /users
 router.use('/users', userRoutes);
 
-module.exports = router; 
+module.exports = router;
