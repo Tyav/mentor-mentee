@@ -74,6 +74,9 @@ UserSchema.methods = {
       "email"
     ];
     return pick(fields, this)
+  }, 
+  generateToken() {
+    // generate token
   }
 }
 
