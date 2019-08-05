@@ -61,4 +61,4 @@ path:
         #     $ref: "#/definitions/error-message"
     post:
       tags:
-        - Fo
+        - Forgot Password
