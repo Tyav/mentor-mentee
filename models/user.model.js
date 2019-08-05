@@ -25,6 +25,14 @@ const UserSchema = new mongoose.Schema({
     minlength: 6,
     required: true
   },
+  isMentor: {
+    type: Boolean,
+    required: true
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false
+  }
 })
 
 UserSchema.pre("save", function(next) {
@@ -66,6 +74,9 @@ UserSchema.methods = {
       "email"
     ];
     return pick(fields, this)
+  }, 
+  generateToken() {
+    // generate token
   }
 }
 
