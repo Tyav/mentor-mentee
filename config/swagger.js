@@ -19,21 +19,21 @@ const options = {
       },
       {
         name: 'Schedule',
-        description: 'Everything about the Documents API',
+        description: 'Everything about the Schedule API',
       },
       {
         name: 'Forgot Password',
-        description: 'Everything about the Roles API',
+        description: 'Everything about the Password API',
       },
       {
         name: 'Request',
-        description: 'Everything about the Categories API',
+        description: 'Everything about the Request API',
       },
     ],
     schemes  : [ 'https', 'http' ],
     // host     : ['localhost:6060/'],  
     servers: [
-      {url: 'localhost:6060', description: 'sdds'}
+      {url: 'localhost:6060', description: ''}
     ],
 
   },
