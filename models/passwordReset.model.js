@@ -16,4 +16,16 @@ PasswordResetSchema.pre('save', function(next) {
   next();
 });
 
+PasswordResetSchema.statics = {
+  /**
+   *
+   * @param {String} email
+   * @returns {Promise<PasswordResetSchema, APIError>}
+   */
+  async getByEmail(email) {
+    let user = this.findOne({ email }).exec();
+    return user;
+  }
+};
+
 module.exports = mongoose.model('PasswordReset', PasswordResetSchema);
