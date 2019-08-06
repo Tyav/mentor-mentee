@@ -1,3 +1,22 @@
+const request = require('supertest');
+const app = require('../index');
+
+describe('LOGIN', () => {
+  it('should return invalid name or password if a wrong email is passed in', () => {
+    const incorrectEmail = {
+      email: 'rukeeojigbo@gmail.com'
+    };
+    return request(app)
+      .post('/api/v1/auth/login')
+      .send(incorrectEmail)
+      .expect(200, {
+        statusCode: 400,
+        message: 'Incorrect email or password',
+        payload: null,
+        error: null
+      });
+  });
+});
 // let schedule = {
 //     day: 'Tuesday',
 //     time: {
