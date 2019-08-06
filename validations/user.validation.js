@@ -22,6 +22,11 @@ module.exports = {
     },
     params: {
       userId: Joi.string().hex().required(),
+    },
+    //added login validation
+    login: {
+      email: Joi.string().email().required(),
+      password: Joi.string().required()
     }
   }
 };
