@@ -3,6 +3,7 @@ const User = require('../models/user.model');
 const sendResponse = require('../helpers/response');
 const { Joi } = require('celebrate');
 const { login } = require('../validations/user.validation');
+const EncodeToken = require('../helpers/TokenEncoder');
 
 /**
  * Load user and append to req.
@@ -23,6 +24,7 @@ exports.getUsers = (req, res) => {
 };
 
 exports.login = async (req, res) => {
+  console.log(req.body);
   const { error } = Joi.validate(req.body, login.body);
 
   if (error)
@@ -61,10 +63,10 @@ exports.login = async (req, res) => {
       )
     );
 
-  const payload = user.transform();
-  console.log(payload, 'hello i am payload');
+  const payload = await user.transform();
+  console.log(payload);
 
-  return res.json(
-    sendResponse(httpStatus.OK, 'login successful', payload, null)
-  );
+  const token = EncodeToken(user.id, user.email, user.isAdmin);
+
+  res.header('auth-token', token).send(token);
 };
