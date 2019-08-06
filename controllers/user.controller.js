@@ -24,7 +24,6 @@ exports.getUsers = (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  console.log(req.body);
   const { error } = Joi.validate(req.body, login.body);
 
   if (error)
@@ -63,8 +62,8 @@ exports.login = async (req, res) => {
       )
     );
 
-  const payload = await user.transform();
-  console.log(payload);
+  //const payload = await user.transform();
+
 
   const token = EncodeToken(user.id, user.email, user.isAdmin);
 

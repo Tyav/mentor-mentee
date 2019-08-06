@@ -101,7 +101,6 @@ UserSchema.statics = {
   //   if (!validPassword)
   //     throw new APIError('Incorrect email or password', null, null, httpStatus.NOT_FOUND, true);
 
-    
   //   return user;
   // }
 };
