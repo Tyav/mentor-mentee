@@ -50,7 +50,9 @@ exports.forgotPassword = async (req, res) => {
   
   Please click on the following link, or paste this into your browser to complete the process:
   
-  http://${req.headers.host}/reset/${passwordResetResult.resetPasswordToken}
+  http://${req.headers.host}/api/v1/auth/reset/${
+    passwordResetResult.resetPasswordToken
+  }
   
   If you did not request this, please ignore this email and your password will remain unchanged`;
 
