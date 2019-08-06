@@ -28,6 +28,9 @@ const envVarsSchema = Joi.object({
     .description('AWS secret access key'),
   AWS_ACCESS_KEY_ID: Joi.string()
     .required()
+    .description('AWS access key'),
+  AWS_ACCESS_KEY_ID: Joi.string()
+    .required()
     .description('AWS access key')
 })
   .unknown()
@@ -49,7 +52,8 @@ const config = {
     port: envVars.MONGO_PORT
   },
   AWS_SECRET_ACCESS_KEY: envVars.AWS_SECRET_ACCESS_KEY,
-  AWS_ACCESS_KEY_ID: envVars.AWS_ACCESS_KEY_ID
+  AWS_ACCESS_KEY_ID: envVars.AWS_ACCESS_KEY_ID,
+  AWS_BUCKET_NAME: envVars.AWS_BUCKET_NAME
 };
 
 module.exports = config;
