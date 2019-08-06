@@ -10,7 +10,6 @@ const router = express.Router(); // eslint-disable-line new-cap
 /** Load user when API with userId route parameter is hit */
 router.param('userId', userCtrl.load);
 
-
 router
   .route('/')
   /** GET /api/v1/users - get all users */

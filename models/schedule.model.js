@@ -30,6 +30,10 @@ const ScheduleSchema = new mongoose.Schema({
       'compares the available slots with the array the number of mentees who have applied'
   },
   mentorId: {
+      type: String,
+      description: 'holds the mentors id'
+  },
+  mentees: {
     type: [
       {
         type: String
@@ -39,9 +43,10 @@ const ScheduleSchema = new mongoose.Schema({
 });
 
 
-
 ScheduleSchema.methods = {
    isClosed = ()=> {return this.slot <= this.mentees.length}
 }
 
 console.log(scheduleSchema, 'hello');
+
+module.exports = mongoose.model('Schedule', ScheduleSchema );
