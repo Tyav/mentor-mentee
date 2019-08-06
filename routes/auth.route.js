@@ -7,20 +7,20 @@ const { sendMail } = require('../controllers/user.controller');
 
 const router = express.Router(); // eslint-disable-line new-cap
 
-router.post('/forgot', async (req, res, next) => {
-  const user = await User.find({ email: req.body.email });
-  if (!user.length) {
-    res.json(
+router.post('/forgot', async (req, res) => {
+  const user = await User.getByEmail(req.body.email);
+  if (!user) {
+    return res.json(
       sendResponse(httpStatus.NOT_FOUND, 'User not found', null, null, null)
     );
   }
   const passwordReset = new PasswordReset({
-    userID: user[0]._id,
+    userID: user._id,
     email: req.body.email
   });
   const passwordResetResult = await passwordReset.save();
   if (!passwordResetResult || !passwordResetResult.email) {
-    res.json(
+    return res.json(
       sendResponse(
         httpStatus.NOT_FOUND,
         'something went wrong',
@@ -40,7 +40,7 @@ router.post('/forgot', async (req, res, next) => {
 
   sendMail(passwordResetResult.email, message);
 
-  res.json(
+  return res.json(
     sendResponse(
       httpStatus.OK,
       'Successfully sent reset mail',
