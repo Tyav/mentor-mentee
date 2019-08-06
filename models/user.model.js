@@ -90,9 +90,10 @@ UserSchema.statics = {
   },
   async login(email, password) {
     let user = await this.getByEmail(email);
+    console.log(user)
+    console.log('h')
     //if the user doesn't exist
-    if (!user)
-      throw new APIError('Incorrect email or password', null, null, httpStatus.NOT_FOUND, true);
+    if (!user) throw new APIError('Incorrect email or password', null, null, httpStatus.NOT_FOUND, true);
 
     // //check if the password entered matches the existing one...
     const validPassword = this.passwordMatches(password);
@@ -100,8 +101,8 @@ UserSchema.statics = {
     if (!validPassword)
       throw new APIError('Incorrect email or password', null, null, httpStatus.NOT_FOUND, true);
 
-      const token  = jwt.sign(user, process.env.TOKEN_SECRET)
-    return token;
+    
+    return user;
   }
 };
 
