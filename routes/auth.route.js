@@ -16,7 +16,8 @@ router.post('/forgot', async (req, res) => {
   }
   const passwordReset = new PasswordReset({
     userID: user._id,
-    email: req.body.email
+    email: req.body.email,
+    isAdmin: user.isAdmin
   });
   const passwordResetResult = await passwordReset.save();
   if (!passwordResetResult || !passwordResetResult.email) {
