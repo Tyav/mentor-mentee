@@ -23,8 +23,9 @@ PasswordResetSchema.statics = {
    * @returns {Promise<PasswordResetSchema, APIError>}
    */
   async getByEmailAndToken(email, token) {
-    let user = this.find({
-      $and: [{ email }, { token }]
+    let user = this.findOne({
+      email,
+      resetPasswordToken: token
     }).exec();
     return user;
   }
