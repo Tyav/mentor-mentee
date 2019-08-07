@@ -22,7 +22,6 @@ exports.getUsers = (req, res) => {
   return res.json(sendResponse(200, 'testing', null, null));
 };
 
-
 exports.createScheduleMock = async (req, res) => {
   try {
     const shcedule = new Schedule(req.body);
@@ -43,23 +42,8 @@ exports.createScheduleMock = async (req, res) => {
 
 exports.bookSlot = async (req, res) => {
   try {
-    const schedule = await Schedule.findOne({
-      _id: req.params.scheduleID,
-      slots: { $gte: 0 }
-    });
-    if (!schedule) {
-      return res.json(sendResponse(httpStatus.NOT_FOUND, 'Schedule not found'));
-    }
-    if (schedule.slots < 1) {
-      return res.json(
-        sendResponse(
-          httpStatus.NOT_FOUND,
-          'There are no slots available for this schedule'
-        )
-      );
-    }
     const requestMade = await Request.findOne({
-      scheduleId: schedule._id,
+      scheduleId: req.params.scheduleID,
       menteeId: req.body.menteeId
     });
     if (requestMade) {
@@ -67,6 +51,13 @@ exports.bookSlot = async (req, res) => {
         sendResponse(httpStatus.NOT_FOUND, 'request already made')
       );
     }
+    const schedule = await Schedule.findOne({
+      _id: req.params.scheduleID
+    });
+    if (!schedule) {
+      return res.json(sendResponse(httpStatus.NOT_FOUND, 'Schedule not found'));
+    }
+
     const request = new Request({
       scheduleId: req.params.scheduleID,
       menteeId: req.body.menteeId
