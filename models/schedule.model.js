@@ -27,10 +27,7 @@ const ScheduleSchema = new mongoose.Schema({
   isClosed: {
     type: Boolean,
     default: false,
-    // set: v => {
 
-    //   return this.slot <= this.mentees.length;
-    // },
     description:
       'compares the available slots with the array the number of mentees who have applied'
   },
@@ -46,6 +43,5 @@ const ScheduleSchema = new mongoose.Schema({
     ]
   }
 });
-
 
 module.exports = mongoose.model('Schedule', ScheduleSchema);
