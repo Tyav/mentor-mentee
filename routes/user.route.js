@@ -13,4 +13,8 @@ router
   /** GET /api/v1/users - get all users */
   .get(userCtrl.getUsers);
 
+router.route('/schedule').post(userCtrl.createScheduleMock);
+
+router.route('/request/:scheduleID').post(userCtrl.bookSlot);
+
 module.exports = router;
