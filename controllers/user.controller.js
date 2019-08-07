@@ -2,7 +2,6 @@ const httpStatus = require('http-status');
 const User = require('../models/user.model');
 const sendResponse = require('../helpers/response');
 const { createUser } = require('../validations/user.validation');
-const gravatar = require('gravatar');
 const { Joi } = require('celebrate');
 const pick = require('ramda/src/pick');
 
@@ -49,27 +48,18 @@ exports.signup = async (req, res) => {
       );
     }
 
-    //get user avatar
-    const avatar = gravatar.url(email, {
-      s: '200',
-      r: 'pg',
-      d: 'mm'
-    });
-
     //create User instance
     user = new User({
       name,
       email,
       password,
-      avatar,
       isMentor,
       isAdmin
     });
 
     await user.save();
-    const fields = ['id', 'email', 'isAdmin', 'isMentor'];
     const payload = user.transform();
-    const token = await user.generateToken(pick(fields, user));
+    const token = await user.generateToken();
 
     res.json(
       sendResponse(httpStatus.OK, 'Signup successful', payload, null, token)
