@@ -45,7 +45,7 @@ exports.reset = async (req, res) => {
 
 exports.resetPassword = async (req, res) => {
   try {
-    const TokenData = TokenDecoder(req.params.token);
+    const TokenData = TokenDecoder(req.query.token);
     if (!TokenData) {
       return res.json(
         sendResponse(

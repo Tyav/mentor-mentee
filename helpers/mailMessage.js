@@ -4,9 +4,13 @@ const message = {
   
   Please click on the following link, or paste this into your browser to complete the process:
   
-  http://${host}/api/v1/auth/reset/${token}
+  http://${host}/api/v1/auth/reset?token=${token}
   
   If you did not request this, please ignore this email and your password will remain unchanged`;
+  },
+  resetPasswordSuccess: email => {
+    return `Hello
+      This is a confirmation that the password for your account ${email} has just been changed`;
   }
 };
 
