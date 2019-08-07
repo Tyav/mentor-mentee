@@ -14,30 +14,8 @@ router
   /** GET /api/v1/users - get all users */
   .get(userCtrl.getUsers);
 
-router.post('/images', (req, res) => {
-  req.userID = '123456789'; // To be swap for the real userID
+router.post('/images', userCtrl.updateAvatar);
 
-  profileImage(req, res, error => {
-    if (error) {
-      res.status(401).json({
-        message: error.message,
-        file: false
-      });
-    } else {
-      if (req.file == undefined) {
-        res.status(401).json({
-          message: 'Error: No File Selected!',
-          file: false
-        });
-      } else {
-        console.log('file', req.file); //save to profile DB now
-        res.status(401).json({
-          msg: 'File Uploaded!',
-          file: `${req.file.location}`
-        });
-      }
-    }
-  });
-});
+router.put('/users/:userId', userCtrl.updateProfile);
 
 module.exports = router;

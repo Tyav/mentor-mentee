@@ -1,11 +1,11 @@
-const mongoose = require("mongoose");
-const httpStatus = require("http-status");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const pick = require("ramda/src/pick")
-const APIError = require("../helpers/APIError");
-const EncodeToken = require("../helpers/TokenEncoder");
-const config = require("../config/env");
+const mongoose = require('mongoose');
+const httpStatus = require('http-status');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const pick = require('ramda/src/pick');
+const APIError = require('../helpers/APIError');
+const EncodeToken = require('../helpers/TokenEncoder');
+const config = require('../config/env');
 
 /**
  * User Schema
@@ -25,23 +25,38 @@ const UserSchema = new mongoose.Schema({
     minlength: 6,
     required: true
   },
-})
+  phone: {
+    type: String,
+    minlength: 8,
+    maxlength: 13
+  },
+  bio: {
+    type: String,
+    minlength: 2,
+    maxlength: 250
+  },
+  location: {
+    type: String
+  },
+  skills: { type: [String], index: true },
+  connection: {}
+});
 
-UserSchema.pre("save", function(next) {
+UserSchema.pre('save', function(next) {
   /**
    * Ensures the password is hashed before save
    */
-  if (!this.isModified("password")) {
-    return next()
+  if (!this.isModified('password')) {
+    return next();
   }
   bcrypt.hash(this.password, 10, (err, hash) => {
     if (err) {
-      return next(err)
+      return next(err);
     }
     this.password = hash;
     next();
-  })
-})
+  });
+});
 
 /**
  * Methods
@@ -53,29 +68,25 @@ UserSchema.methods = {
    * @param {String} password - input password
    */
   async passwordMatches(password) {
-    return bcrypt.compare(password, this.password)
+    return bcrypt.compare(password, this.password);
   },
-/**
- * Returns user object without password
- */
+  /**
+   * Returns user object without password
+   */
   async transform() {
     // add feilds to be selected
-    const fields = [
-      "id",
-      "name",
-      "email"
-    ];
-    return pick(fields, this)
+    const fields = ['id', 'name', 'email', 'phone', 'bio', 'location', 'skills'];
+    return pick(fields, this);
   }
-}
+};
 
 UserSchema.statics = {
   /**
-   * 
-   * @param {String} email 
+   *
+   * @param {String} email
    * @returns {Promise<UserSchema, APIError>}
    */
-  async getByEmail (email) {
+  async getByEmail(email) {
     let user = this.findOne({
       email
     }).exec();
@@ -86,4 +97,4 @@ UserSchema.statics = {
 /**
  * @typedef User
  */
-module.exports = mongoose.model("User", UserSchema)
+module.exports = mongoose.model('User', UserSchema);
