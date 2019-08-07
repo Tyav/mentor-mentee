@@ -1,11 +1,9 @@
 const request = require('supertest');
+const app = require('../index');
 const User = require('../models/user.model');
 
-const app = require('../index');
-
-// const token =
-//   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1NjU5NzQ1ODUsImlhdCI6MTU2NTExMDU4NSwic3ViIjoiNWQ0OTU1MWRkNjQ4ODhjOTYzNmMwZjI1IiwiZW1haWwiOiJva2V0ZWdhaEBnbWFpbC5jb20ifQ.Fd5NhXaalDNhv_8wAMX3hsSI0tcApE-t6-wrU7cciTg';
-let user = new User({
+describe('#LOGIN TEST', () => {
+  let user = new User({
   name: 'oke tega',
   email: 'mike@gmail.com',
   password: 'xxxxxxxxxxxxxxxxx',
@@ -13,10 +11,66 @@ let user = new User({
 });
 user.save();
 let token = user.generateToken();
+  let user = new User({
+    name: 'testMentor2',
+    email: 'mentor@test.com',
+    password: 'mentorpass',
+    isMentor: true
+  });
 
-afterAll(() => {
-  return User.deleteOne({ email: 'mike@gmail.com' });
-});
+  beforeAll(async () => {
+    await user.save();
+  });
+  afterAll(async () => {
+    await User.deleteMany();
+  });
+
+  describe('LOGIN', () => {
+    it('should return invalid name or password if a wrong email is passed in', () => {
+      const incorrectEmail = {
+        email: 'rukeeojigbo@gmail.com'
+      };
+      return request(app)
+        .post('/api/v1/auth/login')
+        .send(incorrectEmail)
+        .expect(200, {
+          statusCode: 400,
+          message: 'Incorrect email or password',
+          payload: null,
+          error: null
+        });
+    });
+
+    it('should return an Invalid password if a wrong password is entered', () => {
+      const incorrectPassword = {
+        email: 'ter@test.com',
+        password: '222222'
+      };
+
+      return request(app)
+        .post('/api/v1/auth/login')
+        .send(incorrectPassword)
+        .expect(200, {
+          statusCode: 400,
+          message: 'Incorrect email or password',
+          payload: null,
+          error: null
+        });
+    });
+
+    it('should return a token when the credentials are correct', async () => {
+   
+
+      let userObject = {
+        email: 'mentor@test.com',
+        password: 'mentorpass'
+      };
+
+      return request(app)
+        .post('/api/v1/auth/login')
+        .send(userObject)
+        .expect(200, {});
+    });
 
 describe('Forgot Password Endpoint', () => {
   test('Should check if there is a /auth/forgot endpoint', () => {
@@ -26,6 +80,7 @@ describe('Forgot Password Endpoint', () => {
       .expect(200, {
         statusCode: 404,
         message: 'email success message'
+
       });
   });
   test('Returns 404 if user is not found', () => {
@@ -37,6 +92,7 @@ describe('Forgot Password Endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(200, {
         statusCode: 404,
+
         message: 'email success message'
       });
   });
@@ -49,6 +105,7 @@ describe('Forgot Password Endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(200);
     expect(response.body.statusCode).toBe(200);
+
   });
 });
 
