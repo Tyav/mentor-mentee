@@ -3,7 +3,6 @@ const User = require('../models/user.model');
 const sendResponse = require('../helpers/response');
 const { createUser } = require('../validations/user.validation');
 const { Joi } = require('celebrate');
-const pick = require('ramda/src/pick');
 
 /**
  * Load user and append to req.

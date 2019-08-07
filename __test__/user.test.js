@@ -31,13 +31,19 @@ describe('test /api/v1/users endpoint', () => {
       .post('/api/v1/users')
       .send(data)
       .expect(200);
+    expect(response.body.payload).toMatchObject({
+      id: expect.any(String),
+      name: expect.any(String),
+      email: expect.any(String),
+      isAdmin: expect.any(Boolean),
+      isMentor: expect.any(Boolean)
+    });
     expect(response.body.statusCode).toBe(200);
     expect(response.body.message).toBeDefined();
-    expect(response.body.payload).toHaveProperty('id');
-    expect(response.body.payload).toHaveProperty('email');
-    expect(response.body.payload).toHaveProperty('name');
     expect(response.body.error).toBe(null);
-    expect(response.body.token).toMatch(/^[a-z0-9-_=]*\.[a-z0-9-_=]*\.[a-z0-9-_.+=]*$/i);
+    expect(response.body.token).toMatch(
+      /^[a-z0-9-_=]*\.[a-z0-9-_=]*\.[a-z0-9-_.+=]*$/i
+    );
   });
 
   test('POST to /api/v1/users respond with 400 email already in use', async () => {
