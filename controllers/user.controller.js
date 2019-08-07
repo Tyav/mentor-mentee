@@ -1,11 +1,11 @@
 const httpStatus = require('http-status');
 const User = require('../models/user.model');
 const sendResponse = require('../helpers/response');
+const EncodeToken = require('../helpers/TokenEncoder');
 const Schedule = require('../models/scheduleMock.model');
 const Request = require('../models/request.model');
-const { createUser } = require('../validations/user.validation');
+const { createUser, login} = require('../validations/user.validation');
 const { Joi } = require('celebrate');
-
 
 /**
  * Load user and append to req.
@@ -137,3 +137,46 @@ exports.signup = async (req, res) => {
   }
 };
 
+exports.login = async (req, res) => {
+  const { error } = Joi.validate(req.body, login.body);
+
+  if (error)
+    return res.json(
+      sendResponse(
+        httpStatus.BAD_REQUEST,
+        'Incorrect email or password',
+        null,
+        null
+      )
+    );
+
+  const { email, password } = req.body;
+
+  const user = await User.getByEmail(email);
+
+  if (!user)
+    return res.json(
+      sendResponse(
+        httpStatus.BAD_REQUEST,
+        'Incorrect email or password',
+        null,
+        null
+      )
+    );
+
+  const validPassword = user.passwordMatches(password);
+
+  if (!validPassword)
+    return res.json(
+      sendResponse(
+        httpStatus.BAD_REQUEST,
+        'Incorrect email or password',
+        null,
+        null
+      )
+    );
+
+  const token = EncodeToken(user.id, user.email, user.isAdmin);
+
+  res.header('auth-token', token).send(token);
+};

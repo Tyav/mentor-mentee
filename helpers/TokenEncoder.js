@@ -4,7 +4,6 @@ const { jwtExpirationInterval, jwtSecret } = require('../config/env');
 
 const EncodeToken = (id, email, isAdmin, isMentor) => {
   const payload = {
-
       exp: moment()
         .add(jwtExpirationInterval, 'days')
         .unix(),

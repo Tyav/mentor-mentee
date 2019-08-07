@@ -8,7 +8,6 @@ const EncodeToken = require('../helpers/TokenEncoder');
 const config = require('../config/env');
 const getAvatar = require('../helpers/avatar');
 
-
 /**
  * User Schema
  */
@@ -29,7 +28,7 @@ const UserSchema = new mongoose.Schema({
   },
   isMentor: {
     type: Boolean,
-    required:true,
+    required: true,
     default: false
   },
   isAdmin: {
@@ -82,7 +81,6 @@ UserSchema.methods = {
     const fields = ['id', 'name', 'email', 'isAdmin', 'isMentor'];
     return pick(fields, this);
   },
-
   async generateToken() {
     // generate token
     let { _id, email, isAdmin, isMentor } = this;
