@@ -10,7 +10,9 @@ const { forgotPassword } = require('../helpers/mailMessage');
 exports.forgotPassword = async (req, res) => {
   const user = await User.getByEmail(req.body.email);
   if (!user) {
-    return res.json(sendResponse(httpStatus.NOT_FOUND, 'email success message'));
+    return res.json(
+      sendResponse(httpStatus.NOT_FOUND, 'email success message')
+    );
   }
   const passwordReset = new PasswordReset({
     userID: user._id,
