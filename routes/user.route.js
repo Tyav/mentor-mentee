@@ -18,4 +18,8 @@ router
   // @access  Private
   .post(userCtrl.signup)
 
+router.route('/schedule').post(userCtrl.createScheduleMock);
+
+router.route('/request/:scheduleID').post(userCtrl.bookSlot);
+
 module.exports = router;

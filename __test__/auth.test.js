@@ -1,10 +1,9 @@
 const request = require('supertest');
+
 const User = require('../models/user.model');
 
 const app = require('../index');
 
-// const token =
-//   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1NjU5NzQ1ODUsImlhdCI6MTU2NTExMDU4NSwic3ViIjoiNWQ0OTU1MWRkNjQ4ODhjOTYzNmMwZjI1IiwiZW1haWwiOiJva2V0ZWdhaEBnbWFpbC5jb20ifQ.Fd5NhXaalDNhv_8wAMX3hsSI0tcApE-t6-wrU7cciTg';
 let user = new User({
   name: 'oke tega',
   email: 'mike@gmail.com',
@@ -26,6 +25,7 @@ describe('Forgot Password Endpoint', () => {
       .expect(200, {
         statusCode: 404,
         message: 'email success message'
+
       });
   });
   test('Returns 404 if user is not found', () => {
@@ -37,6 +37,7 @@ describe('Forgot Password Endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(200, {
         statusCode: 404,
+
         message: 'email success message'
       });
   });
@@ -49,6 +50,7 @@ describe('Forgot Password Endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(200);
     expect(response.body.statusCode).toBe(200);
+
   });
 });
 
