@@ -57,7 +57,7 @@ UserSchema.pre('save', function(next) {
     next();
   });
 });
-
+ 
 /**
  * Methods
  * write reusable methods here
