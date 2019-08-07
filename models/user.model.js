@@ -27,7 +27,8 @@ const UserSchema = new mongoose.Schema({
   },
   isMentor: {
     type: Boolean,
-    required: true
+    required: true,
+    default: false
   },
   isAdmin: {
     type: Boolean,
