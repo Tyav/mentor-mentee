@@ -29,7 +29,7 @@ describe('# SCHEDULES TEST', () => {
           to: new Date()
         },
         isClosed: false,
-        slot: 4,
+        slots: 4,
         mentorId: user._id
       };
 

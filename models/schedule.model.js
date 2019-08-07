@@ -20,7 +20,7 @@ const ScheduleSchema = new mongoose.Schema({
     // required: true
   },
 
-  slot: {
+  slots: {
     type: Number,
     description: 'The number of available slots'
   },
@@ -28,7 +28,7 @@ const ScheduleSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
     // set: v => {
-      
+
     //   return this.slot <= this.mentees.length;
     // },
     description:

@@ -9,7 +9,7 @@ module.exports = {
         from: Joi.date().required(),
         to:Joi.date().required()
       }),
-      slot: Joi.number().required(),
+      slots: Joi.number().required(),
       isClosed:Joi.boolean().required(),
       mentorId: Joi.string().required(),
       mentees: Joi.array().items(Joi.string())

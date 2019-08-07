@@ -23,7 +23,7 @@ exports.createSchedule = async (req, res, next) => {
 
       console.log(error)
 
-    const { day, time, slot, isClosed, mentorId, mentees } = req.body;
+    const { day, time, slots, isClosed, mentorId, mentees } = req.body;
 
     const schedule = new ScheduleModel({
       day: day,
@@ -31,7 +31,7 @@ exports.createSchedule = async (req, res, next) => {
         from: time.from,
         to: time.to
       },
-      slot: slot,
+      slots: slots,
       isClosed: isClosed,
       mentorId: mentorId,
       mentees: mentees
