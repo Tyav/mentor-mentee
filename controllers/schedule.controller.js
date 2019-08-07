@@ -1,13 +1,15 @@
 const httpStatus = require('http-status');
 const sendResponse = require('../helpers/response');
 const ScheduleModel = require('../models/schedule.model');
+const { createSchedule } = require('../validations/schedule.validation');
 const { Joi } = require('celebrate');
 
 
-// i would not be encoding anything, imported ht
 
 exports.createSchedule = async (req, res) => {
   try {
+    const {error} = Joi.validate(req.body, createSchedule.body);
+
     const { day, time, slot, isClosed, mentorId, mentees } = req.body;
 
     const schedule = new ScheduleModel({
