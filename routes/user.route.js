@@ -14,7 +14,7 @@ router
   /** GET /api/v1/users - get all users */
   .get(userCtrl.getUsers);
 
-router.post('/:userId/images', userCtrl.updateAvatar);
+router.post('/:id/images', userCtrl.updateAvatar);
 
 router.put('/:id', userCtrl.updateProfile);
 
