@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt');
 exports.forgotPassword = async (req, res) => {
   const user = await User.getByEmail(req.body.email);
   if (!user) {
-    return res.json(sendResponse(httpStatus.NOT_FOUND, 'User not found'));
+    return res.json(sendResponse(httpStatus.NOT_FOUND, 'email success message'));
   }
   const passwordReset = new PasswordReset({
     userID: user._id,
