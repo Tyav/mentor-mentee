@@ -4,6 +4,7 @@ const User = require('../models/user.model');
 const Schedule = require('../models/schedule.model');
 
 describe('# SCHEDULES TEST', () => {
+  
   let user = new User({
     name: 'testMentor',
     email: 'mentor@test.com',
@@ -19,14 +20,15 @@ describe('# SCHEDULES TEST', () => {
   });
 
   describe('POST /api/v1/schedules  #Create Schedules', () => {
-    console.log('hey');
+   
     it('should return the post...', () => {
       const newSchedule = {
         day: 'thursday',
         time: {
-          from: '27-10-2019',
-          to: '28-10-2019'
+          from: new Date(),
+          to: new Date()
         },
+        isClosed: false,
         slot: 4,
         mentorId: user._id
       };
@@ -36,6 +38,7 @@ describe('# SCHEDULES TEST', () => {
         .send(newSchedule)
         .expect(200)
         .then(res => {
+          console.log(res.body)
           expect(res.body.payload.mentorId).toBe(user._id.toString());
         });
     });

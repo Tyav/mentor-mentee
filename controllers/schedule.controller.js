@@ -4,19 +4,32 @@ const ScheduleModel = require('../models/schedule.model');
 const { createSchedule } = require('../validations/schedule.validation');
 const { Joi } = require('celebrate');
 
-
-
-exports.createSchedule = async (req, res) => {
+exports.createSchedule = async (req, res, next) => {
   try {
-    const {error} = Joi.validate(req.body, createSchedule.body);
+    const { error } = Joi.validate(req.body, createSchedule.body);
+
+    if (error) {
+      console.log('there was an erro');
+      return res.json(
+        sendResponse(
+          httpStatus.BAD_REQUEST,
+          'Incorrect email or password',
+          null,
+          null
+        )
+      );
+
+    }
+
+      console.log(error)
 
     const { day, time, slot, isClosed, mentorId, mentees } = req.body;
 
     const schedule = new ScheduleModel({
       day: day,
       time: {
-        from: Date(time.from),
-        to: Date(time.to)
+        from: time.from,
+        to: time.to
       },
       slot: slot,
       isClosed: isClosed,
@@ -24,19 +37,15 @@ exports.createSchedule = async (req, res) => {
       mentees: mentees
     });
 
-    schedule.save();
+  await schedule.save();
+    console.log('hy')
     return res.json(sendResponse(200, 'Schedule Created', schedule, null));
   } catch (error) {
     console.log(error.message);
-    next(error);
   }
 };
 
-
-exports.getAllSchedules = async(req,res) =>{
+exports.getAllSchedules = async (req, res) => {
   try {
-    
-  } catch (error) {
-    
-  }
-}
+  } catch (error) {}
+};
