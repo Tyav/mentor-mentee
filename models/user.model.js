@@ -8,6 +8,7 @@ const EncodeToken = require('../helpers/TokenEncoder');
 const config = require('../config/env');
 const getAvatar = require('../helpers/avatar');
 
+
 /**
  * User Schema
  */
