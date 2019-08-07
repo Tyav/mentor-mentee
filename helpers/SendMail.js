@@ -2,9 +2,8 @@ const nodemailer = require('nodemailer');
 
 const sendMail = (email, message) => {
   const smtpTransport = nodemailer.createTransport({
-    service: 'gmail',
-    secure: true,
-    port: 25,
+    host: 'smtp.mailtrap.io',
+    port: 2525,
     auth: {
       user: process.env.MAILER_EMAIL,
       pass: process.env.MAILER_PASSWORD
