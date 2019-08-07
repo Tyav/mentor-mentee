@@ -12,16 +12,20 @@ const s3 = new aws.S3({
   Bucket: AWS_BUCKET_NAME
 });
 
+function isNewProfile(previousAvatar, userID) {
+  if (previousAvatar) return previousAvatar;
+  return `${userID}-${Date.now()}`;
+}
+
 const multerS3Config = multerS3({
   s3: s3,
   bucket: AWS_BUCKET_NAME,
   acl: 'public-read', // to allow acces to image
-  contentType: multerS3.AUTO_CONTENT_TYPE,
   metadata: (req, file, callback) => {
     callback(null, { fieldName: file.fieldname });
   },
   key: (req, file, callback) => {
-    callback(null, `${req.userID}-${Date.now()}${file.originalname}`); // Key is the filename
+    callback(null, isNewProfile(req.previousAvatar, req.userID)); // retain the previous key if exist
   }
 });
 
