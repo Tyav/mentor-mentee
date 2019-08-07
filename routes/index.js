@@ -4,6 +4,7 @@ const userRoutes = require('./user.route');
 const authRoutes = require('./auth.route');
 const sendResponse = require('../helpers/response');
 const scheduleRoutes = require('./schedule.route');
+const sendResponse = require('../helpers/response');
 
 const router = express.Router(); // eslint-disable-line new-cap
 
@@ -25,6 +26,5 @@ router.use('/auth', authRoutes);
 //mount schedule route
 router.use('/schedules', scheduleRoutes);
 
-// router.use('/schedule', )
 
 module.exports = router;

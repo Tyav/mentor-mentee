@@ -4,13 +4,11 @@ module.exports = {
   // POST /api/v1/users
   createUser: {
     body: {
-      name: Joi.string().required(),
-      email: Joi.string()
-        .email()
-        .required(),
-      password: Joi.string()
-        .min(6)
-        .required()
+      name: Joi.string().required().min(1).max(120),
+      email: Joi.string().email().required(),
+      password: Joi.string().min(6).max(20).required(),
+      isMentor:Joi.boolean()
+
     }
   },
   // PUT /api/users/:userId
