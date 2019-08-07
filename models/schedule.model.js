@@ -50,6 +50,5 @@ const ScheduleSchema = new mongoose.Schema({
 // //    isClosed = ()=> {return this.slot <= this.mentees.length}
 // // }
 
-console.log(ScheduleSchema, 'hello');
 
 module.exports = mongoose.model('Schedule', ScheduleSchema);

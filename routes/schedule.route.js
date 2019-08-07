@@ -9,7 +9,7 @@ const modelCtrl = require('../controllers/schedule.controller');
 const router = express.Router();
 
 router.post('/', (req, res) => {
-  return modelCtrl.createPost(req, res);
+  return modelCtrl.createSchedule(req, res);
 });
 
 module.exports = router;
