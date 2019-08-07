@@ -36,5 +36,4 @@ describe('Make request End Point', () => {
     expect(response.body.statusCode).toBe(404);
     expect(response.body.message).toBe('request already made');
   });
-
 });

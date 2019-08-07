@@ -4,7 +4,7 @@ const app = require('../index');
 
 const token =
   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1NjU5NzQ1ODUsImlhdCI6MTU2NTExMDU4NSwic3ViIjoiNWQ0OTU1MWRkNjQ4ODhjOTYzNmMwZjI1IiwiZW1haWwiOiJva2V0ZWdhaEBnbWFpbC5jb20ifQ.Fd5NhXaalDNhv_8wAMX3hsSI0tcApE-t6-wrU7cciTg';
-  
+
 describe('Forgot Password Endpoint', () => {
   test('Should check if there is a /auth/forgot endpoint', () => {
     return request(app)
