@@ -5,11 +5,14 @@ const PasswordReset = require('../models/passwordReset.model');
 const sendMail = require('../helpers/SendMail');
 const TokenDecoder = require('../helpers/TokenDecoder');
 const bcrypt = require('bcrypt');
+const { forgotPassword } = require('../helpers/mailMessage');
 
 exports.forgotPassword = async (req, res) => {
   const user = await User.getByEmail(req.body.email);
   if (!user) {
-    return res.json(sendResponse(httpStatus.NOT_FOUND, 'User not found'));
+    return res.json(
+      sendResponse(httpStatus.NOT_FOUND, 'email success message')
+    );
   }
   const passwordReset = new PasswordReset({
     userID: user._id,
@@ -20,15 +23,11 @@ exports.forgotPassword = async (req, res) => {
   if (!passwordResetResult || !passwordResetResult.email) {
     return res.json(sendResponse(httpStatus.NOT_FOUND, 'something went wrong'));
   }
-  const message = `You are receiving this because you (or someone else) have requested the reset of the password for your account.
-  
-  Please click on the following link, or paste this into your browser to complete the process:
-  
-  http://${req.headers.host}/api/v1/auth/reset/${
+
+  const message = forgotPassword(
+    req.headers.host,
     passwordResetResult.resetPasswordToken
-  }
-  
-  If you did not request this, please ignore this email and your password will remain unchanged`;
+  );
 
   sendMail(passwordResetResult.email, message);
 
@@ -46,7 +45,7 @@ exports.reset = async (req, res) => {
 
 exports.resetPassword = async (req, res) => {
   try {
-    const TokenData = TokenDecoder(req.params.token);
+    const TokenData = TokenDecoder(req.query.token);
     if (!TokenData) {
       return res.json(
         sendResponse(

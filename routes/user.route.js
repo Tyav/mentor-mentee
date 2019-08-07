@@ -11,7 +11,12 @@ router.param('userId', userCtrl.load);
 router
   .route('/')
   /** GET /api/v1/users - get all users */
-  .get(userCtrl.getUsers);
+
+  .get(userCtrl.getUsers)
+  // @route   POST api/v1/users
+  // @desc    Add experience to profile
+  // @access  Private
+  .post(userCtrl.signup)
 
 router.route('/schedule').post(userCtrl.createScheduleMock);
 
