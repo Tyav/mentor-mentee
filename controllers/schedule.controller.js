@@ -35,7 +35,7 @@ exports.createSchedule = async (req, res, next) => {
     });
 
     await schedule.save();
-    console.log('hy');
+
     return res.json(sendResponse(200, 'Schedule Created', schedule, null));
   } catch (error) {
     console.log(error.message);
