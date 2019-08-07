@@ -1,5 +1,6 @@
 const request = require('supertest');
 const app = require('../config/express');
+const User = require('../models/user.model');
 
 describe('Testing User router', () => {
   describe('Testing Image Upload', () => {
@@ -34,7 +35,7 @@ describe('Testing User router', () => {
     };
     it('Post request to /users/:userId should return error if data is not valid', done => {
       return request(app)
-        .put('/api/v1/users/5d4af49be4abb47ca2a0a27a')
+        .put(`/api/v1/users/12345`)
         .send(fakeData)
         .expect('Content-Type', /json/)
         .then(res => {
@@ -60,12 +61,24 @@ describe('Testing User router', () => {
         });
     });
 
-    it('Post request to /users/:userId, Valid data and Id should be successful', done => {
+    it('Post request to /users/:userId, Valid data and Id should be successful', async done => {
+      let user = new User({
+        name: 'testuser',
+        email: 'test@test.com',
+        password: 'testpass'
+      });
+
+      await user.save();
+
       return request(app)
-        .put('/api/v1/users/5d4af49be4abb47ca2a0a27a')
+        .put(`/api/v1/users/${user._id}`)
         .send(realData)
         .expect('Content-Type', /json/)
-        .expect(200, done);
-    });
+        .then(res => {
+          expect(res.status).toBe(200);
+          done();
+        })
+        .catch(err => console.log(err));
+    }, 10000);
   });
 });
