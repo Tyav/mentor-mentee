@@ -77,15 +77,15 @@ exports.updateProfile = async (req, res) => {
     );
   }
 
-  let user = await User.findByIdAndUpdate(req.params.id, { $set: value }, { new: true }) 
-    if (!user) {
-      return res.json(
-        sendResponse(httpStatus.BAD_REQUEST, 'Error Occur', null, { error: error.message }, null)
+  User.findByIdAndUpdate(req.params.userId, { $set: values }, { new: true }, (error, user) => {
+    if (error) {
+      res.json(
+        sendResponse(httpStatus[500], 'Error Occur', null, { message: error.message }, null)
       );
     }
-    console.log(value)
 
-    return res.json(sendResponse(httpStatus.OK, 'User Updated', await user.transform(), null, null));
-
+    user.transform().then(data => {
+      return res.json(sendResponse(httpStatus.OK, 'User Updated', data, null, null));
+    });
+  });
 };
-
