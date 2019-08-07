@@ -5,8 +5,6 @@ const router = express.Router(); // eslint-disable-line new-cap
 router.route('/');
 /** GET /api/v1/users - get all users */
 
-router.post('/login', (req, res) => {
-  return login(req, res);
-});
+router.post('/login', login);
 
 module.exports = router;

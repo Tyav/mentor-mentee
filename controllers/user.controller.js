@@ -62,8 +62,6 @@ exports.login = async (req, res) => {
       )
     );
 
-  //const payload = await user.transform();
-
   const token = EncodeToken(user.id, user.email, user.isAdmin);
 
   res.header('auth-token', token).send(token);

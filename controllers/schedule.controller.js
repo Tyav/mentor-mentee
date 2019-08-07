@@ -18,10 +18,7 @@ exports.createSchedule = async (req, res, next) => {
           null
         )
       );
-
     }
-
-      console.log(error)
 
     const { day, time, slots, isClosed, mentorId, mentees } = req.body;
 
@@ -37,8 +34,8 @@ exports.createSchedule = async (req, res, next) => {
       mentees: mentees
     });
 
-  await schedule.save();
-    console.log('hy')
+    await schedule.save();
+    console.log('hy');
     return res.json(sendResponse(200, 'Schedule Created', schedule, null));
   } catch (error) {
     console.log(error.message);
