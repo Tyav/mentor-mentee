@@ -5,6 +5,7 @@ const { profileImage } = require('../helpers/upload');
 const { updateUser: updateUserValidation } = require('../validations/user.validation');
 const AvatarSchema = require('../models/avatar.model');
 const { customErrorMessage } = require('../helpers/joiCustomError');
+const { Joi } = require('celebrate');
 
 /**
  * Load user and append to req.
@@ -23,7 +24,7 @@ exports.getUsers = (req, res) => {
 };
 
 exports.updateAvatar = async (req, res) => {
-  const userId = req.params.userId;
+  const { id: userId } = req.params;
 
   const avatar = await AvatarSchema.getByUserId(userId);
   if (avatar) req.previousAvatar = avatar.key;
@@ -63,28 +64,27 @@ exports.updateAvatar = async (req, res) => {
 };
 
 exports.updateProfile = (req, res) => {
-  const { error, values } = Joi.validate(req.body, updateUserValidation);
-
+  const { error, value } = Joi.validate(req.body, updateUserValidation);
   if (error) {
-    res.json(
+    return res.json(
       sendResponse(
         httpStatus.BAD_REQUEST,
         'Bad Request',
         null,
-        { message: customErrorMessage(error) },
+        { error: customErrorMessage(error.details) },
         null
       )
     );
   }
 
-  User.findByIdAndUpdate(req.params.userId, { $set: values }, { new: true }, (error, user) => {
+  User.findByIdAndUpdate(req.params.id, { $set: value }, { new: true }, (error, user) => {
     if (error) {
-      res.json(
-        sendResponse(httpStatus[500], 'Error Occur', null, { message: error.message }, null)
+      return res.json(
+        sendResponse(httpStatus[500], 'Error Occur', null, { error: error.message }, null)
       );
     }
-
-    const data = user.transform().then(data => data);
-    res.json(sendResponse(httpStatus.OK, 'User Updated', data, null, null));
+    user.transform().then(data => {
+      res.json(sendResponse(httpStatus.OK, 'User Updated', data, null, null));
+    });
   });
 };

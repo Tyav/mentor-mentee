@@ -15,18 +15,16 @@ module.exports = {
   },
   // PUT /api/users/:userId
   updateUser: {
-    body: {
-      name: Joi.string().required(),
-      email: Joi.string()
-        .email()
-        .required(),
-      phone: Joi.string(),
-      connection: Joi.object().required(),
-      bio: Joi.string()
-        .max(250)
-        .required(),
-      location: Joi.string().required(),
-      skills: Joi.array().items(Joi.string())
-    }
+    name: Joi.string().required(),
+    email: Joi.string()
+      .email()
+      .required(),
+    phone: Joi.string(),
+    connection: Joi.object().required(),
+    bio: Joi.string()
+      .max(250)
+      .required(),
+    location: Joi.string(),
+    skills: Joi.array().items(Joi.string())
   }
 };
