@@ -68,11 +68,12 @@ exports.signup = async (req, res) => {
 
     await user.save();
     const fields = ['id', 'email', 'isAdmin', 'isMentor'];
-    const payload =  pick(fields, user);
-    const token = await user.generateToken(payload);
+    const payload = user.transform();
+    const token = await user.generateToken(pick(fields, user));
 
-
-    res.json(sendResponse(httpStatus.OK, 'Signup successful', token, null));
+    res.json(
+      sendResponse(httpStatus.OK, 'Signup successful', payload, null, token)
+    );
   } catch (error) {
     console.error('Error: ', error.message);
     res
