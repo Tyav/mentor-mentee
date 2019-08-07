@@ -16,7 +16,7 @@ const ScheduleSchema = new mongoose.Schema({
     to: {
       type: Date,
       description: 'The time at which the schedule ends'
-     }
+    }
     // required: true
   },
 
@@ -26,14 +26,16 @@ const ScheduleSchema = new mongoose.Schema({
   },
   isClosed: {
     type: Boolean,
-    //default: false,
-    set: (v) => {return this.slot <= this.mentees.length},
+    default: false,
+    set: v => {
+      return this.slot <= this.mentees.length;
+    },
     description:
       'compares the available slots with the array the number of mentees who have applied'
   },
   mentorId: {
-      type: String,
-      description: 'holds the mentors id'
+    type: String,
+    description: 'holds the mentors id'
   },
   mentees: {
     type: [
@@ -44,11 +46,10 @@ const ScheduleSchema = new mongoose.Schema({
   }
 });
 
-
 // // ScheduleSchema.methods = {
 // //    isClosed = ()=> {return this.slot <= this.mentees.length}
 // // }
 
-// //console.log(scheduleSchema, 'hello');
+console.log(ScheduleSchema, 'hello');
 
-// module.exports = mongoose.model('Schedule', ScheduleSchema );
+module.exports = mongoose.model('Schedule', ScheduleSchema);
