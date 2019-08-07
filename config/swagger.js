@@ -9,37 +9,38 @@ const options = {
       version: '1.0.0',
       description: 'MentorDev API Documentation',
       contact: {
-        email: 'tyav2greenz@gmail.com',
-      },
+        email: 'tyav2greenz@gmail.com'
+      }
     },
     tags: [
       {
         name: 'User',
-        description: 'Everything about the Users API',
+        description: 'Everything about the Users API'
       },
       {
         name: 'Schedule',
-        description: 'Everything about the Documents API',
+        description: 'Everything about the Documents API'
       },
       {
         name: 'Forgot Password',
-        description: 'Everything about the Roles API',
+        description: 'Everything about the Roles API'
       },
       {
         name: 'Request',
-        description: 'Everything about the Categories API',
+        description: 'Everything about the Categories API'
       },
+      {
+        name: 'Profile',
+        description: 'Edit user profile'
+      }
     ],
-    schemes  : [ 'https', 'http' ],
-    // host     : ['localhost:6060/'],  
-    servers: [
-      {url: 'localhost:6060', description: 'sdds'}
-    ],
-
+    schemes: ['https', 'http'],
+    // host     : ['localhost:6060/'],
+    servers: [{ url: 'localhost:6060', description: 'sdds' }]
   },
 
   // List of files to be processes. You can also set globs './routes/*.js'
-  apis: ['./swagger-files/*.yaml'],
+  apis: ['./swagger-files/*.yaml']
 };
 
 const specs = swaggerJsdoc(options);

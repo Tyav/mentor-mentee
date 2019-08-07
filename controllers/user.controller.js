@@ -23,29 +23,34 @@ exports.getUsers = (req, res) => {
 };
 
 exports.updateAvatar = async (req, res) => {
-  req.userID = '123456789'; // To be swap for the real userID
-  const avatar = await AvatarSchema.getByUserId(req.userID);
+  const userId = req.params.userId;
+
+  const avatar = await AvatarSchema.getByUserId(userId);
   if (avatar) req.previousAvatar = avatar.key;
 
   profileImage(req, res, error => {
     if (error) {
-      res.status(401).json({
-        message: error.message,
-        file: false
-      });
+      res.json(
+        sendResponse(httpStatus.BAD_REQUEST, 'Bad Request', null, { message: error.message }, null)
+      );
     } else {
       if (req.file == undefined) {
-        res.status(401).json({
-          message: 'Error: No File Selected!',
-          file: false
-        });
+        res.json(
+          sendResponse(
+            httpStatus.BAD_REQUEST,
+            'Error: No File Selected!',
+            null,
+            { message: 'Error: No File Selected!' },
+            null
+          )
+        );
       } else {
         if (!avatar) {
           const { key, location } = req.file;
-          const newAvatar = new AvatarSchema({ key, location, userId: req.userID });
+          const newAvatar = new AvatarSchema({ key, location, userId });
           newAvatar.save(error => {
             if (error) throw error;
-            console.log('Avatar saved successfully!');
+            // console.log('Avatar saved successfully!');
           });
         }
         res.status(401).json({
@@ -57,22 +62,29 @@ exports.updateAvatar = async (req, res) => {
   });
 };
 
-exports.updateProfile = async (req, res) => {
+exports.updateProfile = (req, res) => {
   const { error, values } = Joi.validate(req.body, updateUserValidation);
 
   if (error) {
-    res.status(401).json({ message: customErrorMessage(error) });
+    res.json(
+      sendResponse(
+        httpStatus.BAD_REQUEST,
+        'Bad Request',
+        null,
+        { message: customErrorMessage(error) },
+        null
+      )
+    );
   }
 
   User.findByIdAndUpdate(req.params.userId, { $set: values }, { new: true }, (error, user) => {
-    if (!error) {
-      res.status(201).json({
-        data: user.transform().then(data => data)
-      });
-    } else {
-      res.status(500).json({
-        message: error.message
-      });
+    if (error) {
+      res.json(
+        sendResponse(httpStatus[500], 'Error Occur', null, { message: error.message }, null)
+      );
     }
+
+    const data = user.transform().then(data => data);
+    res.json(sendResponse(httpStatus.OK, 'User Updated', data, null, null));
   });
 };
