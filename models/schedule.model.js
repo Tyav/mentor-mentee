@@ -16,7 +16,8 @@ const ScheduleSchema = new mongoose.Schema({
     to: {
       type: Date,
       description: 'The time at which the schedule ends'
-    }
+     }
+    // required: true
   },
 
   slot: {
@@ -44,10 +45,10 @@ const ScheduleSchema = new mongoose.Schema({
 });
 
 
-// ScheduleSchema.methods = {
-//    isClosed = ()=> {return this.slot <= this.mentees.length}
-// }
+// // ScheduleSchema.methods = {
+// //    isClosed = ()=> {return this.slot <= this.mentees.length}
+// // }
 
-//console.log(scheduleSchema, 'hello');
+// //console.log(scheduleSchema, 'hello');
 
-module.exports = mongoose.model('Schedule', ScheduleSchema );
+// module.exports = mongoose.model('Schedule', ScheduleSchema );
