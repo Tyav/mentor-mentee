@@ -12,7 +12,7 @@ describe('Forgot Password Endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(200, {
         statusCode: 404,
-        message: 'User not found'
+        message: 'email success message'
       });
   });
   test('Returns 404 if user is not found', () => {
@@ -24,7 +24,7 @@ describe('Forgot Password Endpoint', () => {
       .expect('Content-Type', /json/)
       .expect(200, {
         statusCode: 404,
-        message: 'User not found'
+        message: 'email success message'
       });
   });
   test('Returns 200 if mail was sent', () => {
