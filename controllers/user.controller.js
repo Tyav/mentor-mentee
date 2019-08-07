@@ -4,6 +4,7 @@ const sendResponse = require('../helpers/response');
 const { createUser } = require('../validations/user.validation');
 const gravatar = require('gravatar');
 const { Joi } = require('celebrate');
+const pick = require('ramda/src/pick');
 
 /**
  * Load user and append to req.
@@ -66,10 +67,10 @@ exports.signup = async (req, res) => {
     });
 
     await user.save();
-    const payload = user.transform();
+    const fields = ['id', 'email', 'isAdmin', 'isMentor'];
+    const payload =  pick(fields, user);
     const token = await user.generateToken(payload);
 
-    console.log('token received:', token);
 
     res.json(sendResponse(httpStatus.OK, 'Signup successful', token, null));
   } catch (error) {

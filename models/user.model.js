@@ -81,11 +81,7 @@ UserSchema.methods = {
 
     // sign a jwt token
 
-    return await jwt.sign(
-      payload,
-      config.jwtSecret,
-      { expiresIn: 360000 }
-    );
+    return await EncodeToken(payload)
   }
 };
 
