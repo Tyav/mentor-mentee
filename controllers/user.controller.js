@@ -63,7 +63,7 @@ exports.updateAvatar = async (req, res) => {
   });
 };
 
-exports.updateProfile = (req, res) => {
+exports.updateProfile = async (req, res) => {
   const { error, value } = Joi.validate(req.body, updateUserValidation);
   if (error) {
     return res.json(
@@ -77,15 +77,14 @@ exports.updateProfile = (req, res) => {
     );
   }
 
-  User.findByIdAndUpdate(req.params.id, { $set: value }, { new: true }, (error, user) => {
-    if (error) {
-      return res.json(
-        sendResponse(httpStatus[500], 'Error Occur', null, { error: error.message }, null)
-      );
-    }
+  let user = await User.findByIdAndUpdate(req.params.id, { $set: value }, { new: true });
+  if (!user) {
+    return res.json(
+      sendResponse(httpStatus.BAD_REQUEST, 'Error Occur', null, { error: error.message }, null)
+    );
+  }
 
-    user.transform().then(data => {
-      return res.json(sendResponse(httpStatus.OK, 'User Updated', data, null, null));
-    });
+  user.transform().then(data => {
+    return res.json(sendResponse(httpStatus.OK, 'User Updated', data, null, null));
   });
 };
