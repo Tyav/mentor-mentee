@@ -7,6 +7,8 @@ const app = require('./config/express');
 
 const debug = require('debug')('mentordev:index');
 
+console.log('build')
+
 // make bluebird default Promise
 Promise = require('bluebird'); // eslint-disable-line no-global-assign
 
