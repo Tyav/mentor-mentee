@@ -1,10 +1,13 @@
 const httpStatus = require('http-status');
 const User = require('../models/user.model');
 const sendResponse = require('../helpers/response');
-const EncodeToken = require('../helpers/tokenEncoder');
+const { profileImage } = require('../helpers/upload');
+const { updateUser: updateUserValidation,createUser, login} = require('../validations/user.validation');
+const AvatarSchema = require('../models/avatar.model');
+const { customErrorMessage } = require('../helpers/joiCustomError');
+const EncodeToken = require('../helpers/TokenEncoder');
 const Schedule = require('../models/scheduleMock.model');
 const Request = require('../models/request.model');
-const { createUser, login} = require('../validations/user.validation');
 const { Joi } = require('celebrate');
 
 /**
@@ -24,6 +27,50 @@ exports.load = async (req, res, next, id) => {
 exports.getUsers = (req, res) => {
   return res.json(sendResponse(200, 'testing', null, null));
 };
+
+exports.updateAvatar = async (req, res) => {
+  const { id: userId } = req.params;
+
+  const avatar = await AvatarSchema.getByUserId(userId);
+  if (avatar) req.previousAvatar = avatar.key;
+
+  profileImage(req, res, error => {
+    if (error) {
+      res.json(
+        sendResponse(httpStatus.BAD_REQUEST, 'Bad Request', null, { message: error.message }, null)
+      );
+    } else {
+      if (req.file == undefined) {
+        res.json(
+          sendResponse(
+            httpStatus.BAD_REQUEST,
+            'Error: No File Selected!',
+            null,
+            { message: 'Error: No File Selected!' },
+            null
+          )
+        );
+      } else {
+        if (!avatar) {
+          const { key, location } = req.file;
+          const newAvatar = new AvatarSchema({ key, location, userId });
+          newAvatar.save(error => {
+            if (error) throw error;
+            // console.log('Avatar saved successfully!');
+          });
+        }
+        res.status(401).json({
+          msg: 'File Uploaded!',
+          file: `${req.file.location}`
+        });
+      }
+    }
+  });
+};
+
+exports.updateProfile = async (req, res) => {
+  const { error, value } = Joi.validate(req.body, updateUserValidation);
+  if (error) {
 
 exports.createScheduleMock = async (req, res) => {
   try {
@@ -89,6 +136,22 @@ exports.signup = async (req, res) => {
         httpStatus.BAD_REQUEST,
         'Bad Request',
         null,
+        { error: customErrorMessage(error.details) },
+        null
+      )
+    );
+  }
+
+  let user = await User.findByIdAndUpdate(req.params.id, { $set: value }, { new: true });
+  if (!user) {
+    return res.json(
+      sendResponse(httpStatus.BAD_REQUEST, 'Error Occur', null, { error: error.message }, null)
+    );
+  }
+
+  user.transform().then(data => {
+    return res.json(sendResponse(httpStatus.OK, 'User Updated', data, null, null));
+  });
         error.details[0].message
       )
     );
@@ -175,7 +238,6 @@ exports.login = async (req, res) => {
         null
       )
     );
-
   const token = EncodeToken(user.id, user.email, user.isAdmin);
 
   res.header('auth-token', token).send(token);

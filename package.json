@@ -37,6 +37,8 @@
   },
   "homepage": "https://github.com/Tyav/mentor-mentee#readme",
   "dependencies": {
+    "@types/jest": "^24.0.17",
+    "aws-sdk": "^2.504.0",
     "bcrypt": "^3.0.6",
     "bluebird": "^3.5.5",
     "body-parser": "^1.19.0",
@@ -56,6 +58,8 @@
     "moment-timezone": "^0.5.26",
     "mongoose": "^5.6.7",
     "morgan": "^1.9.1",
+    "multer": "^1.4.2",
+    "multer-s3": "^2.9.0",
     "nodemailer": "^6.3.0",
     "nodemon": "^1.19.1",
     "passport": "^0.4.0",

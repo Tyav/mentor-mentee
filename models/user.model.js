@@ -26,6 +26,21 @@ const UserSchema = new mongoose.Schema({
     minlength: 6,
     required: true
   },
+  phone: {
+    type: String,
+    minlength: 8,
+    maxlength: 13
+  },
+  bio: {
+    type: String,
+    minlength: 2,
+    maxlength: 250
+  },
+  location: {
+    type: String
+  },
+  skills: { type: [String], index: true },
+  connection: {},
   isMentor: {
     type: Boolean,
     required: true,
@@ -76,9 +91,10 @@ UserSchema.methods = {
   /**
    * Returns user object without password
    */
+
   transform() {
     // add feilds to be selected
-    const fields = ['id', 'name', 'email', 'isAdmin', 'isMentor'];
+    const fields = ['id', 'name', 'email', 'isAdmin', 'isMentor', 'phone', 'bio', 'location', 'skills'];
     return pick(fields, this);
   },
   async generateToken() {

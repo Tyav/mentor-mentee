@@ -47,6 +47,51 @@ path:
                     email:
                       type: string
                       example: 'johndoe@email.com'
+
+  # /api/v1/users/:userId:
+  #   put:
+  #       Profile:
+  #        description: Edit user profile   
+  #        produces:
+  #         - application/json
+  #       parameters:
+  #       - name: Authorization
+  #         in: header
+  #         schema:
+  #           type: string
+  #           example: 'Bearer xxxxxx'
+  #         required: true
+  #         name: name
+  #         in: query
+  #         schema:
+  #           type: string
+  #           example: "Tope Alabi"
+
+  #       responses:
+  #       200:
+  #         description: all users are retrieved.
+  #         schema:
+  #           type: object
+  #           properties:
+  #             error:
+  #               description: description on error if available
+  #               type: null
+  #               example: null
+  #             token:
+  #               description: jwt c ontain users id and other referrential informations
+  #               type: string
+  #               example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1Y2U5YjNjZTNjZjc3YTIzMjg3NGViNTEiLCJpc0FkbWluIjpmYWxzZSwiaXNMb2dnZWQiOnRydWUsInJvbGUiOiI1Y2RjMmQ1MTQ2NWJiNDRkM2E5MGMwMmMiLCJpYXQiOjE1NTg4MTk3OTF9.NH-CzRu4JcCou7gXJ40GDUtjeJRde9pWfsQ-fL_EM1s"
+  #             payload:
+  #               type: array
+  #               items: 
+  #                 type: object
+  #                 properties: 
+  #                   name:
+  #                     type: string
+  #                     example: 'John Doe'
+  #                   email:
+  #                     type: string
+  #                     example: 'johndoe@email.com'
         # 404:
         #  description: user not found
         #  schema:
@@ -111,3 +156,4 @@ path:
                     type: jwt token
                   error:
                     type: null
+
