@@ -6,6 +6,7 @@ const pick = require('ramda/src/pick');
 const APIError = require('../helpers/APIError');
 const EncodeToken = require('../helpers/TokenEncoder');
 const config = require('../config/env');
+const getAvatar = require('../helpers/avatar');
 
 /**
  * User Schema
@@ -39,7 +40,24 @@ const UserSchema = new mongoose.Schema({
     type: String
   },
   skills: { type: [String], index: true },
-  connection: {}
+  connection: {},
+  isMentor: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false
+  },
+  avatar: {
+    type: String,
+    default: getAvatar(this.email)
+  },
+  created: {
+    type: Date,
+    default: Date.now()
+  }
 });
 
 UserSchema.pre('save', function(next) {
@@ -57,7 +75,7 @@ UserSchema.pre('save', function(next) {
     next();
   });
 });
- 
+
 /**
  * Methods
  * write reusable methods here
@@ -73,10 +91,18 @@ UserSchema.methods = {
   /**
    * Returns user object without password
    */
-  async transform() {
+
+  transform() {
     // add feilds to be selected
-    const fields = ['id', 'name', 'email', 'phone', 'bio', 'location', 'skills'];
+    const fields = ['id', 'name', 'email', 'isAdmin', 'isMentor', 'phone', 'bio', 'location', 'skills'];
     return pick(fields, this);
+  },
+  async generateToken() {
+    // generate token
+    let { _id, email, isAdmin, isMentor } = this;
+    // sign a jwt token
+
+    return await EncodeToken(_id, email, isAdmin, isMentor);
   }
 };
 

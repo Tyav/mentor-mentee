@@ -2,6 +2,7 @@ path:
   /api/v1/users:
     get:
       tags:
+        - Schedule
         - User
       description: This should return all users
       produces:
@@ -13,6 +14,14 @@ path:
             type: string
             example: 'Bearer xxxxxx'
           required: true
+        - name: body
+          in: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: john
       responses:
         200:
           description: all users are retrieved.
@@ -26,18 +35,19 @@ path:
               token:
                 description: jwt c ontain users id and other referrential informations
                 type: string
-                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1Y2U5YjNjZTNjZjc3YTIzMjg3NGViNTEiLCJpc0FkbWluIjpmYWxzZSwiaXNMb2dnZWQiOnRydWUsInJvbGUiOiI1Y2RjMmQ1MTQ2NWJiNDRkM2E5MGMwMmMiLCJpYXQiOjE1NTg4MTk3OTF9.NH-CzRu4JcCou7gXJ40GDUtjeJRde9pWfsQ-fL_EM1s"
+                example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1Y2U5YjNjZTNjZjc3YTIzMjg3NGViNTEiLCJpc0FkbWluIjpmYWxzZSwiaXNMb2dnZWQiOnRydWUsInJvbGUiOiI1Y2RjMmQ1MTQ2NWJiNDRkM2E5MGMwMmMiLCJpYXQiOjE1NTg4MTk3OTF9.NH-CzRu4JcCou7gXJ40GDUtjeJRde9pWfsQ-fL_EM1s'
               payload:
                 type: array
-                items: 
+                items:
                   type: object
-                  properties: 
+                  properties:
                     name:
                       type: string
                       example: 'John Doe'
                     email:
                       type: string
                       example: 'johndoe@email.com'
+
   # /api/v1/users/:userId:
   #   put:
   #       Profile:
@@ -82,3 +92,68 @@ path:
   #                   email:
   #                     type: string
   #                     example: 'johndoe@email.com'
+        # 404:
+        #  description: user not found
+        #  schema:
+        #    $ref: "#/definitions/error-message"
+        # 400:
+        #  description: Bad Request
+        #  schema:
+        #    $ref: "#/definitions/error-message"
+        # 401:
+        #   description: Unauthorized User
+        #   schema:
+        #     $ref: "#/definitions/error-message"
+
+  # /api/v1/users:
+    post:
+      tags:
+        - User
+      summary: Creates a new user
+      description: Creates a new user with the fields sent, if is mentor not sent, it defauts to false
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      parameters:
+        - name: requestBody
+          in: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                # required: true
+                example: John Doe
+              email:
+                type: string
+                # required: true
+                example: johndoe@gmail.com
+              password:
+                type: string
+                # minimum: 6
+                # maximum: 20
+                # required: true
+              isMentor:
+                type: boolean
+                default: false
+      responses:
+        200:
+          summary: new user created
+          description: a new user was successfully created with no errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: string
+                  payload:
+                    type: jwt token
+                  error:
+                    type: null
+
