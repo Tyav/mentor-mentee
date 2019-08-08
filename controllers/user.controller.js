@@ -2,7 +2,11 @@ const httpStatus = require('http-status');
 const User = require('../models/user.model');
 const sendResponse = require('../helpers/response');
 const { profileImage } = require('../helpers/upload');
-const { updateUser: updateUserValidation,createUser, login} = require('../validations/user.validation');
+const {
+  updateUser: updateUserValidation,
+  createUser,
+  login
+} = require('../validations/user.validation');
 const AvatarSchema = require('../models/avatar.model');
 const { customErrorMessage } = require('../helpers/joiCustomError');
 const EncodeToken = require('../helpers/TokenEncoder');
@@ -16,9 +20,7 @@ const { Joi } = require('celebrate');
 exports.load = async (req, res, next, id) => {
   try {
     // Load user object from quarystring Id
-    return res.json(
-      sendResponse(httpStatus.NOT_FOUND, 'No such user exists!', null, null)
-    );
+    return res.json(sendResponse(httpStatus.NOT_FOUND, 'No such user exists!', null, null));
   } catch (error) {
     next(error);
   }
@@ -95,7 +97,7 @@ exports.updateProfile = async (req, res) => {
     );
   }
 
-  const data = user.transform()
+  const data = user.transform();
   return res.json(sendResponse(httpStatus.OK, 'User Updated', data, null, null));
 };
 
