@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const pick = require('ramda/src/pick');
 const APIError = require('../helpers/APIError');
-const EncodeToken = require('../helpers/TokenEncoder');
+const EncodeToken = require('../helpers/tokenEncoder');
 const config = require('../config/env');
 const getAvatar = require('../helpers/avatar');
 

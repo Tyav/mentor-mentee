@@ -1,13 +1,14 @@
 const jwt = require('jsonwebtoken');
-
-const DecodeToken = token => {
-  const decoded = jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) {
-      throw new Error('Token may have expired');
-    }
-    return decoded;
-  });
-  return decoded;
+const { jwtSecret } = require('../config/env');
+module.exports = req => {
+  const authorization = req.headers['authorization'];
+  if (!authorization) {
+    return res.json(
+      sendResponse(
+      httpStatus.UNAUTHORIZED,
+      'Invalid User',
+      null
+    ));
+  }
+  return jwt.decode(authorization.split(' ')[1], jwtSecret);;
 };
-
-module.exports = DecodeToken;

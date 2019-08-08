@@ -1,7 +1,7 @@
 const httpStatus = require('http-status');
 const User = require('../models/user.model');
 const sendResponse = require('../helpers/response');
-const EncodeToken = require('../helpers/TokenEncoder');
+const EncodeToken = require('../helpers/tokenEncoder');
 const Schedule = require('../models/scheduleMock.model');
 const Request = require('../models/request.model');
 const { createUser, login} = require('../validations/user.validation');

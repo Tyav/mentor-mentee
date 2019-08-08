@@ -21,10 +21,6 @@ app.use(helmet());
 app.use(cors({ credentials: true, origin: true }))
 app.use(cookieParser());
 
-if (env === 'development') {
-  app.use(logger('dev'));
-}
-
 // parse body params and attach them to res.body
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -35,6 +31,7 @@ app.use(methodOverride());
 // enable detailed API logging in dev env
 //comment this code to reduce api logs
 if (env === 'development') {
+  app.use(logger('dev'));
   expressWinston.responseWhitelist.push('body');
   app.use(
     expressWinston.logger({
@@ -66,11 +63,11 @@ app.use(error.converter);
 app.use(error.notFound);
 
 if (env !== 'test') {
-  // app.use(
-  //   expressWinston.errorLogger({
-  //     winstonInstance,
-  //   }),
-  // );
+  app.use(
+    expressWinston.errorLogger({
+      winstonInstance,
+    }),
+  );
 };
 
 // error handler, send stacktrace only during development

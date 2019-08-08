@@ -1,18 +1,25 @@
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const EncodeToken = require('../helpers/TokenEncoder');
+const encodeToken = require('../helpers/tokenEncoder');
+const tokenDecoder = require('../helpers/tokenDecoder')
 
 const PasswordResetSchema = new mongoose.Schema({
-  userID: { type: String, required: true },
-  email: { type: String, required: true },
-  resetPasswordToken: { type: String },
-  createdAt: { type: String, default: new Date() }
-});
+  email: { 
+    type: String, 
+    required: true 
+  },
+  token: { 
+    type: String 
+  },
+  exp : {
+    type: Date,
+    default: Date.now() + 300000  // 5 Hours span
+  }
+}, {timestamps: true});
 
-PasswordResetSchema.pre('save', function(next) {
-  const user = this;
-
-  user.resetPasswordToken = EncodeToken(user.userID, user.email, user.isAdmin);
+PasswordResetSchema.pre('save', function (next){
+  const forgotPassword = this;
+  forgotPassword.token = EncodeToken(forgotPassword.email);
   next();
 });
 
@@ -22,13 +29,14 @@ PasswordResetSchema.statics = {
    * @param {String} email
    * @returns {Promise<PasswordResetSchema, APIError>}
    */
-  async getByEmailAndToken(email, token) {
+  async verify (req) {
+    const { email } = tokenDecoder(req)
     let user = this.findOne({
       email,
-      resetPasswordToken: token
+      resetPasswordToken: token,
     }).exec();
     return user;
-  }
+  },
 };
 
 module.exports = mongoose.model('PasswordReset', PasswordResetSchema);

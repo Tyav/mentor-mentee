@@ -3,7 +3,7 @@ const User = require('../models/user.model');
 const sendResponse = require('../helpers/response');
 const PasswordReset = require('../models/passwordReset.model');
 const sendMail = require('../helpers/SendMail');
-const TokenDecoder = require('../helpers/TokenDecoder');
+const TokenDecoder = require('../helpers/tokenDecoder');
 const bcrypt = require('bcrypt');
 const { forgotPassword } = require('../helpers/mailMessage');
 
