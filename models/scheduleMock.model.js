@@ -10,4 +10,4 @@ const Schedule = new mongoose.Schema({
   createdAt: { type: Date, required: true, default: new Date() }
 });
 
-module.exports = mongoose.model('Schedule', Schedule);
+module.exports = mongoose.model('ScheduleMock', Schedule);

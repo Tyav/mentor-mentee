@@ -8,8 +8,6 @@ router.route('/');
 
 router.post('/login', login);
 
-const router = express.Router(); // eslint-disable-line new-cap
-
 router.route('/forgot').post(authCtrl.forgotPassword);
 
 router.route('/reset').get(authCtrl.reset);

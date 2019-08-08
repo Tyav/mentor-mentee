@@ -69,8 +69,35 @@ exports.updateAvatar = async (req, res) => {
 };
 
 exports.updateProfile = async (req, res) => {
-  const { error, value } = Joi.validate(req.body, updateUserValidation);
+  const { id: userId } = req.params;
+
+  const { error, value } = Joi.validate(
+    { body: req.body, params: { userId } },
+    updateUserValidation
+  );
+
   if (error) {
+    return res.json(
+      sendResponse(
+        httpStatus.BAD_REQUEST,
+        'Bad Request',
+        null,
+        { error: customErrorMessage(error.details) },
+        null
+      )
+    );
+  }
+
+  let user = await User.findByIdAndUpdate(req.params.id, { $set: value.body }, { new: true });
+  if (!user) {
+    return res.json(
+      sendResponse(httpStatus.BAD_REQUEST, 'Error Occur', null, { error: error.message }, null)
+    );
+  }
+
+  const data = user.transform()
+  return res.json(sendResponse(httpStatus.OK, 'User Updated', data, null, null));
+};
 
 exports.createScheduleMock = async (req, res) => {
   try {
@@ -78,10 +105,7 @@ exports.createScheduleMock = async (req, res) => {
     const result = await shcedule.save();
     if (!result) {
       return res.json(
-        sendResponse(
-          httpStatus.INTERNAL_SERVER_ERROR,
-          'An error occured submiting schedule'
-        )
+        sendResponse(httpStatus.INTERNAL_SERVER_ERROR, 'An error occured submiting schedule')
       );
     }
     return res.json(sendResponse(httpStatus.OK, 'Request submitted'));
@@ -97,9 +121,7 @@ exports.bookSlot = async (req, res) => {
       menteeId: req.body.menteeId
     });
     if (requestMade) {
-      return res.json(
-        sendResponse(httpStatus.NOT_FOUND, 'request already made')
-      );
+      return res.json(sendResponse(httpStatus.NOT_FOUND, 'request already made'));
     }
     const schedule = await Schedule.findOne({
       _id: req.params.scheduleID
@@ -114,9 +136,7 @@ exports.bookSlot = async (req, res) => {
     });
     const requestResult = await request.save();
     if (!requestResult) {
-      return res.json(
-        sendResponse(httpStatus.NOT_FOUND, 'the request was not submitted')
-      );
+      return res.json(sendResponse(httpStatus.NOT_FOUND, 'the request was not submitted'));
     }
     return res.json(sendResponse(httpStatus.OK, 'Request submitted'));
   } catch {
@@ -128,10 +148,11 @@ exports.bookSlot = async (req, res) => {
     );
   }
 };
+
 exports.signup = async (req, res) => {
   const { error } = Joi.validate(req.body, createUser.body);
-  if (error)
-    return res.json(
+  if (error) {
+    res.json(
       sendResponse(
         httpStatus.BAD_REQUEST,
         'Bad Request',
@@ -148,13 +169,6 @@ exports.signup = async (req, res) => {
       sendResponse(httpStatus.BAD_REQUEST, 'Error Occur', null, { error: error.message }, null)
     );
   }
-
-  user.transform().then(data => {
-    return res.json(sendResponse(httpStatus.OK, 'User Updated', data, null, null));
-  });
-        error.details[0].message
-      )
-    );
 
   try {
     const { name, email, password, isMentor, isAdmin } = req.body;
@@ -182,21 +196,12 @@ exports.signup = async (req, res) => {
     const payload = user.transform();
     const token = await user.generateToken();
 
-    res.json(
-      sendResponse(httpStatus.OK, 'Signup successful', payload, null, token)
-    );
+    res.json(sendResponse(httpStatus.OK, 'Signup successful', payload, null, token));
   } catch (error) {
     console.error('Error: ', error.message);
     res
       .status(500)
-      .json(
-        sendResponse(
-          httpStatus.INTERNAL_SERVER_ERROR,
-          'Server Error',
-          null,
-          error
-        )
-      );
+      .json(sendResponse(httpStatus.INTERNAL_SERVER_ERROR, 'Server Error', null, error));
   }
 };
 
@@ -205,12 +210,7 @@ exports.login = async (req, res) => {
 
   if (error)
     return res.json(
-      sendResponse(
-        httpStatus.BAD_REQUEST,
-        'Incorrect email or password',
-        null,
-        null
-      )
+      sendResponse(httpStatus.BAD_REQUEST, 'Incorrect email or password', null, null)
     );
 
   const { email, password } = req.body;
@@ -219,24 +219,14 @@ exports.login = async (req, res) => {
 
   if (!user)
     return res.json(
-      sendResponse(
-        httpStatus.BAD_REQUEST,
-        'Incorrect email or password',
-        null,
-        null
-      )
+      sendResponse(httpStatus.BAD_REQUEST, 'Incorrect email or password', null, null)
     );
 
   const validPassword = user.passwordMatches(password);
 
   if (!validPassword)
     return res.json(
-      sendResponse(
-        httpStatus.BAD_REQUEST,
-        'Incorrect email or password',
-        null,
-        null
-      )
+      sendResponse(httpStatus.BAD_REQUEST, 'Incorrect email or password', null, null)
     );
   const token = EncodeToken(user.id, user.email, user.isAdmin);
 

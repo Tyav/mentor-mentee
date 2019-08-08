@@ -14,14 +14,13 @@ router
   /** GET /api/v1/users - get all users */
   .get(userCtrl.getUsers);
 
-router.post('/:id/images', userCtrl.updateAvatar);
+router.route('/:id/images').post(userCtrl.updateAvatar);
 
-router.put('/:id', userCtrl.updateProfile);
-  .get(userCtrl.getUsers)
-  // @route   POST api/v1/users
-  // @desc    Add experience to profile
-  // @access  Private
-  .post(userCtrl.signup)
+router.route('/:id').put(userCtrl.updateProfile);
+// @route   POST api/v1/users
+// @desc    Add experience to profile
+// @access  Private
+router.post(userCtrl.signup);
 
 router.route('/schedule').post(userCtrl.createScheduleMock);
 
