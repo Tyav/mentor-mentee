@@ -5,43 +5,62 @@ const APIError = require('../helpers/APIError');
 const ScheduleSchema = new mongoose.Schema({
   day: {
     type: String,
-    description: 'The day the schedule was created',
     required: true
   },
   time: {
     from: {
       type: Date,
-      description: 'The time at which his schedule opens'
     },
     to: {
       type: Date,
-      description: 'The time at which the schedule ends'
-    }
-    // required: true
+    },
+    required: true
   },
-
   slots: {
     type: Number,
-    description: 'The number of available slots'
+    required: true,
+    default: 5
   },
   isClosed: {
     type: Boolean,
     default: false,
-
-    description:
-      'compares the available slots with the array the number of mentees who have applied'
   },
-  mentorId: {
-    type: String,
-    description: 'holds the mentors id'
-  },
-  mentees: {
-    type: [
-      {
-        type: String
-      }
-    ]
+  mentor: {
+    type: mongoose.Types.ObjectId,
+    ref : 'User'
   }
-});
+}, {timestamps: true});
+
+
+/**
+ * Schema methods
+ */
+ScheduleSchema.methods = {
+
+}
+
+/**
+ * Schema statics
+ */
+
+ScheduleSchema.statics = {
+  async getOpenSchedules () {
+    const schedule = await this.find({isClosed: false})
+      .populate({path:'mentor', select: 'name avatar bio skills'})
+      .exec();
+    return schedule;
+
+  },
+  async get(id) {
+    const schedule = await this.findById(id).exec()
+      .populate({path:'mentor', select: 'name avatar bio skills'})
+    if (schedule) return schedule
+    throw new APIError({
+      message: 'Sorry, this schedule is not open at the moment',
+      status: httpStatus.BAD_REQUEST
+    })
+  }
+
+} 
 
 module.exports = mongoose.model('Schedule', ScheduleSchema);
