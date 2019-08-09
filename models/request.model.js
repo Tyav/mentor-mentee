@@ -5,12 +5,13 @@ const httpStatus = require('http-status')
 const RequestSchema = new mongoose.Schema({
   mentee: { 
     type: mongoose.Types.ObjectId, 
-    required: true 
+    required: true,
+    ref: 'User'
   },
   schedule: { 
     type: mongoose.Types.ObjectId,
     required: true,
-    path: 'Schedule'
+    ref: 'Schedule'
   },
   message: {
     type: String,
