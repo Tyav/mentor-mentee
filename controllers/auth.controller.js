@@ -32,18 +32,17 @@ exports.forgotPassword = async (req, res) => {
 exports.resetPassword = async (req, res) => {
   try {
     const forgotPassword = await ForgotPassword.verify(req);
-
     if (!forgotPassword) {
       return res.json(sendResponse(httpStatus.NOT_FOUND, 'Password reset link is invalid or has expired'));
     }
-    let user = User.getByEmail(forgotPassword.email);
+    let user = await User.getByEmail(forgotPassword.email);
     user.password = req.body.password;
     await user.save();
     await ForgotPassword.deleteMany({ email: user.email });
 
     sendMail(user.email, messages.resetPassword(user.email));
 
-    return res.json(sendResponse(httpStatus.OK, 'Password was successfully changed', null, null, null));
+    return res.json(sendResponse(httpStatus.OK, 'Password was successfully changed'));
   } catch {
     res.json(sendResponse(httpStatus.INTERNAL_SERVER_ERROR, 'An error occured. Please try again later', null, null, null));
   }
