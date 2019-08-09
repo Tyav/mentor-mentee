@@ -16,7 +16,6 @@ const ScheduleSchema = new mongoose.Schema({
       type: Date,
       required: true
     },
-    //required: true
   },
   slots: {
     type: Number,
