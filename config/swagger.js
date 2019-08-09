@@ -10,7 +10,11 @@ const options = {
       description: 'MentorDev API Documentation',
       contact: {
         email: 'tyav2greenz@gmail.com'
-      }
+      },
+      license: {
+        "name": "Apache 2.0",
+        "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+      },
     },
     tags: [
       {
@@ -36,11 +40,12 @@ const options = {
     ],
 
     schemes  : [ 'http', 'https' ],
-    // host     : ['localhost:6060/'],  
-    servers: [
-      {url: 'localhost:6060', description: ''}
-    ],
+    host     : ['localhost:6060/'],  
   },
+  servers : [
+    {url: 'http://localhost:6060', description: ''}
+  ],
+
 
   // List of files to be processes. You can also set globs './routes/*.js'
   apis: ['./swagger-files/*.yaml']

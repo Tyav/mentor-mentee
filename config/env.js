@@ -23,15 +23,20 @@ const envVarsSchema = Joi.object({
     .required()
     .description('Mongo DB host url'),
   MONGO_PORT: Joi.number().default(27017),
-  AWS_SECRET_ACCESS_KEY: Joi.string()
+  DO_SECRET_ACCESS_KEY: Joi.string()
     .required()
-    .description('AWS secret access key'),
-  AWS_ACCESS_KEY_ID: Joi.string()
+    .description('Digital Ocean secret access key'),
+  DO_ACCESS_KEY_ID: Joi.string()
     .required()
-    .description('AWS access key'),
-  AWS_ACCESS_KEY_ID: Joi.string()
+    .description('Digital Ocean access key'),
+  DO_BUCKET_NAME: Joi.string()
     .required()
-    .description('AWS access key')
+    .description('Digital Ocean bucket'),
+  DO_ENDPOINT: Joi.string()
+  .required()
+  .description('Digital Ocean space endpoint'),
+  CLIENT_SIDE_URL: Joi.string().required().description('Mentordev client-side URL'),
+  MENTOR_DEV_EMAIL: Joi.string().required().description('Official email for mentordev')
 })
   .unknown()
   .required();
@@ -51,9 +56,14 @@ const config = {
     host: process.env.NODE_ENV === 'development' ? envVars.MONGO_HOST : envVars.MONGO_HOST_TEST,
     port: envVars.MONGO_PORT
   },
-  AWS_SECRET_ACCESS_KEY: envVars.AWS_SECRET_ACCESS_KEY,
-  AWS_ACCESS_KEY_ID: envVars.AWS_ACCESS_KEY_ID,
-  AWS_BUCKET_NAME: envVars.AWS_BUCKET_NAME
+  digiOcean : {
+    secretAccessKey: envVars.DO_SECRET_ACCESS_KEY,
+    accessKeyId: envVars.DO_ACCESS_KEY_ID,
+    bucket: envVars.DO_BUCKET_NAME,
+    endpoint: envVars.DO_ENDPOINT
+  },
+  clientSideUrl: envVars.CLIENT_SIDE_URL,
+  mentordev_email: envVars.MENTOR_DEV_EMAIL
 };
 
 module.exports = config;
