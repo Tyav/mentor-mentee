@@ -39,8 +39,13 @@ const UserSchema = new mongoose.Schema({
   location: {
     type: String
   },
-  skills: { type: [String], index: true },
-  connection: {},
+  skills: { 
+    type: [String], 
+    index: true },
+  connection: {
+    type: Map,
+    of: String
+  },
   isMentor: {
     type: Boolean,
     required: true,
@@ -54,11 +59,11 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: getAvatar(this.email)
   },
-  created: {
-    type: Date,
-    default: Date.now()
+  deleted : {
+    type: Boolean,
+    default: false
   }
-});
+}, {timestamps: true});
 
 UserSchema.pre('save', function(next) {
   /**
@@ -91,33 +96,82 @@ UserSchema.methods = {
   /**
    * Returns user object without password
    */
-
   transform() {
     // add feilds to be selected
-    const fields = ['id', 'name', 'email', 'isAdmin', 'isMentor', 'phone', 'bio', 'location', 'skills'];
+    const fields = [
+      'id', 
+      'name', 
+      'email', 
+      'avatar', 
+      'isAdmin', 
+      'isMentor', 
+      'phone', 
+      'bio', 
+      'location',
+      'connection', 
+      'skills', 
+      'deleted', 
+      'createdAt',
+      'modifiedAt'
+    ];
     return pick(fields, this);
   },
-  async generateToken() {
-    // generate token
-    let { _id, email, isAdmin, isMentor } = this;
-    // sign a jwt token
-
-    return await EncodeToken(_id, email, isAdmin, isMentor);
-  }
+  // Generates user token
+  token() {
+    return EncodeToken(this.email, this._id, this.isAdmin, this.isMentor);
+  },
 };
 
 UserSchema.statics = {
+
+  /**
+   * 
+   * @param {{}} options 
+   */
+  async loginAndGenerateToken(options) {
+    const { email, password } = options;
+    if (!email) {
+      throw new APIError({
+        message: "An email is required to generate a token"
+      });
+    }
+
+    const user = await this.getByEmail(email);
+    const err = {
+      status: httpStatus.UNAUTHORIZED,
+      isPublic: true
+    };
+    if (password) {
+      if (user && (await user.passwordMatches(password))) {
+        return { user, accessToken: user.token() };
+      }
+      err.message = "Incorrect username or password";
+    }
+    throw new APIError(err);
+  },
   /**
    *
    * @param {String} email
    * @returns {Promise<UserSchema, APIError>}
    */
   async getByEmail(email) {
-    let user = this.findOne({
-      email
+    let user = await this.findOne({
+      email,
+      deleted: false
     }).exec();
     return user;
-  }
+  },
+  async get(id) {
+    try {
+      const user = await this.findById(id).exec();
+      if (user) {
+        return user;
+      }
+      return user;
+    } catch (error) {
+      throw new APIError(error);
+    }
+  },
 };
 
 /**
