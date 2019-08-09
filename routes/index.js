@@ -4,7 +4,7 @@ const userRoutes = require('./user.route');
 const authRoutes = require('./auth.route');
 const sendResponse = require('../helpers/response');
 const scheduleRoutes = require('./schedule.route');
-const sendResponse = require('../helpers/response');
+const requestRoutes = require('./request.route')
 
 const router = express.Router(); // eslint-disable-line new-cap
 
@@ -18,13 +18,15 @@ router.get('/states', (req, res) =>
 );
 
 // mount user routes at /users
-router.use('/users', userRoutes);
+router.use('/user', userRoutes);
 
 // mount auth routes at /auth
 router.use('/auth', authRoutes);
 
 //mount schedule route
-router.use('/schedules', scheduleRoutes);
+router.use('/schedule', scheduleRoutes);
 
+//mount request route
+router.use('/request', requestRoutes);
 
 module.exports = router;

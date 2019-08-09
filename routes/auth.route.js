@@ -1,19 +1,17 @@
 const express = require('express');
-const { login } = require('../controllers/user.controller');
+const { celebrate: validate, errors } = require('celebrate');
+const userValidate = require('../validations/user.validation');
+const userCtrl = require('../controllers/user.controller');
 const authCtrl = require('../controllers/auth.controller');
 const router = express.Router(); // eslint-disable-line new-cap
 
 router.route('/');
-/** GET /api/v1/users - get all users */
+/** GET /api/v1/auth/login - get all users */
 
-router.post('/login', login);
+router.post('/login', validate(userValidate.login, { abortEarly: false }), userCtrl.login);
 
-const router = express.Router(); // eslint-disable-line new-cap
+router.route('/forgot-password').post(authCtrl.forgotPassword);
 
-router.route('/forgot').post(authCtrl.forgotPassword);
-
-router.route('/reset').get(authCtrl.reset);
-
-router.route('/reset/:token').post(authCtrl.resetPassword);
+router.route('/reset-password').post(authCtrl.resetPassword);
 
 module.exports = router;

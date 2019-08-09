@@ -1,9 +1,45 @@
 const mongoose = require('mongoose');
+const APIError = require('../helpers/APIError');
+const httpStatus = require('http-status')
 
-const Request = new mongoose.Schema({
-  menteeId: { type: String, required: true },
-  scheduleId: { type: String },
-  createdAt: { type: Date, default: new Date() }
+const RequestSchema = new mongoose.Schema({
+  mentee: { 
+    type: mongoose.Types.ObjectId, 
+    required: true 
+  },
+  schedule: { 
+    type: mongoose.Types.ObjectId,
+    required: true,
+    path: 'Schedule'
+  },
+  message: {
+    type: String,
+    maxlength: 250,
+  },
+  response: {
+    type: String,
+    maxlength: 250,
+  },
+  status : {
+    type : String,
+    enum : ['Pending', 'Approved', 'Rejected'],
+    default: 'Pending'
+  }
 });
 
-module.exports = mongoose.model('Request', Request);
+RequestSchema.methods = {
+
+}
+
+RequestSchema.statics ={
+  async get(id) {
+    try {
+      return await this.findById(id)
+    } catch (error) {
+      throw new APIError({message: error.message, status: httpStatus.BAD_REQUEST})
+    }
+  }
+}
+
+
+module.exports = mongoose.model('Request', RequestSchema);

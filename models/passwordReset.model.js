@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const encodeToken = require('../helpers/tokenEncoder');
 const tokenDecoder = require('../helpers/tokenDecoder')
 
-const PasswordResetSchema = new mongoose.Schema({
+const ForgotPasswordSchema = new mongoose.Schema({
   email: { 
     type: String, 
     required: true 
@@ -17,26 +17,27 @@ const PasswordResetSchema = new mongoose.Schema({
   }
 }, {timestamps: true});
 
-PasswordResetSchema.pre('save', function (next){
+ForgotPasswordSchema.pre('save', function (next){
   const forgotPassword = this;
-  forgotPassword.token = EncodeToken(forgotPassword.email);
+  forgotPassword.token = encodeToken(forgotPassword.email);
   next();
 });
 
-PasswordResetSchema.statics = {
+ForgotPasswordSchema.statics = {
   /**
    *
    * @param {String} email
    * @returns {Promise<PasswordResetSchema, APIError>}
    */
   async verify (req) {
-    const { email } = tokenDecoder(req)
-    let user = this.findOne({
+    const { token, decodeToken } = tokenDecoder(req)
+    const { email } = decodeToken
+    const forgotPassword = this.findOne({
       email,
-      resetPasswordToken: token,
+      token,
     }).exec();
-    return user;
+    return forgotPassword;
   },
 };
 
-module.exports = mongoose.model('PasswordReset', PasswordResetSchema);
+module.exports = mongoose.model('ForgotPassword', ForgotPasswordSchema);

@@ -1,14 +1,13 @@
 const jwt = require('jsonwebtoken');
+const httpStatus = require('http-status')
 const { jwtSecret } = require('../config/env');
-module.exports = req => {
+const APIError = require('../helpers/APIError');
+const sendResponse = require('../helpers/response');
+module.exports = (req)=> {
   const authorization = req.headers['authorization'];
   if (!authorization) {
-    return res.json(
-      sendResponse(
-      httpStatus.UNAUTHORIZED,
-      'Invalid User',
-      null
-    ));
+    throw new APIError({message: "Unauthorized", status: httpStatus.UNAUTHORIZED})
   }
-  return jwt.decode(authorization.split(' ')[1], jwtSecret);;
+  let token = authorization.split(' ')[1]
+  return {token , decodeToken: jwt.decode(token, jwtSecret)}
 };
