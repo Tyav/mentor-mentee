@@ -13,8 +13,8 @@ exports.customErrorMessage = (arr) => {
       errMessage[key] = message.replace(/["']/g, '')
     }
   }
-  if (errMessage['mobileNumber']) {
-    errMessage['mobileNumber'] = 'mobile number must contain numbers only'
+  if (errMessage['phone']) {
+    errMessage['phone'] = 'mobile number must contain numbers only'
   }
   return errMessage;
 };

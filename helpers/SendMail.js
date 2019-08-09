@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const config = require('../config/env')
 
 const sendMail = (email, message) => {
   const smtpTransport = nodemailer.createTransport({
@@ -11,7 +12,7 @@ const sendMail = (email, message) => {
   });
   let mailOptions = {
     to: email,
-    from: 'passwordreset@mentordev.com',
+    from: config.mentordev_email,
     subject: 'Mentor Dev Password Reset',
     text: message
   };
