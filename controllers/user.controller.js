@@ -22,6 +22,15 @@ exports.load = async (req, res, next, id) => {
   }
 };
 
+exports.getUsers = async (req, res, next) => {
+  try {
+    const users = await User.find({});
+    return res.json(sendResponse(httpStatus[200], 'Request for all users sucessful', users, null));
+  } catch (error) {
+    next(error);
+  }
+};
+
 exports.signup = async (req, res, next) => {
   try {
     const { email } = req.body;

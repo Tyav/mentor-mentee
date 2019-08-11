@@ -12,8 +12,9 @@ router.param('userId', userCtrl.load);
 
 router
   .route('/')
+
   /** GET /api/v1/users - get all users */
-  //.get(userCtrl.getUsers)
+  .get(userCtrl.getUsers)
   /** POST /api/v1/users - creae a user */
   .post(validate(paramValidation.createUser, { abortEarly: false }), userCtrl.signup);
 
