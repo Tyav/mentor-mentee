@@ -1,7 +1,7 @@
 const httpStatus = require('http-status');
 const User = require('../models/user.model');
 const sendResponse = require('../helpers/response');
-const Schedule = require('../models/scheduleMock.model');
+// const Schedule = require('../models/scheduleMock.model');
 const Request = require('../models/request.model');
 const { Joi } = require('celebrate');
 const APIError = require('../helpers/APIError');
