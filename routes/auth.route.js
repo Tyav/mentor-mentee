@@ -5,9 +5,7 @@ const userCtrl = require('../controllers/user.controller');
 const authCtrl = require('../controllers/auth.controller');
 const router = express.Router(); // eslint-disable-line new-cap
 
-router.route('/');
 /** GET /api/v1/auth/login - get all users */
-
 router.post('/login', validate(userValidate.login, { abortEarly: false }), userCtrl.login);
 
 router.route('/forgot-password').post(authCtrl.forgotPassword);
