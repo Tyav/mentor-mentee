@@ -53,13 +53,26 @@ ScheduleSchema.statics = {
 
   },
   async get(id) {
-    const schedule = await this.findById(id).exec()
+    const schedule = await this.findById(id)
       .populate({path:'mentor', select: 'name avatar bio skills'})
+      .exec()
     if (schedule) return schedule
     throw new APIError({
       message: 'Sorry, this schedule is not open at the moment',
       status: httpStatus.BAD_REQUEST
     })
+  },
+  async getByUserId(mentor) {
+    try {
+      let schedule = await this.find({mentor})
+      .exec();
+      return schedule;      
+    } catch (error) {
+      throw new APIError({
+        message: error.message,
+        status: httpStatus.INTERNAL_SERVER_ERROR
+      })
+    }
   }
 
 } 
