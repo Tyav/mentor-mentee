@@ -4,19 +4,16 @@ const Request = require('../models/request.model');
 const Schedule = require('../models/schedule.model');
 const APIError = require('../helpers/APIError');
 
-
 exports.load = async (req, res, next, id) => {
   try {
-    const request = await Request.get(id)
+    const request = await Request.get(id);
     if (request) {
       req.request = request;
-      next()
+      next();
     }
-    return res.json(sendResponse(httpStatus.NOT_FOUND, 'Request not found'))
-  } catch (error) {
-    
-  }
-}
+    return res.json(sendResponse(httpStatus.NOT_FOUND, 'Request not found'));
+  } catch (error) {}
+};
 exports.create = async (req, res, next) => {
   try {
     const { scheduleId, message } = req.body;
@@ -38,12 +35,38 @@ exports.create = async (req, res, next) => {
     next(
       new APIError({
         message: error.message,
-        status: httpStatus.BAD_GATEWAY,
+        status: httpStatus.BAD_REQUEST,
       })
     );
   }
 };
 
-exports.getAll = async (req, res, next) => {
-  
-}
+exports.getScheduleResquests = async (req, res, next) => {
+  try {
+    const schedule = req.schedule._id;
+    let requests = await Request.getBy({ schedule });
+    return res.json(sendResponse(httpStatus.OK, 'Success', requests));
+  } catch (error) {
+    next(
+      new APIError({
+        message: error.message,
+        status: httpStatus.BAD_REQUEST,
+      })
+    );
+  }
+};
+
+exports.getUserRequests = async (req, res, next) => {
+  try {
+    const mentee = req.sub;
+    let requests = await Request.getBy({ mentee });
+    return res.json(sendResponse(httpStatus.OK, 'Success', requests));
+  } catch (error) {
+    next(
+      new APIError({
+        message: error.message,
+        status: httpStatus.BAD_REQUEST,
+      })
+    );
+  }
+};

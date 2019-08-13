@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+const httpStatus = require('http-status');
+const APIError = require('../helpers/APIError')
 const encodeToken = require('../helpers/tokenEncoder');
-const tokenDecoder = require('../helpers/tokenDecoder')
+const tokenDecoder = require('../helpers/tokenDecoder');
 
 const ForgotPasswordSchema = new mongoose.Schema({
   email: { 
@@ -30,13 +32,18 @@ ForgotPasswordSchema.statics = {
    * @returns {Promise<PasswordResetSchema, APIError>}
    */
   async verify (req) {
-    const { token, decodeToken } = tokenDecoder(req)
-    const { email } = decodeToken
-    const forgotPassword = this.findOne({
-      email,
-      token,
-    }).exec();
-    return forgotPassword;
+    try {
+      const { token, decodeToken } = tokenDecoder(req)
+      const { email } = decodeToken
+      const forgotPassword = await this.findOne({
+        email,
+        token,
+      }).exec();
+      if (forgotPassword) return forgotPassword;
+      throw new Error('Password reset link is invalid or has expired')
+    } catch (error) {
+      throw new APIError({status:httpStatus.NOT_FOUND, message:error.message})
+    }
   },
 };
 
