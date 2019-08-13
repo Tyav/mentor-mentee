@@ -80,7 +80,7 @@ describe('Testing User router', () => {
         })
         .catch(err => console.log(err));
     }, 10000);
-
+  })
 
 const fakeID = 'xxxxxxxxxxxx';
 const validID = '5d4a5fc81787c69023eeca8e';
@@ -116,6 +116,8 @@ describe('Make request End Point', () => {
       .expect(200);
     expect(response.body.statusCode).toBe(404);
     expect(response.body.message).toBe('request already made');
+  })
+})
 describe('test /api/v1/users endpoint', () => {
   test('POST to /api/v1/users respond with 400 email is required', async () => {
     let data = {
@@ -177,4 +179,5 @@ describe('test /api/v1/users endpoint', () => {
     expect(response.body.payload).toBe(null);
     expect(response.body.error.msg).toBe('Email already in use!');
   });
-});
+})
+})
