@@ -11,6 +11,7 @@ describe('Testing User router', () => {
         .expect(200, done());
     });
   });
+  
   describe('PUT request to /users/:id to update user Profile', () => {
     const realData = {
       name: 'Omolayo Victor',
@@ -107,6 +108,7 @@ describe('Make request End Point', () => {
         message: 'Schedule not found'
       });
   });
+
   test('Returns 404 if request has already been made', async () => {
     const response = await request(app)
       .post(`/api/v1/users/request/${validID}`)
@@ -116,6 +118,7 @@ describe('Make request End Point', () => {
       .expect(200);
     expect(response.body.statusCode).toBe(404);
     expect(response.body.message).toBe('request already made');
+
 describe('test /api/v1/users endpoint', () => {
   test('POST to /api/v1/users respond with 400 email is required', async () => {
     let data = {
@@ -178,3 +181,4 @@ describe('test /api/v1/users endpoint', () => {
     expect(response.body.error.msg).toBe('Email already in use!');
   });
 });
+
