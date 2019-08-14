@@ -3,15 +3,15 @@ const APIError = require('../helpers/APIError');
 const httpStatus = require('http-status');
 
 const RequestSchema = new mongoose.Schema({
-  mentee: { 
-    type: mongoose.Types.ObjectId, 
+  mentee: {
+    type: mongoose.Types.ObjectId,
     required: true,
-    ref: 'User'
+    ref: 'User',
   },
   schedule: {
     type: mongoose.Types.ObjectId,
     required: true,
-    ref: 'Schedule'
+    ref: 'Schedule',
   },
   message: {
     type: String,

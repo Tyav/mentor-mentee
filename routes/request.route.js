@@ -8,7 +8,7 @@ const router = express.Router(); // eslint-disable-line new-cap
 
 router.param('id', requestCtrl.load);
 
-router.use
+router.use(decode)
 
 router
   .route('/')
