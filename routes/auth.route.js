@@ -11,5 +11,7 @@ router.post('/login', validate(userValidate.login, { abortEarly: false }), userC
 router.route('/forgot-password').post(authCtrl.forgotPassword);
 
 router.route('/reset-password').post(authCtrl.resetPassword);
+//'i need to pus something in here...that comes from the auth ctrl'
+router.route('/verify').put(authCtrl.verify)
 
 module.exports = router;
