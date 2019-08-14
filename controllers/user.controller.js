@@ -12,7 +12,7 @@ const APIError = require('../helpers/APIError');
 exports.load = async (req, res, next, id) => {
   try {
     let user = await User.get(id);
-    if (user && !user.deleted) {
+    if (user && !user.deleted && user.isVerified) {
       req.user = user;
       return next();
     }
