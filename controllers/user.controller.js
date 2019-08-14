@@ -5,7 +5,7 @@ const Schedule = require('../models/schedule.model');
 const Request = require('../models/request.model');
 const { Joi } = require('celebrate');
 const APIError = require('../helpers/APIError');
-const { verifyOnRegister } = require('../helpers/mailMessage');
+const message = require('../helpers/mailMessage');
 const sendMail = require('../helpers/SendMail');
 
 /**
@@ -54,9 +54,14 @@ exports.signup = async (req, res, next) => {
     await user.save();
     const token = await user.token();
 
-    sendMail(user.email, verifyOnRegister(token));
+    sendMail(user.email, message.verifyOnRegister(token));
 
-    res.json(sendResponse(httpStatus.OK, 'Please check your mail for verification'));
+    res.json(
+      sendResponse(
+        httpStatus.OK,
+        `MentorDev emailed a confirmation link to ${user.email} Check your email to proceed`
+      )
+    );
   } catch (error) {
     next(error);
   }
