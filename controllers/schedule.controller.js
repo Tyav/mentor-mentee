@@ -23,7 +23,7 @@ exports.createSchedule = async (req, res, next) => {
       day,
       time: {
         from: time.from,
-        to: time.to,
+        to: time.to
       },
       slots,
       isClosed,

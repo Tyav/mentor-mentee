@@ -16,9 +16,11 @@ exports.load = async (req, res, next, id) => {
 };
 exports.create = async (req, res, next) => {
   try {
-    const { scheduleId, message } = req.body;
+    let { schedule, message } = req.body;
+    console.log(schedule)
     // check if schedule exist
-    const schedule = await Schedule.get(scheduleId);
+    schedule = await Schedule.get(schedule);
+
     if (schedule.isClosed)
       throw new APIError({
         message: 'Sorry, this schedule is not open at the moment',
@@ -26,7 +28,7 @@ exports.create = async (req, res, next) => {
       });
     const request = new Request({
       mentee: req.sub,
-      schedule: scheduleId,
+      schedule,
       message
     });
     await request.save();
@@ -74,6 +76,7 @@ exports.getUserRequests = async (req, res, next) => {
 };
 
 exports.approveRequests = async (req, res, next) => {
-  console.log(req.body)
+  console.log('i came here');
+  console.log(req.body);
   res.send('hello boo i am reaching you live from update request');
 };
