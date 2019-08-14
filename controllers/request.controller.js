@@ -22,20 +22,22 @@ exports.create = async (req, res, next) => {
     if (schedule.isClosed)
       throw new APIError({
         message: 'Sorry, this schedule is not open at the moment',
-        status: httpStatus.BAD_REQUEST,
+        status: httpStatus.BAD_REQUEST
       });
     const request = new Request({
       mentee: req.sub,
       schedule: scheduleId,
-      message,
+      message
     });
     await request.save();
-    res.json(sendResponse(httpStatus.OK, 'Request successfully submitted', request));
+    res.json(
+      sendResponse(httpStatus.OK, 'Request successfully submitted', request)
+    );
   } catch (error) {
     next(
       new APIError({
         message: error.message,
-        status: httpStatus.BAD_REQUEST,
+        status: httpStatus.BAD_REQUEST
       })
     );
   }
@@ -50,7 +52,7 @@ exports.getScheduleResquests = async (req, res, next) => {
     next(
       new APIError({
         message: error.message,
-        status: httpStatus.BAD_REQUEST,
+        status: httpStatus.BAD_REQUEST
       })
     );
   }
@@ -65,8 +67,13 @@ exports.getUserRequests = async (req, res, next) => {
     next(
       new APIError({
         message: error.message,
-        status: httpStatus.BAD_REQUEST,
+        status: httpStatus.BAD_REQUEST
       })
     );
   }
+};
+
+exports.approveRequests = async (req, res, next) => {
+  console.log(req.body)
+  res.send('hello boo i am reaching you live from update request');
 };

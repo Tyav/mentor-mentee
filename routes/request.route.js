@@ -16,5 +16,7 @@ router
   .post(validate(requestValidate.create, { abortEarly: false }), requestCtrl.create)
   /** Get all */
   .get(requestCtrl.getUserRequests)
-
+  /**Approves or rejects request  */
+  .put(validate(requestValidate.update,{abortEarly: false}),requestCtrl.approveRequests)
+  
 module.exports = router;
