@@ -111,7 +111,7 @@ exports.updateProfile = async (req, res) => {
     res.json(sendResponse(httpStatus.OK, 'succesful', user));
   } catch (error) {
     res.json(
-      sendResponse(httpStatus.INTERNAL_SERVER_ERROR, 'Something went wrong')//use api error funtion
+      sendResponse(httpStatus.INTERNAL_SERVER_ERROR, 'Something went wrong') //use api error funtion
     );
   }
 };
@@ -156,7 +156,7 @@ exports.bookSlot = async (req, res) => {
       scheduleId: req.params.scheduleID,
       menteeId: req.body.menteeId
     });
-     
+
     const requestResult = await request.save();
     if (!requestResult) {
       return res.json(
