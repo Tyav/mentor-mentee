@@ -56,12 +56,7 @@ exports.signup = async (req, res, next) => {
 
     sendMail(user.email, message.verifyOnRegister(token));
 
-    res.json(
-      sendResponse(
-        httpStatus.OK,
-        `MentorDev emailed a confirmation link to ${user.email} Check your email to proceed`
-      )
-    );
+    res.json(sendResponse(httpStatus.OK, user.email));
   } catch (error) {
     next(error);
   }
