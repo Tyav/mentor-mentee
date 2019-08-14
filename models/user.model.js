@@ -61,6 +61,11 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: getAvatar(this.email)
     },
+
+    isVerified: {
+      type: Boolean,
+      default: false
+    },
     deleted: {
       type: Boolean,
       default: false
