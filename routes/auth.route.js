@@ -3,7 +3,10 @@ const { celebrate: validate, errors } = require('celebrate');
 const userValidate = require('../validations/user.validation');
 const userCtrl = require('../controllers/user.controller');
 const authCtrl = require('../controllers/auth.controller');
+const decode = require('../middlewares/decode')
 const router = express.Router(); // eslint-disable-line new-cap
+
+router.use(decode)
 
 /** GET /api/v1/auth/login - get all users */
 router.post('/login', validate(userValidate.login, { abortEarly: false }), userCtrl.login);
