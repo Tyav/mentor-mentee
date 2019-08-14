@@ -1,10 +1,8 @@
 const httpStatus = require('http-status');
 const User = require('../models/user.model');
 const sendResponse = require('../helpers/response');
-const updateUserValidation = require('../validations/user.validation')
-  .updateUser;
-
-//econst Schedule = require('../models/scheduleMock.model');
+const updateUserValidation = require('../validations/user.validation').updateUser;
+const Schedule = require('../models/schedule.model');
 const Request = require('../models/request.model');
 const { Joi } = require('celebrate');
 const APIError = require('../helpers/APIError');
@@ -22,6 +20,16 @@ exports.load = async (req, res, next, id) => {
     return res.json(
       sendResponse(httpStatus.NOT_FOUND, 'No such user exists!', null, null)
     );
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getUsers = async (req, res, next) => {
+  try {
+    let users = await User.find({});
+    users = [...users].map(user => user.transform());
+    return res.json(sendResponse(httpStatus[200], 'Request for all users sucessful', users, null));
   } catch (error) {
     next(error);
   }
@@ -74,15 +82,7 @@ exports.updateAvatar = async (req, res) => {
 
       req.s3.deleteObject(params, function(err, data) {});
     }
-    res.json(
-      sendResponse(
-        httpStatus.OK,
-        'Upload Successful',
-        user.transform(),
-        null,
-        null
-      )
-    );
+    res.json(sendResponse(httpStatus.OK, 'Upload Successful', user.transform(), null, null));
   } catch (error) {
     next(error);
   }
@@ -122,10 +122,7 @@ exports.createScheduleMock = async (req, res) => {
     const result = await shcedule.save();
     if (!result) {
       return res.json(
-        sendResponse(
-          httpStatus.INTERNAL_SERVER_ERROR,
-          'An error occured submiting schedule'
-        )
+        sendResponse(httpStatus.INTERNAL_SERVER_ERROR, 'An error occured submiting schedule')
       );
     }
     return res.json(sendResponse(httpStatus.OK, 'Request submitted'));
@@ -177,13 +174,7 @@ exports.login = async (req, res, next) => {
   try {
     const { user, accessToken } = await User.loginAndGenerateToken(req.body);
     return res.json(
-      sendResponse(
-        200,
-        'Successfully logged in',
-        user.transform(),
-        null,
-        accessToken
-      )
+      sendResponse(200, 'Successfully logged in', user.transform(), null, accessToken)
     );
   } catch (error) {
     next(error);
