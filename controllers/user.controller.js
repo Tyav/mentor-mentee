@@ -25,7 +25,7 @@ exports.load = async (req, res, next, id) => {
 exports.getUsers = async (req, res, next) => {
   try {
     const users = await User.find({});
-    return res.json(sendResponse(httpStatus[200], 'Request for all users sucessful', users, null));
+    return res.json(sendResponse(httpStatus[200], 'Request for all users sucessful', users.transform(), null));
   } catch (error) {
     next(error);
   }
