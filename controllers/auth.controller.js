@@ -72,7 +72,7 @@ exports.validationLink = async (req, res, next) => {
   } catch (error) {
     next(error)
   }
-}
+} 
 exports.verify = async (req, res, next) => {
   if (req.user.isVerified) {
     //if user is already verified return an error
