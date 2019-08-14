@@ -24,8 +24,9 @@ exports.load = async (req, res, next, id) => {
 
 exports.getUsers = async (req, res, next) => {
   try {
-    const users = await User.find({});
-    return res.json(sendResponse(httpStatus[200], 'Request for all users sucessful', users.transform(), null));
+    let users = await User.find({});
+    users = [...users].map(user => user.transform());
+    return res.json(sendResponse(httpStatus[200], 'Request for all users sucessful', users, null));
   } catch (error) {
     next(error);
   }
