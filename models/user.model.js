@@ -11,59 +11,67 @@ const getAvatar = require('../helpers/avatar');
 /**
  * User Schema
  */
-const UserSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
+const UserSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      minlength: 6,
+      required: true,
+    },
+    phone: {
+      type: String,
+      minlength: 8,
+      maxlength: 13,
+    },
+    bio: {
+      type: String,
+      minlength: 2,
+      maxlength: 250,
+    },
+    location: {
+      type: String,
+    },
+    skills: {
+      type: [String],
+      index: true,
+    },
+    connection: {
+      type: Map,
+      of: String,
+    },
+    isMentor: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
+    isVerified:{
+      type: Boolean,
+      default: false
+    },
+    avatar: {
+      type: String,
+      default: getAvatar(this.email),
+    },
+    deleted: {
+      type: Boolean,
+      default: false,
+    },
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  password: {
-    type: String,
-    minlength: 6,
-    required: true
-  },
-  phone: {
-    type: String,
-    minlength: 8,
-    maxlength: 13
-  },
-  bio: {
-    type: String,
-    minlength: 2,
-    maxlength: 250
-  },
-  location: {
-    type: String
-  },
-  skills: { 
-    type: [String], 
-    index: true },
-  connection: {
-    type: Map,
-    of: String
-  },
-  isMentor: {
-    type: Boolean,
-    required: true,
-    default: false
-  },
-  isAdmin: {
-    type: Boolean,
-    default: false
-  },
-  avatar: {
-    type: String,
-    default: getAvatar(this.email)
-  },
-  deleted : {
-    type: Boolean,
-    default: false
-  }
-}, {timestamps: true});
+  { timestamps: true }
+);
 
 UserSchema.pre('save', function(next) {
   /**
@@ -98,22 +106,7 @@ UserSchema.methods = {
    */
   transform() {
     // add feilds to be selected
-    const fields = [
-      'id', 
-      'name', 
-      'email', 
-      'avatar', 
-      'isAdmin', 
-      'isMentor', 
-      'phone', 
-      'bio', 
-      'location',
-      'connection', 
-      'skills', 
-      'deleted', 
-      'createdAt',
-      'modifiedAt'
-    ];
+    const fields = ['id', 'name', 'email', 'avatar', 'isAdmin', 'isMentor', 'phone', 'bio', 'location', 'connection', 'skills', 'deleted', 'createdAt', 'modifiedAt'];
     return pick(fields, this);
   },
   // Generates user token
@@ -123,29 +116,28 @@ UserSchema.methods = {
 };
 
 UserSchema.statics = {
-
   /**
-   * 
-   * @param {{}} options 
+   *
+   * @param {{}} options
    */
   async loginAndGenerateToken(options) {
     const { email, password } = options;
     if (!email) {
       throw new APIError({
-        message: "An email is required to generate a token"
+        message: 'An email is required to generate a token',
       });
     }
 
     const user = await this.getByEmail(email);
     const err = {
       status: httpStatus.UNAUTHORIZED,
-      isPublic: true
+      isPublic: true,
     };
     if (password) {
       if (user && (await user.passwordMatches(password))) {
         return { user, accessToken: user.token() };
       }
-      err.message = "Incorrect username or password";
+      err.message = 'Incorrect username or password';
     }
     throw new APIError(err);
   },
@@ -157,7 +149,8 @@ UserSchema.statics = {
   async getByEmail(email) {
     let user = await this.findOne({
       email,
-      deleted: false
+      deleted: false,
+      isVerified: true
     }).exec();
     return user;
   },
