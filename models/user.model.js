@@ -106,7 +106,7 @@ UserSchema.methods = {
    */
   transform() {
     // add feilds to be selected
-    const fields = ['id', 'name', 'email', 'avatar', 'isAdmin', 'isMentor', 'phone', 'bio', 'location', 'connection', 'skills', 'deleted', 'createdAt', 'modifiedAt'];
+    const fields = ['id', 'name', 'email', 'avatar', 'isAdmin', 'isMentor','isVerified', 'phone', 'bio', 'location', 'connection', 'skills', 'deleted', 'createdAt', 'modifiedAt'];
     return pick(fields, this);
   },
   // Generates user token
