@@ -4,17 +4,20 @@ const APIError = require('../helpers/APIError');
 
 //holds the relationship between a mentors and a mentees id
 const ContactSchema = new mongoose.Schema({
-  menteeId: {
+  mentee: {
     type: String,
-    required: true
+    required: true,
+    ref: 'User'
   },
-  mentorsId: {
+  mentors: {
     type: String,
-    required: true
+    required: true,
+    ref: 'User'
   },
-  scheduleId: {
+  schedule: {
     type: String,
-    required: true
+    required: true,
+    ref: 'Schedule'
   }
 });
 

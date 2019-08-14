@@ -90,10 +90,10 @@ exports.updateAvatar = async (req, res) => {
 
 //updates user's profile...
 exports.updateProfile = async (req, res) => {
+  //takew away
   const { error, value } = Joi.validate(req.body, updateUserValidation.body);
 
   if (error) {
-    console.log(error.message, 'hello');
     return res.json(
       sendResponse(
         httpStatus.BAD_GATEWAY,
@@ -111,7 +111,7 @@ exports.updateProfile = async (req, res) => {
     res.json(sendResponse(httpStatus.OK, 'succesful', user));
   } catch (error) {
     res.json(
-      sendResponse(httpStatus.INTERNAL_SERVER_ERROR, 'Something went wrong')
+      sendResponse(httpStatus.INTERNAL_SERVER_ERROR, 'Something went wrong')//use api error funtion
     );
   }
 };
@@ -156,6 +156,7 @@ exports.bookSlot = async (req, res) => {
       scheduleId: req.params.scheduleID,
       menteeId: req.body.menteeId
     });
+     
     const requestResult = await request.save();
     if (!requestResult) {
       return res.json(
