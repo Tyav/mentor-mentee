@@ -184,17 +184,13 @@ describe('#LOGIN TEST', () => {
 
   // the test for verified user comes in <here className="">
   describe('#VERIFY', () => {
-    console.log('hello boooo')
     it('should return the user object back', () => {
       return request(app)
         .get('/verify')
         .set('Authorization', `Bearer ${useThreeToken}`)
         .then(response => {
-          console.log('hhhajlsdfjasdfasd')
-          console.log(response)
           expect(response.statusCode).toBe(200);
           expect(response.type).toBe('application/json');
-          
         });
     });
   });

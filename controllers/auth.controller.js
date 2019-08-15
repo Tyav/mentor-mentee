@@ -25,7 +25,11 @@ exports.forgotPassword = async (req, res) => {
       email: user.email
     });
     await passwordReset.save();
-    sendMail(passwordReset.email,'Mentor Dev Password Reset', messages.forgotPassword(passwordReset.token));
+    sendMail(
+      passwordReset.email,
+      'Mentor Dev Password Reset',
+      messages.forgotPassword(passwordReset.token)
+    );
 
     return res.json(
       sendResponse(
@@ -52,8 +56,14 @@ exports.resetPassword = async (req, res, next) => {
     let user = await User.getByEmail(forgotPassword.email);
     user.password = req.body.password;
     await user.save();
-    sendMail(user.email,'Mentor Dev Password Reset', messages.resetPassword(user.email));
-    return res.json(sendResponse(httpStatus.OK, 'Password was successfully changed'));
+    sendMail(
+      user.email,
+      'Mentor Dev Password Reset',
+      messages.resetPassword(user.email)
+    );
+    return res.json(
+      sendResponse(httpStatus.OK, 'Password was successfully changed')
+    );
   } catch (error) {
     next(error);
   }
@@ -61,20 +71,23 @@ exports.resetPassword = async (req, res, next) => {
 
 exports.validationLink = async (req, res, next) => {
   try {
-    const { email } = req.body
-    const user = await User.findOne({email});
-    if (!user){
-      return res.json(sendResponse(httpStatus.NOT_FOUND, email))
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.json(sendResponse(httpStatus.NOT_FOUND, email));
     }
     const token = user.token();
-    sendMail(email,'Mentor Dev, Verification', messages.verifyRegistration(token));
-    return res.json(sendResponse(httpStatus.NOT_FOUND, email))
+    sendMail(
+      email,
+      'Mentor Dev, Verification',
+      messages.verifyRegistration(token)
+    );
+    return res.json(sendResponse(httpStatus.NOT_FOUND, email));
   } catch (error) {
-    next(error)
+    next(error);
   }
-} 
+};
 exports.verify = async (req, res, next) => {
-  console.log('testingtto  see if this guy si called from test')
   if (req.user.isVerified) {
     //if user is already verified return an error
     return res.json(
