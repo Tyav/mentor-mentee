@@ -5,6 +5,8 @@ const Schedule = require('../models/schedule.model');
 const Request = require('../models/request.model');
 const { Joi } = require('celebrate');
 const APIError = require('../helpers/APIError');
+const message = require('../helpers/mailMessage');
+const sendMail = require('../helpers/SendMail');
 
 /**
  * Load user and append to req.
@@ -50,10 +52,11 @@ exports.signup = async (req, res, next) => {
     const user = new User(req.body);
 
     await user.save();
-    const payload = user.transform();
     const token = await user.token();
 
-    res.json(sendResponse(httpStatus.OK, 'Signup successful', payload, null, token));
+    sendMail(user.email, message.verifyOnRegister(token));
+
+    res.json(sendResponse(httpStatus.OK, user.email));
   } catch (error) {
     next(error);
   }
