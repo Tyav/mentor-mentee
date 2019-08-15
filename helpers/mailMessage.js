@@ -13,7 +13,7 @@ const message = {
     return `Hello
       This is a confirmation that the password for your account ${email} has just been changed`;
   },
-  verifyOnRegister: token => {
+  verifyRegistration: token => {
     return `Hello,
     Congrats on signing up for MnetorDev! 
     In order to activate your account please follow the link below to verify your email address:

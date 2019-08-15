@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
-const config = require('../config/env')
+const config = require('../config/env');
 
-const sendMail = (email, message) => {
+const sendMail = (email, subject, message) => {
   const smtpTransport = nodemailer.createTransport({
     host: 'smtp.mailtrap.io',
     port: 2525,
@@ -13,7 +13,7 @@ const sendMail = (email, message) => {
   let mailOptions = {
     to: email,
     from: config.mentordev_email,
-    subject: 'Mentor Dev Password Reset',
+    subject: subject,
     text: message
   };
   smtpTransport.sendMail(mailOptions, err => {
