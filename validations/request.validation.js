@@ -15,9 +15,7 @@ module.exports = {
       response: Joi.string().max(250)
     },
     params: {
-      userId: Joi.string()
-        .hex()
-        .required()
+      id: Joi.string().hex()
     }
   }
 };
