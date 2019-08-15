@@ -16,9 +16,11 @@ exports.load = async (req, res, next, id) => {
 };
 exports.create = async (req, res, next) => {
   try {
-    const { scheduleId, message } = req.body;
+    const { schedule: scheduleId, message } = req.body;
     // check if schedule exist
+
     const schedule = await Schedule.get(scheduleId);
+
     if (schedule.isClosed)
       throw new APIError({
         message: 'Sorry, this schedule is not open at the moment',
@@ -74,22 +76,12 @@ exports.getUserRequests = async (req, res, next) => {
 };
 
 exports.approveRequests = async (req, res, next) => {
-  console.log(req.params,'par')
   try {
     //retrieves the request with the given id from the database....
-    let request = await Request.get(req.params.id)
-    
-    request.status = req.query.status
+    let request = await Request.get(req.params.id);
 
+    request.status = req.query.status;
     request.save();
-    console.log(request)
-  } catch (error) {
-    
-  }
-  // i want to update a request, 
-  // now the goal is to scan through the request data base and fetch data from the back end.
-  //when if the request exist i set the data = to the incoming request.satus
-  //and save it back if it doesn't exist request not found....
-
-  res.send({mess:'hello boo i am reaching you live from update request', query: req.query});
+    return res.json(sendResponse(httpStatus.OK, 'Suceess', request));
+  } catch (error) {}
 };
