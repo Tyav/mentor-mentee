@@ -15,61 +15,60 @@ const UserSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true
+      required: true,
     },
     email: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
     password: {
       type: String,
       minlength: 6,
-      required: true
+      required: true,
     },
     phone: {
       type: String,
       minlength: 8,
-      maxlength: 13
+      maxlength: 13,
     },
     bio: {
       type: String,
       minlength: 2,
-      maxlength: 250
+      maxlength: 250,
     },
     location: {
-      type: String
+      type: String,
     },
     skills: {
       type: [String],
-      index: true
+      index: true,
     },
     connection: {
       type: Map,
-      of: String
+      of: String,
     },
     isMentor: {
       type: Boolean,
       required: true,
-      default: false
+      default: false,
     },
     isAdmin: {
+      type: Boolean,
+      default: false,
+    },
+    isVerified:{
       type: Boolean,
       default: false
     },
     avatar: {
       type: String,
-      default: getAvatar(this.email)
-    },
-
-    isVerified: {
-      type: Boolean,
-      default: false
+      default: getAvatar(this.email),
     },
     deleted: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   { timestamps: true }
 );
@@ -107,22 +106,7 @@ UserSchema.methods = {
    */
   transform() {
     // add feilds to be selected
-    const fields = [
-      'id',
-      'name',
-      'email',
-      'avatar',
-      'isAdmin',
-      'isMentor',
-      'phone',
-      'bio',
-      'location',
-      'connection',
-      'skills',
-      'deleted',
-      'createdAt',
-      'modifiedAt'
-    ];
+    const fields = ['id', 'name', 'email', 'avatar', 'isAdmin', 'isMentor','isVerified', 'phone', 'bio', 'location', 'connection', 'skills', 'deleted', 'createdAt', 'modifiedAt'];
     return pick(fields, this);
   },
   // Generates user token
@@ -140,14 +124,14 @@ UserSchema.statics = {
     const { email, password } = options;
     if (!email) {
       throw new APIError({
-        message: 'An email is required to generate a token'
+        message: 'An email is required to generate a token',
       });
     }
 
     const user = await this.getByEmail(email);
     const err = {
       status: httpStatus.UNAUTHORIZED,
-      isPublic: true
+      isPublic: true,
     };
     if (password) {
       if (user && (await user.passwordMatches(password))) {
@@ -165,7 +149,8 @@ UserSchema.statics = {
   async getByEmail(email) {
     let user = await this.findOne({
       email,
-      deleted: false
+      deleted: false,
+      isVerified: true
     }).exec();
     return user;
   },

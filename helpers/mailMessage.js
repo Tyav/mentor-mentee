@@ -1,6 +1,6 @@
-const config = require('../config/env')
+const config = require('../config/env');
 const message = {
-  forgotPassword: (token) => {
+  forgotPassword: token => {
     return `You are receiving this because you (or someone else) have requested the reset of the password for your account.
   
   Please click on the following link, or paste this into your browser to complete the process:
@@ -12,6 +12,12 @@ const message = {
   resetPassword: email => {
     return `Hello
       This is a confirmation that the password for your account ${email} has just been changed`;
+  },
+  verifyRegistration: token => {
+    return `Hello,
+    Congrats on signing up for MnetorDev! 
+    In order to activate your account please follow the link below to verify your email address:
+    ${config.clientSideUrl}/verify?token=${token}`;
   }
 };
 

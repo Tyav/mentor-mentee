@@ -7,6 +7,8 @@ const Schedule = require('../models/schedule.model');
 const Request = require('../models/request.model');
 const { Joi } = require('celebrate');
 const APIError = require('../helpers/APIError');
+const message = require('../helpers/mailMessage');
+const sendMail = require('../helpers/SendMail');
 
 /**
  * Load user and append to req.
@@ -14,7 +16,7 @@ const APIError = require('../helpers/APIError');
 exports.load = async (req, res, next, id) => {
   try {
     let user = await User.get(id);
-    if (user && !user.deleted) {
+    if (user && !user.deleted && user.isVerified) {
       req.user = user;
       return next();
     }
@@ -61,12 +63,11 @@ exports.signup = async (req, res, next) => {
     const user = new User(req.body);
 
     await user.save();
-    const payload = user.transform();
     const token = await user.token();
 
-    res.json(
-      sendResponse(httpStatus.OK, 'Signup successful', payload, null, token)
-    );
+    sendMail(user.email, 'Mentor Dev, Verification', message.verifyRegistration(token));
+
+    res.json(sendResponse(httpStatus.OK, user.email));
   } catch (error) {
     next(error);
   }
