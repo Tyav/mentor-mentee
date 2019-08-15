@@ -74,6 +74,7 @@ exports.validationLink = async (req, res, next) => {
   }
 } 
 exports.verify = async (req, res, next) => {
+  console.log('testingtto  see if this guy si called from test')
   if (req.user.isVerified) {
     //if user is already verified return an error
     return res.json(
@@ -83,6 +84,8 @@ exports.verify = async (req, res, next) => {
   const user = req.user;
   user.isVerified = true;
   await user.save();
-  const token =  user.token()
-  return res.json(sendResponse(httpStatus.OK, 'Verified', user.transform(), null, token))
+  const token = user.token();
+  return res.json(
+    sendResponse(httpStatus.OK, 'Verified', user.transform(), null, token)
+  );
 };
