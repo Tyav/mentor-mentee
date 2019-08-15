@@ -112,7 +112,7 @@ UserSchema.methods = {
   // Generates user token
   token() {
     return EncodeToken(this.email, this._id, this.isAdmin, this.isMentor);
-  },
+  }
 };
 
 UserSchema.statics = {
@@ -164,7 +164,7 @@ UserSchema.statics = {
     } catch (error) {
       throw new APIError(error);
     }
-  },
+  }
 };
 
 /**

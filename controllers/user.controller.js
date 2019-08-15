@@ -1,6 +1,8 @@
 const httpStatus = require('http-status');
 const User = require('../models/user.model');
 const sendResponse = require('../helpers/response');
+const updateUserValidation = require('../validations/user.validation')
+  .updateUser;
 const Schedule = require('../models/schedule.model');
 const Request = require('../models/request.model');
 const { Joi } = require('celebrate');
@@ -18,7 +20,9 @@ exports.load = async (req, res, next, id) => {
       req.user = user;
       return next();
     }
-    return res.json(sendResponse(httpStatus.NOT_FOUND, 'No such user exists!', null, null));
+    return res.json(
+      sendResponse(httpStatus.NOT_FOUND, 'No such user exists!', null, null)
+    );
   } catch (error) {
     next(error);
   }
@@ -28,7 +32,14 @@ exports.getUsers = async (req, res, next) => {
   try {
     let users = await User.find({});
     users = [...users].map(user => user.transform());
-    return res.json(sendResponse(httpStatus[200], 'Request for all users sucessful', users, null));
+    return res.json(
+      sendResponse(
+        httpStatus[200],
+        'Request for all users sucessful',
+        users,
+        null
+      )
+    );
   } catch (error) {
     next(error);
   }
@@ -80,15 +91,44 @@ exports.updateAvatar = async (req, res) => {
 
       req.s3.deleteObject(params, function(err, data) {});
     }
-    res.json(sendResponse(httpStatus.OK, 'Upload Successful', user.transform(), null, null));
+    res.json(
+      sendResponse(
+        httpStatus.OK,
+        'Upload Successful',
+        user.transform(),
+        null,
+        null
+      )
+    );
   } catch (error) {
     next(error);
   }
 };
 
+//updates user's profile...
 exports.updateProfile = async (req, res) => {
-  const { error, value } = Joi.validate(req.body, updateUserValidation);
+  const { error, value } = Joi.validate(req.body, updateUserValidation.body);
+
   if (error) {
+    return res.json(
+      sendResponse(
+        httpStatus.BAD_GATEWAY,
+        'Ensure the details supplied are in the right format',
+        error.message
+      )
+    );
+  }
+
+  try {
+    const user = await User.findByIdAndUpdate(req.params.userId, req.body, {
+      new: true
+    });
+
+    res.json(sendResponse(httpStatus.OK, 'succesful', user));
+  } catch (error) {
+    res.json(
+      sendResponse(httpStatus.INTERNAL_SERVER_ERROR, 'Something went wrong')
+    );
   }
 };
 
@@ -98,7 +138,10 @@ exports.createScheduleMock = async (req, res) => {
     const result = await shcedule.save();
     if (!result) {
       return res.json(
-        sendResponse(httpStatus.INTERNAL_SERVER_ERROR, 'An error occured submiting schedule')
+        sendResponse(
+          httpStatus.INTERNAL_SERVER_ERROR,
+          'An error occured submiting schedule'
+        )
       );
     }
     return res.json(sendResponse(httpStatus.OK, 'Request submitted'));
@@ -114,7 +157,9 @@ exports.bookSlot = async (req, res) => {
       menteeId: req.body.menteeId
     });
     if (requestMade) {
-      return res.json(sendResponse(httpStatus.NOT_FOUND, 'request already made'));
+      return res.json(
+        sendResponse(httpStatus.NOT_FOUND, 'request already made')
+      );
     }
     const schedule = await Schedule.findOne({
       _id: req.params.scheduleID
@@ -129,7 +174,9 @@ exports.bookSlot = async (req, res) => {
     });
     const requestResult = await request.save();
     if (!requestResult) {
-      return res.json(sendResponse(httpStatus.NOT_FOUND, 'the request was not submitted'));
+      return res.json(
+        sendResponse(httpStatus.NOT_FOUND, 'the request was not submitted')
+      );
     }
     return res.json(sendResponse(httpStatus.OK, 'Request submitted'));
   } catch {
@@ -146,7 +193,13 @@ exports.login = async (req, res, next) => {
   try {
     const { user, accessToken } = await User.loginAndGenerateToken(req.body);
     return res.json(
-      sendResponse(200, 'Successfully logged in', user.transform(), null, accessToken)
+      sendResponse(
+        200,
+        'Successfully logged in',
+        user.transform(),
+        null,
+        accessToken
+      )
     );
   } catch (error) {
     next(error);

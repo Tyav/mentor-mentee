@@ -11,7 +11,11 @@ exports.load = async (req, res, next, id) => {
       req.schedule = schedule;
       return next();
     }
-    return res.json(sendResponse(httpStatus.NOT_FOUND, 'Not found', null, {schedule: 'Not found'}));
+    return res.json(
+      sendResponse(httpStatus.NOT_FOUND, 'Not found', null, {
+        schedule: 'Not found'
+      })
+    );
   } catch (error) {
     next(error);
   }
@@ -23,11 +27,11 @@ exports.createSchedule = async (req, res, next) => {
       day,
       time: {
         from: time.from,
-        to: time.to,
+        to: time.to
       },
       slots,
       isClosed,
-      mentor: req.sub,
+      mentor: req.sub
     });
 
     await schedule.save();
@@ -66,10 +70,12 @@ exports.getSingleSchedule = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
   try {
-    const {schedule} = req;
-    let updated = await Schedule.findByIdAndUpdate(schedule._id, req.body, {new: true})
+    const { schedule } = req;
+    let updated = await Schedule.findByIdAndUpdate(schedule._id, req.body, {
+      new: true
+    });
     return res.json(sendResponse(200, 'Success', updated));
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
