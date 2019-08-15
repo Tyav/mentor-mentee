@@ -14,6 +14,8 @@ router
   .route('/')
   /** Create  */
   .post(validate(requestValidate.create, { abortEarly: false }), requestCtrl.create)
+  /** Approve mentees request */
+  .put(validate(requestValidate.update,{abortEarly: false}),requestCtrl.approveRequests)
   /** Get all */
   .get(requestCtrl.getUserRequests)
 
