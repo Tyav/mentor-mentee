@@ -73,3 +73,16 @@ exports.validationLink = async (req, res, next) => {
     next(error)
   }
 }
+exports.verify = async (req, res, next) => {
+  if (req.user.isVerified) {
+    //if user is already verified return an error
+    return res.json(
+      sendResponse(httpStatus.BAD_REQUEST, 'The link has expired')
+    );
+  }
+  const user = req.user;
+  user.isVerified = true;
+  await user.save();
+  const token =  user.token()
+  return res.json(sendResponse(httpStatus.OK, 'Verified', user.transform(), null, token))
+};
