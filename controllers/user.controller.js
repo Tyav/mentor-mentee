@@ -54,7 +54,7 @@ exports.signup = async (req, res, next) => {
     await user.save();
     const token = await user.token();
 
-    sendMail(user.email, message.verifyOnRegister(token));
+    sendMail(user.email, 'Mentor Dev, Verification', message.verifyRegistration(token));
 
     res.json(sendResponse(httpStatus.OK, user.email));
   } catch (error) {
