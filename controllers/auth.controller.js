@@ -22,7 +22,8 @@ exports.forgotPassword = async (req, res) => {
     }
     await ForgotPassword.deleteMany({ email: user.email });
     const passwordReset = new ForgotPassword({
-      email: user.email
+      email: user.email,
+      userId: user._id
     });
     await passwordReset.save();
     sendMail(
