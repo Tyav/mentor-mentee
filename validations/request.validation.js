@@ -4,8 +4,10 @@ module.exports = {
   // POST /api/v1/schedules
   create: {
     body: {
-      scheduleId: Joi.string().hex().required(),
-      message: Joi.string(),
+      schedule: Joi.string()
+        .hex()
+        .required(),
+      message: Joi.string()
     }
   },
   update: {

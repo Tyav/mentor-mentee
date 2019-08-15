@@ -52,8 +52,10 @@ exports.resetPassword = async (req, res, next) => {
     let user = await User.getByEmail(forgotPassword.email);
     user.password = req.body.password;
     await user.save();
-    sendMail(user.email,'Mentor Dev Password Reset', messages.resetPassword(user.email));
-    return res.json(sendResponse(httpStatus.OK, 'Password was successfully changed'));
+    sendMail(user.email, messages.resetPassword(user.email));
+    return res.json(
+      sendResponse(httpStatus.OK, 'Password was successfully changed')
+    );
   } catch (error) {
     next(error);
   }
