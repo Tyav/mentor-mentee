@@ -12,7 +12,8 @@ describe('#LOGIN TEST', () => {
 
   user.save();
 
-  let token = user.generateToken();
+  // let token = user.generateToken();
+
   let userTwo = new User({
     name: 'testMentor2',
     email: 'mentor@test.com',
@@ -20,8 +21,31 @@ describe('#LOGIN TEST', () => {
     isMentor: true
   });
 
+  //i am creating this user to test the "verified" functionality
+  // const userThree = new User({
+  // name: 'testUserVerification',
+  // email: 'testuser@gmail.com',
+  // password: 'testingverificationpass',
+  // isMentor: false
+  // });
+
+  let useThreeToken;
+
   beforeAll(async () => {
     await userTwo.save();
+    // await userThree.save();
+    request(app)
+      .post('/user')
+      .send({
+        name: 'testUserVerification',
+        email: 'testuser@gmail.com',
+        password: 'testingverificationpass',
+        isMentor: false
+      })
+      .end((err, response) => {
+        useThreeToken = response.body.token; // save the token!
+        done();
+      });
   });
 
   afterAll(async () => {
@@ -155,6 +179,19 @@ describe('#LOGIN TEST', () => {
           .expect(200);
         expect(response.body.message).toBe('Password has been changed');
       });
+    });
+  });
+
+  // the test for verified user comes in <here className="">
+  describe('#VERIFY', () => {
+    it('should return the user object back', () => {
+      return request(app)
+        .get('/verify')
+        .set('Authorization', `Bearer ${useThreeToken}`)
+        .then(response => {
+          expect(response.statusCode).toBe(200);
+          expect(response.type).toBe('application/json');
+        });
     });
   });
 });
