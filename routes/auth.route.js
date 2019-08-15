@@ -13,11 +13,9 @@ router.post('/login', validate(authValidation.login, { abortEarly: false }), use
 router.route('/forgot-password').post(validate(authValidation.forgotPassword, { abortEarly: false }), authCtrl.forgotPassword);
 
 router.post('/verify-link', validate(authValidation.verficationLink, { abortEarly: false }), authCtrl.validationLink);
-
-router.use(decode)
 //'i need to pus something in here...that comes from the auth ctrl'
-router.route('/verify').put(authCtrl.verify);
-
+router.use(decode)
+router.route('/verify').put(authCtrl.verify)
 router.route('/reset-password').post(validate(authValidation.resetPassword, { abortEarly: false }), authCtrl.resetPassword);
 
 
