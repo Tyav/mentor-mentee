@@ -15,7 +15,7 @@ router
 
   /** GET /api/v1/users - get all users */
   .get(userCtrl.getUsers)
-  /** POST /api/v1/users - creae a user */
+  /** POST /api/v1/user - creae a user */
   .post(validate(paramValidation.createUser, { abortEarly: false }), userCtrl.signup);
 
 /** PUT /api/v1/users/:userId/avatar */
