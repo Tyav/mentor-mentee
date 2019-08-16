@@ -4,10 +4,18 @@ module.exports = {
   // POST /api/v1/users
   createUser: {
     body: {
-      name: Joi.string().required().min(1).max(120),
-      email: Joi.string().email().required(),
-      password: Joi.string().min(6).max(20).required(),
-      isMentor:Joi.boolean()
+      name: Joi.string()
+        .required()
+        .min(1)
+        .max(120),
+      email: Joi.string()
+        .email()
+        .required(),
+      password: Joi.string()
+        .min(6)
+        .max(20)
+        .required(),
+      isMentor: Joi.boolean()
     }
   },
   // PUT /api/users/:userId
@@ -18,7 +26,7 @@ module.exports = {
         .email()
         .required(),
       phone: Joi.string(),
-      connection: Joi.object().required(),
+      connection: Joi.object(),
       bio: Joi.string()
         .max(250)
         .required(),
@@ -30,6 +38,6 @@ module.exports = {
         .hex()
         .required()
     }
-  },
+  }
   //added login validation
 };
