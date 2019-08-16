@@ -16,10 +16,17 @@ router
   /** GET /api/v1/users - get all users */
   .get(userCtrl.getUsers)
   /** POST /api/v1/users - creae a user */
-  .post(validate(paramValidation.createUser, { abortEarly: false }), userCtrl.signup);
+  .post(
+    validate(paramValidation.createUser, { abortEarly: false }),
+    userCtrl.signup,
+  );
 
 /** PUT /api/v1/users/:userId/avatar */
-router.put('/:userId/images', upload('avatar').single('avatar'), userCtrl.updateAvatar);
+router.put(
+  '/:userId/images',
+  upload('avatar').single('avatar'),
+  userCtrl.updateAvatar,
+);
 
 router
   .route('/:userId')
@@ -29,6 +36,8 @@ router
   .put(userCtrl.updateProfile);
 
 router.get('/:userId/schedules', scheduleCtrl.getUserSchedules);
+
+router.route('/search').post(userCtrl.search);
 
 //router.route('/request/:scheduleID').post(userCtrl.bookSlot);
 
