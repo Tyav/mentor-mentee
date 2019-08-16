@@ -11,6 +11,10 @@ const ForgotPasswordSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    userId:{
+      type: mongoose.Types.ObjectId,
+      ref: 'User'
+    },
     token: {
       type: String,
     },
@@ -22,9 +26,10 @@ const ForgotPasswordSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-ForgotPasswordSchema.pre('save', function(next) {
+ForgotPasswordSchema.pre('save', function(next, id) {
+  console.log(id)
   const forgotPassword = this;
-  forgotPassword.token = encodeToken(forgotPassword.email);
+  forgotPassword.token = encodeToken(forgotPassword.email, forgotPassword.userId);
   next();
 });
 
