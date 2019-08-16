@@ -10,6 +10,7 @@ router.param('id', requestCtrl.load);
 
 router.use(decode);
 
+
 router
   .route('/')
   /** Create  */
@@ -24,5 +25,6 @@ router
   .get(requestCtrl.getUserRequests);
 
 router.route('/:id').put(validate(requestValidate.update,{abortEarly:false}),requestCtrl.approveRequests);
+
 
 module.exports = router;
