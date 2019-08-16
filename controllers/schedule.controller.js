@@ -55,7 +55,9 @@ exports.getAllSchedules = async (req, res, next) => {
 
 exports.getUserSchedules = async (req, res, next) => {
   try {
+    //get all schedules for the given mentor
     const schedules = await Schedule.getByUserId(req.sub);
+    //for every schedule get all requests that belong to that schedule
     const requests = await schedules.reduce(async (acc, schedule) => {
       acc = await acc;
    
