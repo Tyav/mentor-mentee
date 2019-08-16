@@ -16,7 +16,10 @@ router
   /** Create  */
   .post(validate(requestValidate.create, { abortEarly: false }), requestCtrl.create)
   /** Get all */
-  .get(requestCtrl.getUserRequests)
+  //.get(requestCtrl.getUserRequests)
+   
+
+router.route('/:userId').get(requestCtrl.getUserRequests)
 
 
 module.exports = router;
