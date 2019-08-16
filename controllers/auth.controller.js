@@ -16,27 +16,27 @@ exports.forgotPassword = async (req, res) => {
       return res.json(
         sendResponse(
           httpStatus.NOT_FOUND,
-          'A link to reset your password has been sent to your email.'
-        )
+          'A link to reset your password has been sent to your email.',
+        ),
       );
     }
     await ForgotPassword.deleteMany({ email: user.email });
     const passwordReset = new ForgotPassword({
       email: user.email,
-      userId: user._id
+      userId: user._id,
     });
     await passwordReset.save();
     sendMail(
       passwordReset.email,
       'Mentor Dev Password Reset',
-      messages.forgotPassword(passwordReset.token)
+      messages.forgotPassword(passwordReset.token),
     );
 
     return res.json(
       sendResponse(
         httpStatus.OK,
-        'A link to reset your password has been sent to your email.'
-      )
+        'A link to reset your password has been sent to your email.',
+      ),
     );
   } catch (error) {
     next(error);
@@ -51,19 +51,15 @@ exports.resetPassword = async (req, res, next) => {
       return res.json(
         sendResponse(
           httpStatus.NOT_FOUND,
-          'Password reset link is invalid or has expired'
-        )
+          'Password reset link is invalid or has expired',
+        ),
       );
     let user = await User.getByEmail(forgotPassword.email);
     user.password = req.body.password;
     await user.save();
-    sendMail(
-      user.email,
-      'Mentor Dev Password Reset',
-      messages.resetPassword(user.email)
-    );
+    sendMail(user.email, messages.resetPassword(user.email));
     return res.json(
-      sendResponse(httpStatus.OK, 'Password was successfully changed')
+      sendResponse(httpStatus.OK, 'Password was successfully changed'),
     );
   } catch (error) {
     next(error);
@@ -81,7 +77,7 @@ exports.validationLink = async (req, res, next) => {
     sendMail(
       email,
       'Mentor Dev, Verification',
-      messages.verifyRegistration(token)
+      messages.verifyRegistration(token),
     );
     return res.json(sendResponse(httpStatus.NOT_FOUND, email));
   } catch (error) {
@@ -92,7 +88,7 @@ exports.verify = async (req, res, next) => {
   if (req.user.isVerified) {
     //if user is already verified return an error
     return res.json(
-      sendResponse(httpStatus.BAD_REQUEST, 'The link has expired')
+      sendResponse(httpStatus.BAD_REQUEST, 'The link has expired'),
     );
   }
   const user = req.user;
@@ -100,6 +96,6 @@ exports.verify = async (req, res, next) => {
   await user.save();
   const token = user.token();
   return res.json(
-    sendResponse(httpStatus.OK, 'Verified', user.transform(), null, token)
+    sendResponse(httpStatus.OK, 'Verified', user.transform(), null, token),
   );
 };
