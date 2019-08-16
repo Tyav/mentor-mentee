@@ -23,6 +23,7 @@ exports.load = async (req, res, next, id) => {
 exports.createSchedule = async (req, res, next) => {
   try {
     const { day, time, slots, isClosed } = req.body;
+
     const schedule = new Schedule({
       day,
       time: {
@@ -52,6 +53,7 @@ exports.getAllSchedules = async (req, res, next) => {
 };
 
 exports.getUserSchedules = async (req, res, next) => {
+  
   try {
     const schedules = await Schedule.getByUserId(req.sub);
     return res.json(sendResponse(200, 'Success', schedules));

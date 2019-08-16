@@ -10,11 +10,13 @@ router.param('id', requestCtrl.load);
 
 router.use(decode)
 
+
 router
   .route('/')
   /** Create  */
   .post(validate(requestValidate.create, { abortEarly: false }), requestCtrl.create)
   /** Get all */
   .get(requestCtrl.getUserRequests)
+
 
 module.exports = router;

@@ -16,7 +16,7 @@ exports.load = async (req, res, next, id) => {
 };
 exports.create = async (req, res, next) => {
   try {
-    const { scheduleId, message } = req.body;
+    const { schedule: scheduleId, message } = req.body;
     // check if schedule exist
     const schedule = await Schedule.get(scheduleId);
     if (schedule.isClosed)
@@ -57,9 +57,10 @@ exports.getScheduleResquests = async (req, res, next) => {
 };
 
 exports.getUserRequests = async (req, res, next) => {
+  console.log('hello rukee')
   try {
     const user = req.sub;
-    let requests = await Request.getBy({ mentee });
+    let requests = await Request.getBy({ user });
     return res.json(sendResponse(httpStatus.OK, 'Success', requests));
   } catch (error) {
     next(
