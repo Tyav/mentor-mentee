@@ -213,26 +213,9 @@ exports.login = async (req, res, next) => {
 
 exports.search = async (req, res, next) => {
   try {
-    const escapeChar = escapeString(req.body.query);
-    const searchQueries = escapeChar.split(' ');
-    let search = [];
-    let users = [];
-    for (let i in searchQueries) {
-      if (!searchQueries[i]) continue;
-      const pattern = new RegExp(`${searchQueries[i]}`, 'gi');
-      let query = [
-        { name: { $regex: pattern } },
-        { skills: { $regex: pattern } },
-        { location: { $regex: pattern } },
-      ];
-      search = search.concat(query);
-    }
-    if (search.length)
-      users = await User.find({
-        $or: search,
-      });
+    const results = await User.searchUsers(req.query.search);
 
-    return res.json(sendResponse(httpStatus.OK, 'User found', users));
+    return res.json(sendResponse(httpStatus.OK, 'Users found', results));
   } catch (error) {
     next(error);
   }
