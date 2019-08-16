@@ -23,13 +23,13 @@ const ForgotPasswordSchema = new mongoose.Schema(
       default: Date.now() + 300000, // 5 Hours span
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 ForgotPasswordSchema.pre('save', function(next, id) {
   console.log(id)
   const forgotPassword = this;
-  forgotPassword.token = encodeToken(forgotPassword.email, forgotPassword.userId);
+  forgotPassword.token = encodeToken(forgotPassword.email, forgotPassword._id);
   next();
 });
 
@@ -50,7 +50,10 @@ ForgotPasswordSchema.statics = {
       if (forgotPassword) return forgotPassword;
       throw new Error('Password reset link is invalid or has expired');
     } catch (error) {
-      throw new APIError({ status: httpStatus.NOT_FOUND, message: error.message });
+      throw new APIError({
+        status: httpStatus.NOT_FOUND,
+        message: error.message,
+      });
     }
   },
 };

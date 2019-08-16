@@ -7,6 +7,7 @@ const APIError = require('../helpers/APIError');
 const EncodeToken = require('../helpers/tokenEncoder');
 const config = require('../config/env');
 const getAvatar = require('../helpers/avatar');
+const escapeString = require('../helpers/escapeString');
 
 /**
  * User Schema
@@ -57,9 +58,9 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    isVerified:{
+    isVerified: {
       type: Boolean,
-      default: false
+      default: false,
     },
     avatar: {
       type: String,
@@ -70,7 +71,7 @@ const UserSchema = new mongoose.Schema(
       default: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 UserSchema.pre('save', function(next) {
@@ -106,13 +107,29 @@ UserSchema.methods = {
    */
   transform() {
     // add feilds to be selected
-    const fields = ['id', 'name', 'email', 'avatar', 'isAdmin', 'isMentor','isVerified', 'phone', 'bio', 'location', 'connection', 'skills', 'deleted', 'createdAt', 'modifiedAt'];
+    const fields = [
+      'id',
+      'name',
+      'email',
+      'avatar',
+      'isAdmin',
+      'isMentor',
+      'isVerified',
+      'phone',
+      'bio',
+      'location',
+      'connection',
+      'skills',
+      'deleted',
+      'createdAt',
+      'modifiedAt',
+    ];
     return pick(fields, this);
   },
   // Generates user token
   token() {
     return EncodeToken(this.email, this._id, this.isAdmin, this.isMentor);
-  }
+  },
 };
 
 UserSchema.statics = {
@@ -150,7 +167,7 @@ UserSchema.statics = {
     let user = await this.findOne({
       email,
       deleted: false,
-      isVerified: true
+      isVerified: true,
     }).exec();
     return user;
   },
@@ -164,7 +181,33 @@ UserSchema.statics = {
     } catch (error) {
       throw new APIError(error);
     }
-  }
+  },
+  async searchUsers(query) {
+    try {
+      const escapedString = escapeString(query);
+      const searchQueries = escapedString.split(' ');
+      let search = [];
+      let users = [];
+      for (let i = 0, length = searchQueries.length; i < length; i++) {
+        if (!searchQueries[i]) continue;
+        const pattern = new RegExp(searchQueries[i], 'gi');
+        let query = [
+          { name: { $regex: pattern } },
+          { skills: { $regex: pattern } },
+          { location: { $regex: pattern } },
+        ];
+        search = search.concat(query);
+      }
+      if (search.length) {
+        users = await this.find({
+          $or: search,
+        });
+      }
+      return users;
+    } catch (error) {
+      throw new APIError(error);
+    }
+  },
 };
 
 /**

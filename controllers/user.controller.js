@@ -9,6 +9,7 @@ const { Joi } = require('celebrate');
 const APIError = require('../helpers/APIError');
 const message = require('../helpers/mailMessage');
 const sendMail = require('../helpers/SendMail');
+const escapeString = require('../helpers/escapeString');
 
 /**
  * Load user and append to req.
@@ -21,7 +22,7 @@ exports.load = async (req, res, next, id) => {
       return next();
     }
     return res.json(
-      sendResponse(httpStatus.NOT_FOUND, 'No such user exists!', null, null)
+      sendResponse(httpStatus.NOT_FOUND, 'No such user exists!', null, null),
     );
   } catch (error) {
     next(error);
@@ -37,8 +38,8 @@ exports.getUsers = async (req, res, next) => {
         httpStatus[200],
         'Request for all users sucessful',
         users,
-        null
-      )
+        null,
+      ),
     );
   } catch (error) {
     next(error);
@@ -54,8 +55,8 @@ exports.signup = async (req, res, next) => {
     if (userExist) {
       return res.json(
         sendResponse(httpStatus.BAD_REQUEST, 'Bad Request', null, {
-          msg: 'Email already in use!'
-        })
+          msg: 'Email already in use!',
+        }),
       );
     }
 
@@ -65,7 +66,11 @@ exports.signup = async (req, res, next) => {
     await user.save();
     const token = await user.token();
 
-    sendMail(user.email, 'Mentor Dev, Verification', message.verifyRegistration(token));
+    sendMail(
+      user.email,
+      'Mentor Dev, Verification',
+      message.verifyRegistration(token),
+    );
 
     res.json(sendResponse(httpStatus.OK, user.email));
   } catch (error) {
@@ -86,7 +91,7 @@ exports.updateAvatar = async (req, res) => {
     if (req.oldAvatar) {
       var params = {
         Bucket: req.s3.Bucket,
-        Key: req.oldAvatar
+        Key: req.oldAvatar,
       };
 
       req.s3.deleteObject(params, function(err, data) {});
@@ -97,8 +102,8 @@ exports.updateAvatar = async (req, res) => {
         'Upload Successful',
         user.transform(),
         null,
-        null
-      )
+        null,
+      ),
     );
   } catch (error) {
     next(error);
@@ -114,20 +119,20 @@ exports.updateProfile = async (req, res) => {
       sendResponse(
         httpStatus.BAD_GATEWAY,
         'Ensure the details supplied are in the right format',
-        error.message
-      )
+        error.message,
+      ),
     );
   }
 
   try {
     const user = await User.findByIdAndUpdate(req.params.userId, req.body, {
-      new: true
+      new: true,
     });
 
     res.json(sendResponse(httpStatus.OK, 'succesful', user));
   } catch (error) {
     res.json(
-      sendResponse(httpStatus.INTERNAL_SERVER_ERROR, 'Something went wrong')
+      sendResponse(httpStatus.INTERNAL_SERVER_ERROR, 'Something went wrong'),
     );
   }
 };
@@ -140,8 +145,8 @@ exports.createScheduleMock = async (req, res) => {
       return res.json(
         sendResponse(
           httpStatus.INTERNAL_SERVER_ERROR,
-          'An error occured submiting schedule'
-        )
+          'An error occured submiting schedule',
+        ),
       );
     }
     return res.json(sendResponse(httpStatus.OK, 'Request submitted'));
@@ -154,15 +159,15 @@ exports.bookSlot = async (req, res) => {
   try {
     const requestMade = await Request.findOne({
       scheduleId: req.params.scheduleID,
-      menteeId: req.body.menteeId
+      menteeId: req.body.menteeId,
     });
     if (requestMade) {
       return res.json(
-        sendResponse(httpStatus.NOT_FOUND, 'request already made')
+        sendResponse(httpStatus.NOT_FOUND, 'request already made'),
       );
     }
     const schedule = await Schedule.findOne({
-      _id: req.params.scheduleID
+      _id: req.params.scheduleID,
     });
     if (!schedule) {
       return res.json(sendResponse(httpStatus.NOT_FOUND, 'Schedule not found'));
@@ -170,12 +175,12 @@ exports.bookSlot = async (req, res) => {
 
     const request = new Request({
       scheduleId: req.params.scheduleID,
-      menteeId: req.body.menteeId
+      menteeId: req.body.menteeId,
     });
     const requestResult = await request.save();
     if (!requestResult) {
       return res.json(
-        sendResponse(httpStatus.NOT_FOUND, 'the request was not submitted')
+        sendResponse(httpStatus.NOT_FOUND, 'the request was not submitted'),
       );
     }
     return res.json(sendResponse(httpStatus.OK, 'Request submitted'));
@@ -183,8 +188,8 @@ exports.bookSlot = async (req, res) => {
     return res.json(
       sendResponse(
         httpStatus.INTERNAL_SERVER_ERROR,
-        'something went wrong while submitting request'
-      )
+        'something went wrong while submitting request',
+      ),
     );
   }
 };
@@ -198,9 +203,19 @@ exports.login = async (req, res, next) => {
         'Successfully logged in',
         user.transform(),
         null,
-        accessToken
-      )
+        accessToken,
+      ),
     );
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.search = async (req, res, next) => {
+  try {
+    const results = await User.searchUsers(req.query.search);
+
+    return res.json(sendResponse(httpStatus.OK, 'Users found', results));
   } catch (error) {
     next(error);
   }
