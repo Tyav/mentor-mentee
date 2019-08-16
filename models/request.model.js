@@ -45,13 +45,24 @@ RequestSchema.statics = {
     }
   },
   async getBy(option) {
-    console.log('option', option);
     try {
       return await this.find(option)
         .populate({ path: 'mentee', select: '_id name avatar skills isMentor' })
-        .populate({ path: 'schedule', select: '_id day time mentor' })
+        .populate({
+          path: 'schedule',
+          select: '_id day time mentor',
+          populate: {
+            path: 'mentor',
+            select: '_id name avatar skills'
+          }
+        })
         .exec();
-    } catch (error) {}
+    } catch (error) {
+      throw new APIError({
+        message: error.message,
+        status: httpStatus.BAD_REQUEST
+      });
+    }
   }
 };
 

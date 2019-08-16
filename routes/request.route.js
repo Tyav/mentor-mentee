@@ -14,7 +14,7 @@ router.use(decode);
 router
   .route('/')
   /** Create  */
-  
+
   .post(
     validate(requestValidate.create, { abortEarly: false }),
     requestCtrl.create
@@ -31,5 +31,7 @@ router.route('/:id').put(validate(requestValidate.update,{abortEarly:false}),req
 
 router.route('/:userId').get(requestCtrl.getUserRequests)
 
+  .get(requestCtrl.getUserRequests)
+  
 
 module.exports = router;
