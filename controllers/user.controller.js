@@ -94,11 +94,7 @@ exports.updateAvatar = async (req, res) => {
 
 //updates user's profile...
 exports.updateProfile = async (req, res) => {
-  console.log('HEreeeee');
   const { error, value } = Joi.validate(req.body, updateUserValidation.body);
-  console.log('HEreeeee');
-  console.log('values', value);
-
   if (error) {
     return res.json(
       sendResponse(
@@ -110,12 +106,13 @@ exports.updateProfile = async (req, res) => {
   }
 
   try {
-    const user = await User.findByIdAndUpdate(req.params.userId, req.body, {
-      new: true,
+    const user = await User.findByIdAndUpdate(req.params.userId, value, {
+      new: true
     });
 
     res.json(sendResponse(httpStatus.OK, 'succesful', user));
   } catch (error) {
+    console.log('Mongoose error', error);
     res.json(sendResponse(httpStatus.INTERNAL_SERVER_ERROR, 'Something went wrong'));
   }
 };

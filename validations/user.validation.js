@@ -28,9 +28,8 @@ module.exports = {
       phone: Joi.string(),
       connection: Joi.object(),
       bio: Joi.string()
-        .max(250)
-        .required(),
-      location: Joi.string().required(),
+        .max(250),
+      location: Joi.string(),
       skills: Joi.array().items(Joi.string())
     },
     params: {
