@@ -56,6 +56,8 @@ exports.getUserSchedules = async (req, res, next) => {
   
   try {
     const schedules = await Schedule.getByUserId(req.sub);
+    console.log(schedules);
+    console.log(req.sub)
     return res.json(sendResponse(200, 'Success', schedules));
   } catch (error) {
     next(error);

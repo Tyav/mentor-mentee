@@ -15,7 +15,9 @@ router
   .route('/')
   .post(validate(paramValidation.create, { abortEarly: false }), scheduleCtrl.createSchedule)
   /** GET api/v1/schedules  get all schedule */
-  .get(scheduleCtrl.getAllSchedules);
+  // .get(scheduleCtrl.getAllSchedules);
+  .get(scheduleCtrl.getUserSchedules);
+  
 
 router
   .route('/:scheduleId')
