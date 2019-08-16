@@ -58,7 +58,7 @@ exports.getScheduleResquests = async (req, res, next) => {
 
 exports.getUserRequests = async (req, res, next) => {
   try {
-    const mentee = req.sub;
+    const user = req.sub;
     let requests = await Request.getBy({ mentee });
     return res.json(sendResponse(httpStatus.OK, 'Success', requests));
   } catch (error) {
