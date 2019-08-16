@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const sendResponse = require('../helpers/response');
 const Schedule = require('../models/schedule.model');
+const Request = require('../models/request.model');
 const { createSchedule } = require('../validations/schedule.validation');
 const { Joi } = require('celebrate');
 
@@ -53,12 +54,15 @@ exports.getAllSchedules = async (req, res, next) => {
 };
 
 exports.getUserSchedules = async (req, res, next) => {
-  
   try {
     const schedules = await Schedule.getByUserId(req.sub);
-    console.log(schedules);
-    console.log(req.sub)
-    return res.json(sendResponse(200, 'Success', schedules));
+    const requests = await schedules.reduce(async (acc, schedule) => {
+      acc = await acc;
+   
+      const request = await Request.getBy({schedule:schedule._id});
+      return acc.concat(request);
+    }, []);
+    return res.json(sendResponse(200, 'Success', requests));
   } catch (error) {
     next(error);
   }
