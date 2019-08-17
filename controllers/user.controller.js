@@ -90,7 +90,6 @@ exports.updateAvatar = async (req, res) => {
 
 //updates user's profile...
 exports.updateProfile = async (req, res) => {
-  console.log(req.body);
   try {
     const user = await req.user.update(req.body);
     res.json(sendResponse(httpStatus.OK, 'succesful', user.transform()));
