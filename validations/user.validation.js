@@ -5,9 +5,9 @@ module.exports = {
   createUser: {
     body: {
       name: Joi.string()
-        .required()
         .min(1)
-        .max(120),
+        .max(120)
+        .required(),
       email: Joi.string()
         .email()
         .required(),
@@ -21,21 +21,18 @@ module.exports = {
   // PUT /api/users/:userId
   updateUser: {
     body: {
-      name: Joi.string().required(),
+      name: Joi.string()
+        .min(1)
+        .max(120)
+        .required(),
       email: Joi.string()
         .email()
         .required(),
       phone: Joi.string(),
       connection: Joi.object(),
-      bio: Joi.string()
-        .max(250),
+      bio: Joi.string().max(250),
       location: Joi.string(),
       skills: Joi.array().items(Joi.string())
-    },
-    params: {
-      userId: Joi.string()
-        .hex()
-        .required()
     }
   }
   //added login validation
