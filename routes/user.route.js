@@ -19,7 +19,10 @@ router
   /** GET /api/v1/users - get all users */
   .get(userCtrl.getUsers)
   /** POST /api/v1/user - creae a user */
-  .post(validate(paramValidation.createUser, { abortEarly: false }), userCtrl.signup);
+  .post(
+    validate(paramValidation.createUser, { abortEarly: false }),
+    userCtrl.signup
+  );
 
 /** PUT /api/v1/user/userId update a user information */
 router.put(
@@ -29,7 +32,11 @@ router.put(
 );
 
 /** PUT /api/v1/users/:userId/avatar */
-router.put('/:userId/images', upload('avatar').single('avatar'), userCtrl.updateAvatar);
+router.put(
+  '/:userId/images',
+  upload('avatar').single('avatar'),
+  userCtrl.updateAvatar
+);
 
 router
   .route('/:userId')
