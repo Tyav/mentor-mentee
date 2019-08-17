@@ -130,6 +130,13 @@ UserSchema.methods = {
   token() {
     return EncodeToken(this.email, this._id, this.isAdmin, this.isMentor);
   },
+  async update(obj){
+    for (key in obj) {
+      this[key] = obj[key]
+    }
+    await this.save();
+    return this;
+  }
 };
 
 UserSchema.statics = {
