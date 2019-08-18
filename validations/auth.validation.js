@@ -6,23 +6,23 @@ module.exports = {
     body: {
       email: Joi.string()
         .email()
-        .required(),
-    },
+        .required()
+    }
   },
   resetPassword: {
     body: {
       password: Joi.string()
         .min(6)
         .max(20)
-        .required(),
-    },
+        .required()
+    }
   },
   forgotPassword: {
     body: {
       email: Joi.string()
         .email()
-        .required(),
-    },
+        .required()
+    }
   },
   login: {
     body: {
@@ -32,7 +32,17 @@ module.exports = {
       password: Joi.string()
         .min(6)
         .max(20)
-        .required(),
-    },
+        .required()
+    }
   },
+  changePassword: {
+    body: {
+      password: Joi.string()
+        .min(6)
+        .required(),
+      newPassword: Joi.string()
+        .min(6)
+        .required()
+    }
+  }
 };
