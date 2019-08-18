@@ -9,7 +9,7 @@ const ContactSchema = new mongoose.Schema({
     required: true,
     ref: 'User'
   },
-  mentors: {
+  mentor: {
     type: String,
     required: true,
     ref: 'User'

@@ -21,8 +21,6 @@ router
 
 router
   .route('/:scheduleId')
-  /** GET api/v1/schedules/id  get single schedule */
-  .get(scheduleCtrl.getSingleSchedule)
   /** PUT api/v1/schedule/id edit schedule */
   .put(scheduleCtrl.update);
 
