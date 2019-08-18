@@ -25,6 +25,10 @@ router
   .get(requestCtrl.getUserRequests);
 
 router.route('/:id').put(validate(requestValidate.update,{abortEarly:false}),requestCtrl.approveRequests);
+  //.get(requestCtrl.getUserRequests)
+   
+
+router.route('/:userId').get(requestCtrl.getUserRequests)
 
 
 module.exports = router;

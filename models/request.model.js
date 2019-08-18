@@ -6,20 +6,20 @@ const RequestSchema = new mongoose.Schema({
   mentee: {
     type: mongoose.Types.ObjectId,
     required: true,
-    ref: 'User',
+    ref: 'User'
   },
   schedule: {
     type: mongoose.Types.ObjectId,
     required: true,
-    ref: 'Schedule',
+    ref: 'Schedule'
   },
   message: {
     type: String,
-    maxlength: 250,
+    maxlength: 250
   },
   response: {
     type: String,
-    maxlength: 250,
+    maxlength: 250
   },
   status: {
     type: String,
@@ -38,17 +38,21 @@ RequestSchema.statics = {
         .populate({ path: 'schedule', select: '_id day time mentor' })
         .exec();
     } catch (error) {
-      throw new APIError({ message: error.message, status: httpStatus.BAD_REQUEST });
+      throw new APIError({
+        message: error.message,
+        status: httpStatus.BAD_REQUEST
+      });
     }
   },
   async getBy(option) {
+    console.log('option', option);
     try {
       return await this.find(option)
         .populate({ path: 'mentee', select: '_id name avatar skills isMentor' })
         .populate({ path: 'schedule', select: '_id day time mentor' })
         .exec();
     } catch (error) {}
-  },
+  }
 };
 
 module.exports = mongoose.model('Request', RequestSchema);

@@ -62,10 +62,15 @@ exports.getScheduleResquests = async (req, res, next) => {
 };
 
 exports.getUserRequests = async (req, res, next) => {
-  console.log('hello rukee')
   try {
-    const user = req.sub;
-    let requests = await Request.getBy({ user });
+    if (req.user.isMentor)
+      throw new APIError({
+        message: 'Not allowed',
+        status: httpStatus.BAD_REQUEST
+      });
+
+    const mentee = req.sub;
+    let requests = await Request.getBy({ mentee });
     return res.json(sendResponse(httpStatus.OK, 'Success', requests));
   } catch (error) {
     next(
