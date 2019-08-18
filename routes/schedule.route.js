@@ -15,12 +15,12 @@ router
   .route('/')
   .post(validate(paramValidation.create, { abortEarly: false }), scheduleCtrl.createSchedule)
   /** GET api/v1/schedules  get all schedule */
-  .get(scheduleCtrl.getAllSchedules);
+  // .get(scheduleCtrl.getAllSchedules);
+  .get(scheduleCtrl.getUserSchedules);
+  
 
 router
   .route('/:scheduleId')
-  /** GET api/v1/schedules/id  get single schedule */
-  .get(scheduleCtrl.getSingleSchedule)
   /** PUT api/v1/schedule/id edit schedule */
   .put(scheduleCtrl.update);
 

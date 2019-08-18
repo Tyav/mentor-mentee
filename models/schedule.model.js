@@ -7,36 +7,44 @@ const ScheduleSchema = new mongoose.Schema(
     day: {
       type: String,
       required: true,
-      enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      enum: [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday'
+      ]
     },
     time: {
       from: {
         type: String,
-        required: true,
+        required: true
       },
       to: {
         type: String,
-        required: true,
-      },
+        required: true
+      }
     },
     slots: {
       type: Number,
       required: true,
-      default: 5,
+      default: 5
     },
     isClosed: {
       type: Boolean,
-      default: false,
+      default: false
     },
-    poolSize:{
+    poolSize: {
       type: Number,
       required: true,
       default: 20
     },
     mentor: {
       type: mongoose.Types.ObjectId,
-      ref: 'User',
-    },
+      ref: 'User'
+    }
   },
   { timestamps: true }
 );
@@ -44,7 +52,14 @@ const ScheduleSchema = new mongoose.Schema(
 /**
  * Schema methods
  */
-ScheduleSchema.methods = {};
+ScheduleSchema.methods = {
+  async update(obj) {
+    for (key in obj) {
+      this[key] = obj[key];
+    }
+    return this;
+  }
+};
 
 /**
  * Schema statics
@@ -64,7 +79,7 @@ ScheduleSchema.statics = {
     if (schedule) return schedule;
     throw new APIError({
       message: 'Sorry, this schedule is not open at the moment',
-      status: httpStatus.BAD_REQUEST,
+      status: httpStatus.BAD_REQUEST
     });
   },
   async getByUserId(mentor) {
@@ -74,10 +89,10 @@ ScheduleSchema.statics = {
     } catch (error) {
       throw new APIError({
         message: error.message,
-        status: httpStatus.INTERNAL_SERVER_ERROR,
+        status: httpStatus.INTERNAL_SERVER_ERROR
       });
     }
-  },
+  }
 };
 
 module.exports = mongoose.model('Schedule', ScheduleSchema);

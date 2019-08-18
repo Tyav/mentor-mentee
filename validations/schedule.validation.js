@@ -6,8 +6,8 @@ module.exports = {
     body: {
       day: Joi.string().required(),
       time: Joi.object().keys({
-        from: Joi.date().required(),
-        to:Joi.date().required()
+        from: Joi.string().required(),
+        to:Joi.string().required()
       }),
       slots: Joi.number().required(),
       isClosed:Joi.boolean(),

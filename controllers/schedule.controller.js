@@ -1,8 +1,10 @@
 const httpStatus = require('http-status');
 const sendResponse = require('../helpers/response');
 const Schedule = require('../models/schedule.model');
+const Request = require('../models/request.model');
 const { createSchedule } = require('../validations/schedule.validation');
 const { Joi } = require('celebrate');
+const APIError = require('../helpers/APIError');
 
 exports.load = async (req, res, next, id) => {
   try {
@@ -22,7 +24,14 @@ exports.load = async (req, res, next, id) => {
 };
 exports.createSchedule = async (req, res, next) => {
   try {
+    if (!req.user.isMentor) {
+      throw new APIError({
+        message: 'Unauthorized User',
+        status: httpStatus.UNAUTHORIZED
+      });
+    }
     const { day, time, slots, isClosed } = req.body;
+
     const schedule = new Schedule({
       day,
       time: {
@@ -53,16 +62,10 @@ exports.getAllSchedules = async (req, res, next) => {
 
 exports.getUserSchedules = async (req, res, next) => {
   try {
+    //get all schedules for the given mentor
     const schedules = await Schedule.getByUserId(req.sub);
-    return res.json(sendResponse(200, 'Success', schedules));
-  } catch (error) {
-    next(error);
-  }
-};
 
-exports.getSingleSchedule = async (req, res, next) => {
-  try {
-    return res.json(sendResponse(200, 'Success', req.schedule));
+    return res.json(sendResponse(200, 'Success', schedules));
   } catch (error) {
     next(error);
   }
@@ -71,9 +74,8 @@ exports.getSingleSchedule = async (req, res, next) => {
 exports.update = async (req, res, next) => {
   try {
     const { schedule } = req;
-    let updated = await Schedule.findByIdAndUpdate(schedule._id, req.body, {
-      new: true
-    });
+    if (req.sub !== schedule.mentor) throw new APIError({message: 'Unauthorized', statusCode: httpStatus.UNAUTHORIZED})
+    const updated = schedule.update(req.body)
     return res.json(sendResponse(200, 'Success', updated));
   } catch (error) {
     next(error);
