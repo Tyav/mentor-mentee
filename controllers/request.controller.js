@@ -97,7 +97,9 @@ exports.getUserRequests = async (req, res, next) => {
   }
 };
 
+
 exports.approveRequests = async (req, res, next) => {
+  console.log(req.params)
   try {
     //retrieves the request with the given id from the database....
     let request = req.request;
