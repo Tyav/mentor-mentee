@@ -23,6 +23,7 @@ exports.load = async (req, res, next, id) => {
   }
 };
 exports.createSchedule = async (req, res, next) => {
+  console.log(req,'eeeee')
   try {
     if (!req.user.isMentor) {
       throw new APIError({
