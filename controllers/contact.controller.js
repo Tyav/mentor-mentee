@@ -1,7 +1,8 @@
+const { Joi } = require('celebrate');
 const httpStatus = require('http-status');
 const sendResponse = require('../helpers/response');
 const Contact = require('../models/contact.model');
-const { Joi } = require('celebrate');
+const APIError = require('../helpers/APIError');
 
 exports.load = async (req, res, next, id) => {
   try {
@@ -22,13 +23,12 @@ exports.load = async (req, res, next, id) => {
 
 exports.getUserContacts = async (req, res, next) => {
   try {
-    
-    let option = req.user.isMentor? { mentor: req.sub } : { mentee: req.sub };
-    let user = req.user.isMentor? 'mentee': 'mentor';
+    let option = req.user.isMentor ? { mentor: req.sub } : { mentee: req.sub };
+    let user = req.user.isMentor ? 'mentee' : 'mentor';
     const userContact = await Contact.getBy(option);
-    let contacts = userContact.map((contact)=>{
-      contact.transform(user);
-    })
+    let contacts = userContact.map(contact => {
+      return contact.transform(user);
+    });
     return res.json(sendResponse(httpStatus.OK, 'Success', contacts));
   } catch (error) {
     next(
@@ -39,5 +39,3 @@ exports.getUserContacts = async (req, res, next) => {
     );
   }
 };
-
-
