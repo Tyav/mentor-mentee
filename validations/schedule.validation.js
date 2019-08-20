@@ -7,10 +7,10 @@ module.exports = {
       day: Joi.string().required(),
       time: Joi.object().keys({
         from: Joi.string().required(),
-        to:Joi.string().required()
+        to: Joi.string().required()
       }),
       slots: Joi.number().required(),
-      isClosed:Joi.boolean(),
+      isClosed: Joi.boolean()
     }
   },
   update: {
@@ -18,10 +18,10 @@ module.exports = {
       day: Joi.string(),
       time: Joi.object().keys({
         from: Joi.date(),
-        to:Joi.date()
+        to: Joi.date()
       }),
       slots: Joi.number(),
-      isClosed:Joi.boolean(),
+      isClosed: Joi.boolean()
     }
   }
 };

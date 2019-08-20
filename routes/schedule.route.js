@@ -19,6 +19,7 @@ router
   .get(scheduleCtrl.getUserSchedules);
   
 
+router.route('/requests').get(scheduleCtrl.getAllSchedulesRequests);
 router
   .route('/:scheduleId')
   /** PUT api/v1/schedule/id edit schedule */
