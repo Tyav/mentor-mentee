@@ -6,19 +6,20 @@ const APIError = require('../helpers/APIError');
 //holds the relationship between a mentors and a mentees id
 const ContactSchema = new mongoose.Schema({
   mentee: {
-    type: String,
+    type: mongoose.Types.ObjectId,
     required: true,
     ref: 'User'
   },
   mentor: {
-    type: String,
+    type: mongoose.Types.ObjectId,
     required: true,
     ref: 'User'
   },
   schedule: {
-    type: String,
-    required: true,
-    ref: 'Schedule'
+    type: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Schedule'
+    }]
   }
 });
 
@@ -44,6 +45,7 @@ ContactSchema.statics = {
           path: 'mentee',
           select: '_id name email phone avatar skills isMentor'
         })
+        .populate({ path: 'schedule'})
         .exec();
     } catch (error) {
       throw new APIError({
@@ -63,7 +65,8 @@ ContactSchema.statics = {
           path: 'mentee',
           select: '_id name email phone avatar skills isMentor'
         })
-        .populate({ path: 'schedule' });
+        .populate({ path: 'schedule'})
+        .exec();
     } catch (error) {
       throw new APIError({
         message: error.message,
