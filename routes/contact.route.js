@@ -11,5 +11,7 @@ router.param('id', contactCtrl.load);
 router.use(decode);
 
 router.route('/').get(contactCtrl.getUserContacts);
+router.route('/:id').delete(contactCtrl.deleteContact);
 
 module.exports = router;
+
