@@ -2,6 +2,7 @@ const httpStatus = require('http-status');
 const sendResponse = require('../helpers/response');
 const Schedule = require('../models/schedule.model');
 const Request = require('../models/request.model');
+const Contact = require('../models/contact.model')
 const { createSchedule } = require('../validations/schedule.validation');
 const { Joi } = require('celebrate');
 const APIError = require('../helpers/APIError');
@@ -54,7 +55,7 @@ exports.createSchedule = async (req, res, next) => {
 exports.getAllSchedules = async (req, res, next) => {
   //FOR MENTEE...
   try {
-    const schedules = [];
+    let schedules = [];
     const contact = await Contact.getBy({ mentor: req.user._id, mentee: req.sub });
     if (contact.length) {
       // check if mentor and mentee have a contact, mentee should not request if already a contact
