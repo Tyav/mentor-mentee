@@ -13,7 +13,7 @@ router.use(decode);
 
 router
   .route('/')
-  /** Create  */
+  /** Create  request*/
 
   .post(
     validate(requestValidate.create, { abortEarly: false }),
@@ -22,16 +22,15 @@ router
   /** Approve mentees request */
   // .put(validate(requestValidate.update,{abortEarly: false}),requestCtrl.approveRequests)
 
-  /** Get all */
+  /** route for mentee to get all request made*/
   .get(requestCtrl.getUserRequests);
 
+  // route to approve, decline and cancel request
 router.route('/:id').put(validate(requestValidate.update,{abortEarly:false}),requestCtrl.approveRequests);
   //.get(requestCtrl.getUserRequests)
    
-
+    // route for mentee to get requests
 router.route('/:userId').get(requestCtrl.getUserRequests)
-
-  .get(requestCtrl.getUserRequests)
   
 
 module.exports = router;
