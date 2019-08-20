@@ -39,3 +39,24 @@ exports.getUserContacts = async (req, res, next) => {
     );
   }
 };
+
+
+exports.deleteContact = async (req, res, next) => {
+  try {
+    const contact = req.contact;
+    const {mentee, mentor} = contact;
+    req.contact.mentee = `${mentee._id}-${Date.now()}`;
+    req.contact.mentor = `${mentor._id}-${Date.now()}`;
+    contact.save();
+
+    return res.json(sendResponse(httpStatus.OK, 'Success', contact));
+  } catch (error) {
+    next(
+      new APIError({
+        message: error.message,
+        status: httpStatus.BAD_REQUEST
+      })
+    );
+  }
+};
+

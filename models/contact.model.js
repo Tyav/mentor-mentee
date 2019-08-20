@@ -24,7 +24,7 @@ const ContactSchema = new mongoose.Schema({
 
 ContactSchema.methods = {
   transform(user) {
-    let contact = pick(['mentor', 'mentee', 'schedule'], this);
+    let contact = pick(['mentor', 'mentee', 'schedule', 'id'], this);
     contact.contact = contact[user];
     delete contact.mentor;
     delete contact.mentee;
