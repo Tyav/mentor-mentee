@@ -66,8 +66,8 @@ ScheduleSchema.methods = {
  */
 
 ScheduleSchema.statics = {
-  async getOpenSchedules() {
-    const schedule = await this.find({ isClosed: false })
+  async getOpenSchedules(id) {
+    const schedule = await this.find({ mentor: id, isClosed: false })
       .populate({ path: 'mentor', select: 'name avatar bio skills' })
       .exec();
     return schedule;
