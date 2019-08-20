@@ -30,6 +30,11 @@ router.put(
   validate(paramValidation.updateUser, { abortEarly: false }),
   userCtrl.updateProfile
 );
+//ROUTE for mentor to get his schedule....
+router.get(
+  '/me/schedules',
+  scheduleCtrl.getUserSchedules
+);
 
 /** PUT /api/v1/users/:userId/avatar */
 router.put(
@@ -43,6 +48,7 @@ router
   /** GET /api/v1/user/userId gets a user by id */
   .get(userCtrl.getUser);
 
+//Route for mentee to view schedules...
 router.get('/:userId/schedules', scheduleCtrl.getUserSchedules);
 
 router.route('/search').post(userCtrl.search);
