@@ -23,9 +23,9 @@ const RequestSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['Pending', 'Approved', 'Rejected','Cancelled'],
-    default: 'Pending',
-  },
+    enum: ['Pending', 'Approved', 'Rejected', 'Cancelled'],
+    default: 'Pending'
+  }
 });
 
 RequestSchema.methods = {};
@@ -47,7 +47,7 @@ RequestSchema.statics = {
   async getBy(option) {
     try {
       return await this.find(option)
-        .populate({ path: 'mentee', select: '_id name avatar skills isMentor' })
+        .populate({ path: 'mentee', select: '_id name avatar skills isMentor email' })
         .populate({
           path: 'schedule',
           select: '_id day time mentor',
