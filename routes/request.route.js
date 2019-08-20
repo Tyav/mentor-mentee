@@ -15,7 +15,7 @@ router.route('/').get(requestCtrl.getUserRequests);
 
 router
   .route('/')
-  /** Create  */
+  /** Create  request*/
 
   .post(
     validate(requestValidate.create, { abortEarly: false }),
@@ -24,7 +24,7 @@ router
   /** Approve mentees request */
   // .put(validate(requestValidate.update,{abortEarly: false}),requestCtrl.approveRequests)
 
-  /** Get all */
+  /** route for mentee to get all request made*/
   .get(requestCtrl.getUserRequests);
 
 router

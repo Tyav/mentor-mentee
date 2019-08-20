@@ -49,7 +49,7 @@ router
   .get(userCtrl.getUser);
 
 //Route for mentee to view schedules...
-router.get('/:userId/schedules', scheduleCtrl.getUserSchedules);
+router.get('/:userId/schedules', scheduleCtrl.getAllSchedules);
 
 router.route('/search').post(userCtrl.search);
 
