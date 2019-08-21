@@ -121,43 +121,33 @@ exports.approveRequests = async (req, res, next) => {
     }
     //if the req.query.status === approved... create or get a contact and save the request
     if (isApprovedQuery) {
-      message = 'Request has already been approved';
+      message = 'Mentor is already on your schedule.';
       let contacts = await Contact.getBy({
         mentee: request.mentee._id,
         mentor,
       });
       // get contact from array
       let [contact] = contacts;
-      if (!contact) { // check if a contact have been created, if not create one
+      if (!contact) {
         contact = new Contact({
           mentee: request.mentee._id,
           mentor,
-          schedule: [schedule._id],
         });
         message = 'Contact created';
-        requestCount++;
-      } else { // if contact have been created, check if contact has schedule
-        let schedules = [...contact.schedule]; 
-        let scheduleResult = schedules.filter(schedul => { 
-          // get ids of schedule into array
-          return schedul._id.toHexString() == schedule._id.toHexString();
-        }); 
-        // if id exist, don't push schedule id into array
-        if (!scheduleResult.length) { 
-          contact.schedule.push(schedule._id.toHexString());
-          message = 'Request Approved';
-          // increament request count
-          requestCount++;
-        }
+        contact.schedule = schedule._id.toHexString();
+      } else {
+        req.query.status = 'Rejected'
       }
       await contact.save();
+      // increament request count
+      requestCount++;
     }
     //save the contact and the updated request...
     request.status = req.query.status; //update the request object with a status of approved
     await request.save();
 
-    if (schedule.slots <= requestCount) {// check if schedule slot is less than approved requestCount
-      schedule.isClosed = true; // close the schedule
+    if (schedule.slots <= requestCount) {
+      schedule.isClosed = true;
       await schedule.save();
     }
     return res.json(sendResponse(httpStatus.OK, message, request));
