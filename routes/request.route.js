@@ -32,6 +32,6 @@ router
   .put(
     validate(requestValidate.update, { abortEarly: false }),
     requestCtrl.approveRequests,
-  );
+  ); 
 
 module.exports = router;
