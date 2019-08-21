@@ -10,6 +10,8 @@ router.param('id', requestCtrl.load);
 
 router.use(decode);
 
+//.get(requestCtrl.getUserRequests)
+router.route('/').get(requestCtrl.getUserRequests);
 
 router
   .route('/')
@@ -17,7 +19,7 @@ router
 
   .post(
     validate(requestValidate.create, { abortEarly: false }),
-    requestCtrl.create
+    requestCtrl.create,
   )
   /** Approve mentees request */
   // .put(validate(requestValidate.update,{abortEarly: false}),requestCtrl.approveRequests)
@@ -25,13 +27,11 @@ router
   /** Get all */
   .get(requestCtrl.getUserRequests);
 
-router.route('/:id').put(validate(requestValidate.update,{abortEarly:false}),requestCtrl.approveRequests);
-  //.get(requestCtrl.getUserRequests)
-   
-
-router.route('/:userId').get(requestCtrl.getUserRequests)
-
-  .get(requestCtrl.getUserRequests)
-  
+router
+  .route('/:id')
+  .put(
+    validate(requestValidate.update, { abortEarly: false }),
+    requestCtrl.approveRequests,
+  );
 
 module.exports = router;
