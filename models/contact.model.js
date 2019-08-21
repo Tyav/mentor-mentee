@@ -8,19 +8,17 @@ const ContactSchema = new mongoose.Schema({
   mentee: {
     type: mongoose.Types.ObjectId,
     required: true,
-    ref: 'User'
+    ref: 'User',
   },
   mentor: {
     type: mongoose.Types.ObjectId,
     required: true,
-    ref: 'User'
+    ref: 'User',
   },
   schedule: {
-    type: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Schedule'
-    }]
-  }
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Schedule',
+  },
 });
 
 ContactSchema.methods = {
@@ -30,7 +28,7 @@ ContactSchema.methods = {
     delete contact.mentor;
     delete contact.mentee;
     return contact;
-  }
+  },
 };
 
 ContactSchema.statics = {
@@ -39,18 +37,18 @@ ContactSchema.statics = {
       return await this.findById(id)
         .populate({
           path: 'mentor',
-          select: '_id name email phone avatar skills isMentor'
+          select: '_id name email phone avatar skills isMentor',
         })
         .populate({
           path: 'mentee',
-          select: '_id name email phone avatar skills isMentor'
+          select: '_id name email phone avatar skills isMentor',
         })
-        .populate({ path: 'schedule'})
+        .populate({ path: 'schedule' })
         .exec();
     } catch (error) {
       throw new APIError({
         message: error.message,
-        status: httpStatus.BAD_REQUEST
+        status: httpStatus.BAD_REQUEST,
       });
     }
   },
@@ -59,21 +57,21 @@ ContactSchema.statics = {
       return await this.find(option)
         .populate({
           path: 'mentor',
-          select: '_id name email phone avatar skills isMentor'
+          select: '_id name email phone avatar skills isMentor',
         })
         .populate({
           path: 'mentee',
-          select: '_id name email phone avatar skills isMentor'
+          select: '_id name email phone avatar skills isMentor',
         })
-        .populate({ path: 'schedule'})
+        .populate({ path: 'schedule' })
         .exec();
     } catch (error) {
       throw new APIError({
         message: error.message,
-        status: httpStatus.BAD_REQUEST
+        status: httpStatus.BAD_REQUEST,
       });
     }
-  }
+  },
 };
 
 module.exports = mongoose.model('Contact', ContactSchema);
