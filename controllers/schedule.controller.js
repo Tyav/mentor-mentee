@@ -85,9 +85,10 @@ exports.getUserSchedules = async (req, res, next) => {
 exports.update = async (req, res, next) => {
   try {
     const { schedule } = req;
-    if (req.sub !== schedule.mentor)
+    if (req.sub !== schedule.mentor._id.toString())
       throw new APIError({ message: 'Unauthorized', statusCode: httpStatus.UNAUTHORIZED });
-    const updated = schedule.update(req.body);
+    const updated = await schedule.update(req.body);
+    updated.save();
     return res.json(sendResponse(200, 'Success', updated));
   } catch (error) {
     next(error);

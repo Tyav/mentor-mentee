@@ -11,6 +11,7 @@ module.exports = async (req, res, next) => {
     const { sub } = decodeToken;
     const user = await User.get(sub);
     if (user) {
+      console.log(decodeToken)
       req.sub = sub;
       req.user = user;
       return next();
