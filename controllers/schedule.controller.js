@@ -55,14 +55,24 @@ exports.createSchedule = async (req, res, next) => {
 exports.getAllSchedules = async (req, res, next) => {
   //FOR MENTEE...
   try {
-    let schedules = [];
+    // get all schedule for mentor
+    let schedules = await Schedule.getOpenSchedules(req.user._id);
+    // extract all mentor's schedule id into format for mongoose $or query
+    // https://mongoosejs.com/docs/api/query.html#query_Query-or
+    let scheduleIds = schedules.map((schedule)=> {schedule._id});
+    // get all request made to any of the mentors schedule
+    let requestsMade = Request.getBy({
+      mentee: req.sub,
+      $or: [{status: 'Pending'}, {status: 'Approved'}],
+      $or: scheduleIds
+    })
+    // check if mentor and mentee have a contact, 
     const contact = await Contact.getBy({ mentor: req.user._id, mentee: req.sub });
-    if (contact.length) {
+    //mentee should not request if already a contact
+    if (contact.length || requestsMade.length) {
+      schedules = [];
       // check if mentor and mentee have a contact, mentee should not request if already a contact
-      return res.json(sendResponse(200, 'Success', schedules));
     }
-    // check if mentor and mentee have a contact, mentee should not request if already a contact
-    schedules = await Schedule.getOpenSchedules(req.user._id);
     return res.json(sendResponse(200, 'Success', schedules));
   } catch (error) {
     next(error);
