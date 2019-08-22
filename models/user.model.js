@@ -16,62 +16,62 @@ const UserSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: true
     },
     email: {
       type: String,
       required: true,
-      unique: true,
+      unique: true
     },
     password: {
       type: String,
       minlength: 6,
-      required: true,
+      required: true
     },
     phone: {
       type: String,
       minlength: 8,
-      maxlength: 13,
+      maxlength: 13
     },
     bio: {
       type: String,
       minlength: 2,
-      maxlength: 250,
+      maxlength: 250
     },
     location: {
-      type: String,
+      type: String
     },
     skills: {
       type: [String],
-      index: true,
+      index: true
     },
     connection: {
       type: Map,
-      of: String,
+      of: String
     },
     isMentor: {
       type: Boolean,
       required: true,
-      default: false,
+      default: false
     },
     isAdmin: {
       type: Boolean,
-      default: false,
+      default: false
     },
     isVerified: {
       type: Boolean,
-      default: false,
+      default: false
     },
     avatar: {
       type: String,
-      default: getAvatar(this.email),
+      default: getAvatar(this.email)
     },
     deleted: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 UserSchema.pre('save', function(next) {
@@ -122,7 +122,7 @@ UserSchema.methods = {
       'skills',
       'deleted',
       'createdAt',
-      'modifiedAt',
+      'modifiedAt'
     ];
     return pick(fields, this);
   },
@@ -130,9 +130,9 @@ UserSchema.methods = {
   token() {
     return EncodeToken(this.email, this._id, this.isAdmin, this.isMentor);
   },
-  async update(obj){
+  async update(obj) {
     for (key in obj) {
-      this[key] = obj[key]
+      this[key] = obj[key];
     }
     await this.save();
     return this;
@@ -148,14 +148,14 @@ UserSchema.statics = {
     const { email, password } = options;
     if (!email) {
       throw new APIError({
-        message: 'An email is required to generate a token',
+        message: 'An email is required to generate a token'
       });
     }
 
     const user = await this.getByEmail(email);
     const err = {
       status: httpStatus.UNAUTHORIZED,
-      isPublic: true,
+      isPublic: true
     };
     if (password) {
       if (user && (await user.passwordMatches(password))) {
@@ -174,7 +174,7 @@ UserSchema.statics = {
     let user = await this.findOne({
       email,
       deleted: false,
-      isVerified: true,
+      isVerified: true
     }).exec();
     return user;
   },
@@ -201,20 +201,20 @@ UserSchema.statics = {
         let query = [
           { name: { $regex: pattern } },
           { skills: { $regex: pattern } },
-          { location: { $regex: pattern } },
+          { location: { $regex: pattern } }
         ];
         search = search.concat(query);
       }
       if (search.length) {
         users = await this.find({
-          $or: search,
+          $or: search
         });
       }
       return users;
     } catch (error) {
       throw new APIError(error);
     }
-  },
+  }
 };
 
 /**

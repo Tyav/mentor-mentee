@@ -16,9 +16,7 @@ module.exports = async (req, res, next) => {
       return next();
     }
 
-    return res.json(
-      sendResponse(httpStatus.UNAUTHORIZED, 'Unapproved User', null)
-    );
+    return res.json(sendResponse(httpStatus.UNAUTHORIZED, 'Unapproved User', null));
   } catch (error) {
     next(error);
   }

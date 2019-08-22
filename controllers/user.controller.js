@@ -168,3 +168,14 @@ exports.search = async (req, res, next) => {
     next(error);
   }
 };
+exports.getCurrentUser = async (req, res, next) => {
+  let user = req.user;
+  try {
+    if (!user) {
+      return res.json(sendResponse(httpStatus.NOT_FOUND, 'No such user exists!', null, null));
+    }
+    return res.json(sendResponse(200, 'Successfully', user.transform(), null, null));
+  } catch (error) {
+    next(error);
+  }
+};
