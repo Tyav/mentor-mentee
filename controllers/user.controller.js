@@ -67,20 +67,20 @@ exports.signup = async (req, res, next) => {
 exports.getUser = async (req, res) =>
   res.json(sendResponse(200, 'testing', await req.user.transform(), null));
 
-exports.updateAvatar = async (req, res) => {
+exports.updateAvatar = async (req, res, next) => {
   try {
+    console.log(req.file)
     let user = req.user;
-    let avatar = req.file ? req.file.location : user.avatar; //assign imageUrl to avatar
+    let avatar = req.file ? req.file.url : user.avatar; //assign imageUrl to avatar
     user.avatar = avatar;
     await user.save();
     // Delete previous avatar file to seve space
     if (req.oldAvatar) {
-      var params = {
-        Bucket: req.s3.Bucket,
-        Key: req.oldAvatar
-      };
+      const oldUrl = req.oldAvatar.split('.')[0];
+      req.cloudinary.v2.api.delete_resources(oldUrl, function(error,result) {
+        // Perform logic here with error or result
+      });    
 
-      req.s3.deleteObject(params, function(err, data) {});
     }
     res.json(sendResponse(httpStatus.OK, 'Upload Successful', user.transform(), null, null));
   } catch (error) {

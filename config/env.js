@@ -24,18 +24,15 @@ const envVarsSchema = Joi.object({
     .required()
     .description('Mongo DB host url'),
   MONGO_PORT: Joi.number().default(27017),
-  DO_SECRET_ACCESS_KEY: Joi.string()
+  C_SECRET_ACCESS_KEY: Joi.string()
     .required()
-    .description('Digital Ocean secret access key'),
-  DO_ACCESS_KEY_ID: Joi.string()
+    .description('Cloudinary secret access key'),
+  C_ACCESS_KEY_ID: Joi.string()
     .required()
-    .description('Digital Ocean access key'),
-  DO_BUCKET_NAME: Joi.string()
+    .description('Cloudinary access key'),
+  C_CLOUD_NAME: Joi.string()
     .required()
-    .description('Digital Ocean bucket'),
-  DO_ENDPOINT: Joi.string()
-  .required()
-  .description('Digital Ocean space endpoint'),
+    .description('Cloudinary cloud name'),
   CLIENT_SIDE_URL: Joi.string().required().description('Mentordev client-side URL'),
   MENTOR_DEV_EMAIL: Joi.string().required().description('Official email for mentordev')
 })
@@ -54,14 +51,13 @@ const config = {
   jwtSecret: envVars.JWT_SECRET,
   jwtExpirationInterval: envVars.JWT_EXPIRATION_INTERVAL,
   mongo: {
-    host: process.env.NODE_ENV === 'development' ? envVars.MONGO_HOST : envVars.MONGO_HOST_TEST,
+    host: process.env.NODE_ENV === 'test' ? envVars.MONGO_HOST_TEST : envVars.MONGO_HOST,
     port: envVars.MONGO_PORT
   },
-  digiOcean : {
-    secretAccessKey: envVars.DO_SECRET_ACCESS_KEY,
-    accessKeyId: envVars.DO_ACCESS_KEY_ID,
-    bucket: envVars.DO_BUCKET_NAME,
-    endpoint: envVars.DO_ENDPOINT
+  cloudinary : {
+    secretAccessKey: envVars.C_SECRET_ACCESS_KEY,
+    accessKeyId: envVars.C_ACCESS_KEY_ID,
+    cloud: envVars.C_CLOUD_NAME,
   },
   clientSideUrl: envVars.CLIENT_SIDE_URL,
   mentordev_email: envVars.MENTOR_DEV_EMAIL
