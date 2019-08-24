@@ -2,6 +2,7 @@ const httpStatus = require('http-status');
 const sendResponse = require('../helpers/response');
 const Schedule = require('../models/schedule.model');
 const Request = require('../models/request.model');
+const Contact = require('../models/contact.model')
 const { createSchedule } = require('../validations/schedule.validation');
 const { Joi } = require('celebrate');
 const APIError = require('../helpers/APIError');
@@ -54,14 +55,24 @@ exports.createSchedule = async (req, res, next) => {
 exports.getAllSchedules = async (req, res, next) => {
   //FOR MENTEE...
   try {
-    const schedules = [];
+    // get all schedule for mentor
+    let schedules = await Schedule.getOpenSchedules(req.user._id);
+    // extract all mentor's schedule id into format for mongoose $or query
+    // https://mongoosejs.com/docs/api/query.html#query_Query-or
+    let scheduleIds = schedules.map((schedule)=> {schedule._id});
+    // get all request made to any of the mentors schedule
+    let requestsMade = Request.getBy({
+      mentee: req.sub,
+      $or: [{status: 'Pending'}, {status: 'Approved'}],
+      $or: scheduleIds
+    })
+    // check if mentor and mentee have a contact, 
     const contact = await Contact.getBy({ mentor: req.user._id, mentee: req.sub });
-    if (contact.length) {
+    //mentee should not request if already a contact
+    if (contact.length || requestsMade.length) {
+      schedules = [];
       // check if mentor and mentee have a contact, mentee should not request if already a contact
-      return res.json(sendResponse(200, 'Success', schedules));
     }
-    // check if mentor and mentee have a contact, mentee should not request if already a contact
-    schedules = await Schedule.getOpenSchedules(req.user._id);
     return res.json(sendResponse(200, 'Success', schedules));
   } catch (error) {
     next(error);
@@ -84,9 +95,10 @@ exports.getUserSchedules = async (req, res, next) => {
 exports.update = async (req, res, next) => {
   try {
     const { schedule } = req;
-    if (req.sub !== schedule.mentor)
+    if (req.sub !== schedule.mentor._id.toString())
       throw new APIError({ message: 'Unauthorized', statusCode: httpStatus.UNAUTHORIZED });
-    const updated = schedule.update(req.body);
+    const updated = await schedule.update(req.body);
+    updated.save();
     return res.json(sendResponse(200, 'Success', updated));
   } catch (error) {
     next(error);

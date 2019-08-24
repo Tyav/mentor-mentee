@@ -8,8 +8,6 @@ const decode = require('../middlewares/decode');
 //const { profileImage } = require('../helpers/upload');
 const router = express.Router(); // eslint-disable-line new-cap
 
-router.use(decode);
-
 /** Load user when API with userId route parameter is hit */
 router.param('userId', userCtrl.load);
 
@@ -19,29 +17,20 @@ router
   /** GET /api/v1/users - get all users */
   .get(userCtrl.getUsers)
   /** POST /api/v1/user - creae a user */
-  .post(
-    validate(paramValidation.createUser, { abortEarly: false }),
-    userCtrl.signup
-  );
+  .post(validate(paramValidation.createUser, { abortEarly: false }), userCtrl.signup);
 
-/** PUT /api/v1/user/userId update a user information */
-router.put(
-  '/me',
-  validate(paramValidation.updateUser, { abortEarly: false }),
-  userCtrl.updateProfile
-);
+router.use(decode);
+router
+  .route('/me')
+  .get(userCtrl.getCurrentUser)
+  /** PUT /api/v1/user/userId update a user information */
+  .put(validate(paramValidation.updateUser, { abortEarly: false }), userCtrl.updateProfile);
+
 //ROUTE for mentor to get his schedule....
-router.get(
-  '/me/schedules',
-  scheduleCtrl.getUserSchedules
-);
+router.get('/me/schedules', scheduleCtrl.getUserSchedules);
 
 /** PUT /api/v1/users/:userId/avatar */
-router.put(
-  '/:userId/images',
-  upload('avatar').single('avatar'),
-  userCtrl.updateAvatar
-);
+router.put('/:userId/images', upload('avatar').single('avatar'), userCtrl.updateAvatar);
 
 router
   .route('/:userId')
@@ -49,7 +38,7 @@ router
   .get(userCtrl.getUser);
 
 //Route for mentee to view schedules...
-router.get('/:userId/schedules', scheduleCtrl.getUserSchedules);
+router.get('/:userId/schedules', scheduleCtrl.getAllSchedules);
 
 router.route('/search').post(userCtrl.search);
 

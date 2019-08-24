@@ -10,8 +10,14 @@ router.param('id', contactCtrl.load);
 
 router.use(decode);
 
-router.route('/').get(contactCtrl.getUserContacts);
-router.route('/:id').delete(contactCtrl.deleteContact);
+
+router.route('/')
+  // route to get contact for users
+  .get(contactCtrl.getUserContacts);
+
+router.route('/:id')
+  // route to delete contact
+  .delete(contactCtrl.deleteContact);
 
 module.exports = router;
 
