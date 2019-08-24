@@ -62,7 +62,9 @@ exports.getScheduleResquests = async (req, res, next) => {
     let requests = [];
     // check if schedule is closed
     if (req.schedule.isClosed)
-      return res.json(sendResponse(httpStatus.OK, 'The schedul is closed', requests));
+      return res.json(
+        sendResponse(httpStatus.OK, 'The schedul is closed', requests)
+      );
     requests = await Request.getBy({ schedule });
     return res.json(sendResponse(httpStatus.OK, 'Success', requests));
   } catch (error) {
@@ -97,19 +99,17 @@ exports.getUserRequests = async (req, res, next) => {
   }
 };
 
-
 exports.approveRequests = async (req, res, next) => {
-  console.log(req.params)
   try {
     //retrieves the request with the given id from the database....
     let request = req.request;
-    let isApprovedQuery = req.query.status === 'Approved'
-    let message = 'Success'
+    let isApprovedQuery = req.query.status === 'Approved';
+    let message = 'Success';
     const { mentor, id = _id } = request.schedule;
-  
+
     // get schedule to check if schedule is closed
     const schedule = await Schedule.get(id);
-  
+
     // get count of approved requests
     let requestCount = await Request.countDocuments({
       schedule: id,
@@ -117,7 +117,10 @@ exports.approveRequests = async (req, res, next) => {
     });
     // check if approved request has reached schedule slot size
 
-    if ((schedule.slots <= requestCount || schedule.isClosed) && isApprovedQuery) {
+    if (
+      (schedule.slots <= requestCount || schedule.isClosed) &&
+      isApprovedQuery
+    ) {
       schedule.isClosed = true;
       await schedule.save();
       return res.json(
@@ -136,18 +139,19 @@ exports.approveRequests = async (req, res, next) => {
       });
       await contact.save();
       // increament request count
-      message = 'Contact created'
+      message = 'Contact created';
       requestCount++;
     }
+
     //save the contact and the updated request...
     request.status = req.query.status; //update the request object with a status of approved
     await request.save();
-   
 
     if (schedule.slots <= requestCount) {
       schedule.isClosed = true;
       await schedule.save();
     }
+    //console.log(request,'after approval')
     return res.json(sendResponse(httpStatus.OK, message, request));
   } catch (error) {
     next(error);
