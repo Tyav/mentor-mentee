@@ -8,12 +8,10 @@ const adminCtrl = require('../controllers/admin.controller');
 const userCtrl = require('../controllers/user.controller');
 const router = express.Router(); // eslint-disable-line new-cap
 
-
-
-router.use(decode);
-
 /** Load user when API with userId route parameter is hit */
 router.param('userId', userCtrl.load);
+
+router.use(decode);
 
 /** Ensures the user is an admin */
 router.use(adminAuth);
@@ -29,4 +27,3 @@ router
   );
 
 module.exports = router;
-
