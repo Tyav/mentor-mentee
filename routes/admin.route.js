@@ -8,12 +8,7 @@ const adminCtrl = require('../controllers/admin.controller');
 const userCtrl = require('../controllers/user.controller');
 const router = express.Router(); // eslint-disable-line new-cap
 
-/** Admin Login /api/v1/login */
-router.post(
-  '/login',
-  validate(authValidation.login, { abortEarly: false }),
-  adminCtrl.login
-);
+
 
 router.use(decode);
 
