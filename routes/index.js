@@ -6,6 +6,7 @@ const sendResponse = require('../helpers/response');
 const scheduleRoutes = require('./schedule.route');
 const requestRoutes = require('./request.route');
 const contactRoutes = require('./contact.route');
+const adminRoutes = require('./admin.route');
 
 const router = express.Router(); // eslint-disable-line new-cap
 
@@ -16,6 +17,9 @@ router.get('/health-check', (req, res) => res.send('OK'));
 
 // mount user routes at /users
 router.use('/user', userRoutes);
+
+//mount admin routes at /admin
+router.use('/admin', adminRoutes)
 
 // mount auth routes at /auth
 router.use('/auth', authRoutes);
