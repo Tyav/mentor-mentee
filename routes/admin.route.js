@@ -25,14 +25,8 @@ router
   /** POST /api/v1/admin - creae a user */
   .post(
     validate(paramValidation.createUser, { abortEarly: false }),
-    adminCtrl.signup
+    adminCtrl.createAdmin
   );
 
 module.exports = router;
 
-// body = {
-//     name: 'new Admin',
-//     isSuper: true
-// }
-
-// isSuper = user.isSuper ? isSuper : false
