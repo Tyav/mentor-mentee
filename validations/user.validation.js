@@ -15,6 +15,8 @@ module.exports = {
         .min(6)
         .max(20)
         .required(),
+        isAdmin: Joi.boolean(),
+        isSuper: Joi.boolean(),
       isMentor: Joi.boolean()
     }
   },
