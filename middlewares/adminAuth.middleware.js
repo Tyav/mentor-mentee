@@ -1,5 +1,6 @@
 let APIError = require('../helpers/APIError');
 let httpStatus = require('http-status');
+
 module.exports = (req, res, next) => {
   try {
     if (!req.user.isAdmin) {
@@ -10,6 +11,6 @@ module.exports = (req, res, next) => {
     }
     next();
   } catch (error) {
-      next(error)
+    next(error);
   }
 };
