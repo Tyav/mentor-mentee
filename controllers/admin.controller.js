@@ -11,21 +11,26 @@ const message = require('../helpers/mailMessage');
 const sendMail = require('../helpers/SendMail');
 const escapeString = require('../helpers/escapeString');
 
-exports.signup = async (req, res, next) => {
+exports.createAdmin = async (req, res, next) => {
   try {
     const { email } = req.body;
+    let isSuper = req.user.isSuper? req.body.isSuper : false;
     //check if user exists
-    let adminExist = await User.getByEmail(email);
-    if (adminExist) {
+    let userExist = await User.getByEmail(email);
+    
+    if (userExist) {
+      //make user an admin if the user already exist
+      userExist.isAdmin = true;
+      userExist.isSuper = isSuper;
+      await userExist.save();
       return res.json(
-        sendResponse(httpStatus.BAD_REQUEST, 'Bad Request', null, {
-          msg: 'Email already in use!'
-        })
+        sendResponse(httpStatus.OK, 'Admin created', userExist)
       );
     }
 
     //create User instance
     const admin = new User(req.body);
+    admin.isSuper = isSuper;
     admin.isVerified = true;
 
     await admin.save();
@@ -33,8 +38,8 @@ exports.signup = async (req, res, next) => {
 
     sendMail(
       admin.email,
-      'Mentor Dev, Verification',
-      message.verifyRegistration(token)
+      'Your admin account has sucessfully been created',
+      message.createAdmin(admin,req.body.password)
     );
 
     res.json(sendResponse(httpStatus.OK, admin.email));
@@ -46,7 +51,6 @@ exports.signup = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   try {
     const { user, accessToken } = await User.loginAndGenerateToken(req.body);
-    console.log(user, ' iam the user');
     return res.json(
       sendResponse(
         200,
