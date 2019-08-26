@@ -14,7 +14,7 @@ const sendMail = (email, subject, message) => {
     to: email,
     from: config.mentordev_email,
     subject: subject,
-    text: message
+    html: message
   };
   smtpTransport.sendMail(mailOptions, err => {
     if (err) {
