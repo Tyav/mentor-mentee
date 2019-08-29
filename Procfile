@@ -1,1 +1,1 @@
-worker: yarn start:dev
+web: yarn start
