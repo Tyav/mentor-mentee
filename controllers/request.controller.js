@@ -114,7 +114,10 @@ exports.approveRequests = async (req, res, next) => {
     });
     // check if approved request has reached schedule slot size
 
-    if ((schedule.slots <= requestCount || schedule.isClosed) && isApprovedQuery) {
+    if (
+      (schedule.slots <= requestCount || schedule.isClosed) &&
+      isApprovedQuery
+    ) {
       schedule.isClosed = true;
       await schedule.save();
       return res.json(sendResponse(httpStatus.NOT_MODIFIED, 'Maximum approval reached or request is closed'));
@@ -142,6 +145,7 @@ exports.approveRequests = async (req, res, next) => {
       // increament request count
       requestCount++;
     }
+
     //save the contact and the updated request...
     request.status = req.query.status; //update the request object with a status of approved
     await request.save();
@@ -150,6 +154,7 @@ exports.approveRequests = async (req, res, next) => {
       schedule.isClosed = true;
       await schedule.save();
     }
+    //console.log(request,'after approval')
     return res.json(sendResponse(httpStatus.OK, message, request));
   } catch (error) {
     next(error);

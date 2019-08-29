@@ -69,7 +69,7 @@ exports.getUser = async (req, res) =>
 
 exports.updateAvatar = async (req, res, next) => {
   try {
-    console.log(req.file)
+   
     let user = req.user;
     let avatar = req.file ? req.file.url : user.avatar; //assign imageUrl to avatar
     user.avatar = avatar;
@@ -148,13 +148,17 @@ exports.bookSlot = async (req, res) => {
   }
 };
 
+
 exports.login = async (req, res, next) => {
+
   try {
     const { user, accessToken } = await User.loginAndGenerateToken(req.body);
+    console.log(user,' iam the user')
     return res.json(
       sendResponse(200, 'Successfully logged in', user.transform(), null, accessToken)
     );
   } catch (error) {
+    console.log(error)
     next(error);
   }
 };

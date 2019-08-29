@@ -42,8 +42,11 @@ exports.forgotPassword = async (req, res) => {
 
 exports.resetPassword = async (req, res, next) => {
   try {
+    //verify password checks if there exist a request for that password
     const forgotPassword = await ForgotPassword.verify(req);
+    //delete all instances in the db...
     await ForgotPassword.deleteMany({ email: forgotPassword.email });
+    //if forgotPassword.exp < the current date...then the link has expired...
     if (forgotPassword.exp < Date.now())
       return res.json(
         sendResponse(httpStatus.NOT_FOUND, 'Password reset link is invalid or has expired')
