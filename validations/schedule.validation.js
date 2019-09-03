@@ -10,18 +10,20 @@ module.exports = {
         to: Joi.string().required()
       }),
       slots: Joi.number().required(),
-      isClosed: Joi.boolean()
+      isClosed: Joi.boolean(),
+      poolSize: Joi.number()
     }
   },
   update: {
     body: {
       day: Joi.string(),
       time: Joi.object().keys({
-        from: Joi.date(),
-        to: Joi.date()
+        from: Joi.string().required(),
+        to: Joi.string().required()
       }),
       slots: Joi.number(),
-      isClosed: Joi.boolean()
+      isClosed: Joi.boolean(),
+      poolSize: Joi.number()
     }
   }
 };

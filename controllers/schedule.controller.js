@@ -31,17 +31,15 @@ exports.createSchedule = async (req, res, next) => {
         status: httpStatus.UNAUTHORIZED
       });
     }
-    const { day, time, slots, isClosed } = req.body;
+    const { day, time, slots, isClosed, poolSize } = req.body;
 
     const schedule = new Schedule({
       day,
-      time: {
-        from: time.from,
-        to: time.to
-      },
+      time,
       slots,
       isClosed,
-      mentor: req.sub
+      mentor: req.sub,
+      poolSize
     });
 
     await schedule.save();
@@ -95,8 +93,10 @@ exports.getUserSchedules = async (req, res, next) => {
 exports.update = async (req, res, next) => {
   try {
     const { schedule } = req;
-    if (req.sub !== schedule.mentor._id.toString())
+    console.log('sdfs here at lass')
+    if (req.sub !== schedule.mentor._id.toString()){
       throw new APIError({ message: 'Unauthorized', statusCode: httpStatus.UNAUTHORIZED });
+    }
     const updated = await schedule.update(req.body);
     updated.save();
     return res.json(sendResponse(200, 'Success', updated));
