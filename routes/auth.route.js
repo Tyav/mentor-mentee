@@ -4,6 +4,7 @@ const authValidation = require('../validations/auth.validation');
 const userCtrl = require('../controllers/user.controller');
 const adminCtrl = require('../controllers/admin.controller')
 const authCtrl = require('../controllers/auth.controller');
+const oauthCtrl = require('../controllers/github')
 const decode = require('../middlewares/decode');
 const router = express.Router(); // eslint-disable-line new-cap
 
@@ -34,6 +35,8 @@ router.post(
   validate(authValidation.verficationLink, { abortEarly: false }),
   authCtrl.validationLink
 );
+
+router.get('/github/callback',oauthCtrl.githubCallback)
 //'i need to pus something in here...that comes from the auth ctrl'
 router.use(decode);
 router.route('/verify').put(authCtrl.verify);
