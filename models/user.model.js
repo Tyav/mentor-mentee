@@ -210,6 +210,7 @@ UserSchema.statics = {
       }
       if (search.length) {
         users = await this.find({
+          isMentor: true,
           $or: search
         });
       }
