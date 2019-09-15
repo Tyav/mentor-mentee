@@ -56,13 +56,13 @@ exports.create = async (req, res, next) => {
   }
 };
 
-exports.getScheduleResquests = async (req, res, next) => {
+exports.getScheduleRequests = async (req, res, next) => {
   try {
     const schedule = req.schedule._id;
     let requests = [];
     // check if schedule is closed
-    if (req.schedule.isClosed) return res.json(sendResponse(httpStatus.OK, 'The schedul is closed', requests));
-    requests = await Request.getBy({ schedule });
+    if (req.schedule.isClosed) return res.json(sendResponse(httpStatus.OK, 'The schedule is closed', requests));
+    requests = await Request.getBy({ schedule, status: 'Pending' });
     return res.json(sendResponse(httpStatus.OK, 'Success', requests));
   } catch (error) {
     next(
