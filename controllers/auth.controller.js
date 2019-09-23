@@ -83,7 +83,10 @@ exports.verify = async (req, res, next) => {
   const user = req.user;
   user.isVerified = true;
   await user.save();
+
   const token = user.token();
+  if (user.isMentor) res.cookie('validateType', true)
+
   return res.json(sendResponse(httpStatus.OK, 'Verified', user.transform(), null, token));
 };
 

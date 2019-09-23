@@ -36,6 +36,12 @@ module.exports = {
       location: Joi.string(),
       skills: Joi.array().items(Joi.string())
     }
+  },
+  signupUpdate: {
+    body: {
+      isMentor: Joi.boolean().required(),
+      skills: Joi.array().items(Joi.string()).required()
+    }
   }
   //added login validation
 };

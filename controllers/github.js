@@ -30,10 +30,10 @@ exports.githubCallback = async (req, res, next) => {
     if (userExist){
       token = userExist.token();
       res.cookie('mentordev_token',token)
-      if (userExist.isMentor)res.cookie('auth', true)
+      if (userExist.isMentor)res.cookie('validateType', userExist.isMentor)
       return res.redirect(`http://localhost:3000/dashboard`)
     }
-
+    
     // extract git data and save as the user
     const {email, name, login, avatar_url, bio, location} = gitUser
     let user = new User({
@@ -45,11 +45,10 @@ exports.githubCallback = async (req, res, next) => {
       avatar: avatar_url,
     })
     await user.save();
-    // set user.githubLogin_id: 
     // get token and send redirect
     token = user.token();
     res.cookie('mentordev_token',token)
-    res.cookie('social_signup', true,{expires: new Date(Date.now() + 60000)})
+    res.cookie('s_s', true)
     return res.redirect(`http://localhost:3000/verify?token=${token}`)
 
   } catch (error) {

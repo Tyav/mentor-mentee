@@ -93,7 +93,6 @@ exports.getUserSchedules = async (req, res, next) => {
 exports.update = async (req, res, next) => {
   try {
     const { schedule } = req;
-    console.log('sdfs here at lass')
     if (req.sub !== schedule.mentor._id.toString()){
       throw new APIError({ message: 'Unauthorized', statusCode: httpStatus.UNAUTHORIZED });
     }
@@ -118,7 +117,7 @@ exports.getAllSchedulesRequests = async (req, res, next) => {
       throw new APIError({ message: 'Unauthorized', status: httpStatus.UNAUTHORIZED });
     }
 
-    const requests = await Request.getBy({ $or: formatQuery });
+    const requests = await Request.getBy({ $or: formatQuery, status: 'Pending' });
     return res.json(sendResponse(200, 'Success', requests));
   } catch (error) {
     next(error);
