@@ -97,6 +97,15 @@ exports.updateProfile = async (req, res) => {
     res.json(sendResponse(httpStatus.INTERNAL_SERVER_ERROR, 'Something went wrong'));
   }
 };
+//updates user's profile...
+exports.signupUpdate = async (req, res) => {
+  try {
+    const user = await req.user.update(req.body);
+    res.json(sendResponse(httpStatus.OK, 'succesfully', user.transform()));
+  } catch (error) {
+    res.json(sendResponse(httpStatus.INTERNAL_SERVER_ERROR, 'Something went wrong'));
+  }
+};
 
 exports.createScheduleMock = async (req, res) => {
   try {
@@ -153,31 +162,32 @@ exports.login = async (req, res, next) => {
 
   try {
     const { user, accessToken } = await User.loginAndGenerateToken(req.body);
-    console.log(user,' iam the user')
+    
+    res.cookie('mentordev_token', accessToken)
     return res.json(
       sendResponse(200, 'Successfully logged in', user.transform(), null, accessToken)
-    );
-  } catch (error) {
-    console.log(error)
-    next(error);
-  }
-};
-
-exports.search = async (req, res, next) => {
-  try {
-    const results = await User.searchUsers(req.query.search);
-
-    return res.json(sendResponse(httpStatus.OK, 'Users found', results));
-  } catch (error) {
-    next(error);
-  }
-};
-exports.getCurrentUser = async (req, res, next) => {
-  let user = req.user;
-  try {
-    if (!user) {
-      return res.json(sendResponse(httpStatus.NOT_FOUND, 'No such user exists!', null, null));
+      );
+    } catch (error) {
+      next(error);
     }
+  };
+  
+  exports.search = async (req, res, next) => {
+    try {
+      const results = await User.searchUsers(req.query.search);
+      
+      return res.json(sendResponse(httpStatus.OK, 'Users found', results));
+    } catch (error) {
+      next(error);
+    }
+  };
+  exports.getCurrentUser = async (req, res, next) => {
+    let user = req.user;
+    try {
+      if (!user) {
+        return res.json(sendResponse(httpStatus.NOT_FOUND, 'No such user exists!', null, null));
+      }      
+      if (user.isMentor) res.cookie('validateType', true)
     return res.json(sendResponse(200, 'Successfully', user.transform(), null, null));
   } catch (error) {
     next(error);

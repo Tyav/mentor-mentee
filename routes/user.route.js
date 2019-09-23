@@ -21,6 +21,10 @@ router
 
 router.use(decode);
 router
+  .route('/signupUpdate')
+  /** PUT /api/v1/user/signupUpdate update only a user type (isMentor: true || false) and his skills */
+  .put(validate(paramValidation.signupUpdate, { abortEarly: false }), userCtrl.signupUpdate);
+router
   .route('/me')
   .get(userCtrl.getCurrentUser)
   /** PUT /api/v1/user/userId update a user information */

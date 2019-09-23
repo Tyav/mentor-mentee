@@ -32,6 +32,6 @@ router
 router
   .route('/:scheduleId/requests')
   /** GET api/v1/schedule/id/requests get all requests for a schedule */
-  .get(requestCtrl.getScheduleResquests);
+  .get(requestCtrl.getScheduleRequests);
 
 module.exports = router;

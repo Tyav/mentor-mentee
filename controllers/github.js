@@ -33,7 +33,7 @@ exports.githubCallback = async (req, res, next) => {
       if (userExist.isMentor)res.cookie('validateType', userExist.isMentor)
       return res.redirect(`http://localhost:3000/dashboard`)
     }
-
+    
     // extract git data and save as the user
     const {email, name, login, avatar_url, bio, location} = gitUser
     let user = new User({
