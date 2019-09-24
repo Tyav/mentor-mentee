@@ -6,7 +6,7 @@ const sendResponse = require('../helpers/response');
 const ForgotPassword = require('../models/passwordReset.model');
 const sendMail = require('../helpers/SendMail');
 const messages = require('../helpers/mailMessage');
-const TokenDecoder = require('../helpers/tokenDecoder');
+const tokenDecoder = require('../helpers/tokenDecoder');
 const { forgotPassword } = require('../helpers/mailMessage');
 
 exports.forgotPassword = async (req, res) => {
