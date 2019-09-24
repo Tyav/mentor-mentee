@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
 const httpStatus = require('http-status');
 const { jwtSecret } = require('../config/env');
-const APIError = require('../helpers/APIError');
-const sendResponse = require('../helpers/response');
+const APIError = require('./APIError');
+const sendResponse = require('./response');
 module.exports = req => {
   const authorization = req.headers['authorization'];
   if (!authorization) {
