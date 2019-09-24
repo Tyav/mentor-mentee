@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const httpStatus = require('http-status');
 const APIError = require('../helpers/APIError');
-const encodeToken = require('../helpers/tokenEncoder');
-const tokenDecoder = require('../helpers/tokenDecoder');
+const encodeToken = require('../helpers/tokensEncoder');
+const tokenDecoder = require('../helpers/tokensDecoder');
 
 const ForgotPasswordSchema = new mongoose.Schema(
   {

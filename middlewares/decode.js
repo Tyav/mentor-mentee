@@ -3,7 +3,7 @@ const httpStatus = require('http-status');
 const User = require('../models/user.model');
 const { jwtSecret } = require('../config/env');
 const sendResponse = require('../helpers/response');
-const tokendecoder = require('../helpers/tokenDecoder');
+const tokendecoder = require('../helpers/tokensDecoder');
 
 module.exports = async (req, res, next) => {
   try {
