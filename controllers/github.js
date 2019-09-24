@@ -19,7 +19,7 @@ exports.githubCallback = async (req, res, next) => {
     const gitUser = await github.getUser(accessToken) 
     
     if (!gitUser){
-      return res.redirect('http://localhost:3000/register')
+      return res.redirect('https://mentordevs.herokuapp.com/register')
     }
     if (!gitUser.email){
       gitUser.email = await github.getUserEmail(accessToken)
@@ -29,9 +29,9 @@ exports.githubCallback = async (req, res, next) => {
     const userExist = await User.getByEmail(gitUser.email)
     if (userExist){
       token = userExist.token();
-      res.cookie('mentordev_token',token)
-      if (userExist.isMentor)res.cookie('validateType', userExist.isMentor)
-      return res.redirect(`http://localhost:3000/dashboard`)
+      res.cookie('mentordev_token',token, {domain : `herokuapp.com`})
+      if (userExist.isMentor)res.cookie('validateType', userExist.isMentor, {domain : `herokuapp.com`})
+      return res.redirect(`https://mentordevs.herokuapp.com/dashboard`)
     }
     
     // extract git data and save as the user
@@ -47,9 +47,9 @@ exports.githubCallback = async (req, res, next) => {
     await user.save();
     // get token and send redirect
     token = user.token();
-    res.cookie('mentordev_token',token)
-    res.cookie('s_s', true)
-    return res.redirect(`http://localhost:3000/verify?token=${token}`)
+    res.cookie('mentordev_token',token, {domain : `herokuapp.com`})
+    res.cookie('s_s', true, {domain : `herokuapp.com`})
+    return res.redirect(`https://mentordevs.herokuapp.com/verify?token=${token}`)
 
   } catch (error) {
     res.send(error);
