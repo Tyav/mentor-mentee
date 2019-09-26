@@ -44,6 +44,10 @@ const ScheduleSchema = new mongoose.Schema(
     mentor: {
       type: mongoose.Types.ObjectId,
       ref: 'User'
+    },
+    isInstant: {
+      type: Boolean,
+      default: false,
     }
   },
   { timestamps: true }
