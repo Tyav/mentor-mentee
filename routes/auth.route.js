@@ -37,6 +37,7 @@ router.post(
 );
 
 router.get('/github/callback',oauthCtrl.githubCallback)
+router.get('/github/mentorcallback',oauthCtrl.mentorCallbackSupport,oauthCtrl.githubCallback)
 //'i need to pus something in here...that comes from the auth ctrl'
 router.use(decode);
 router.route('/verify').put(authCtrl.verify);

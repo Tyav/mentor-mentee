@@ -1,14 +1,10 @@
 const axios = require('axios');
 
-exports.accessToken = async (code)=>{
+exports.accessToken = async (datas)=>{
   const { data } = await axios({ //sends a JSON post body
     url: 'https://github.com/login/oauth/access_token',
     method: 'post',
-    data:{
-      client_id: '59a761c57c054d36a80d',
-      client_secret: 'eccc2043a907c091c333652a233575e2a9ca736c',
-      code: code
-    }, 
+    data: datas, 
     headers:  {'Accept': 'application/json'}
   })
   return data.access_token;
