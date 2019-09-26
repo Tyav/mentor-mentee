@@ -34,7 +34,11 @@ const envVarsSchema = Joi.object({
     .required()
     .description('Cloudinary cloud name'),
   CLIENT_SIDE_URL: Joi.string().required().description('Mentordev client-side URL'),
-  MENTOR_DEV_EMAIL: Joi.string().required().description('Official email for mentordev')
+  MENTOR_DEV_EMAIL: Joi.string().required().description('Official email for mentordev'),
+  MENTOR_GIT_ID: Joi.string().required().description('Git Oauth client id for mentor'),
+  MENTOR_GIT_SECRET: Joi.string().required().description('Git Oauth secret key for mentor'),
+  MENTEE_GIT_ID: Joi.string().required().description('Git Oauth client id for mentee'),
+  MENTEE_GIT_SECRET: Joi.string().required().description('Git Oauth secret key for mentee')
 })
   .unknown()
   .required();
@@ -60,7 +64,13 @@ const config = {
     cloud: envVars.C_CLOUD_NAME,
   },
   clientSideUrl: envVars.CLIENT_SIDE_URL,
-  mentordev_email: envVars.MENTOR_DEV_EMAIL
+  mentordev_email: envVars.MENTOR_DEV_EMAIL,
+  gitAuth: {
+    mentor_id: envVars.MENTOR_GIT_ID,
+    mentor_secret: envVars.MENTOR_GIT_SECRET,
+    mentee_id: envVars.MENTEE_GIT_ID,
+    mentee_secret: envVars.MENTEE_GIT_SECRET
+  }
 };
 
 module.exports = config;
