@@ -7,12 +7,13 @@ module.exports = {
       day: Joi.string().required(),
       time: Joi.object().keys({
         from: Joi.string().required(),
-        to: Joi.string().required()
+        to: Joi.string().required(),
       }),
       slots: Joi.number().required(),
       isClosed: Joi.boolean(),
-      poolSize: Joi.number()
-    }
+      isInstant: Joi.boolean(),
+      poolSize: Joi.number(),
+    },
   },
   update: {
     body: {
