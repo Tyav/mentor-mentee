@@ -17,7 +17,7 @@ const message = {
     return `Hello,
     Congrats on signing up for MentorDev! 
     In order to activate your account please follow the link below to verify your email address:
-    ${config.clientSideUrl}/verify?token=${token}`;
+    ${config.clientSideUrl}/verify?token=${token}&nue_prof=true`;
   },
   createAdmin: (admin,password) => {
     return `
