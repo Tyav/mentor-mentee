@@ -80,13 +80,12 @@ exports.create = async (req, res, next) => {
           });
           // messages = 'Contact created';
           contact.schedule = schedule._id.toHexString();
+          await contact.save();
+          requestCount++;
         }
         //if the req.query.status === approved... create or get a contact and save the request
           // message = 'Mentor is already on your schedule.';
-          console.log(schedule)
-        await contact.save();
         // increament request count
-        requestCount++;
   
       //save the contact and the updated request...  
       if (schedule.slots <= requestCount) { // check if request count is greater than schedule slot
