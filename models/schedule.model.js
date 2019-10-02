@@ -48,6 +48,9 @@ const ScheduleSchema = new mongoose.Schema(
     isInstant: {
       type: Boolean,
       default: false,
+    },
+    channel:{
+      type: String,
     }
   },
   { timestamps: true }
