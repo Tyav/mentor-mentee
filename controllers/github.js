@@ -33,7 +33,6 @@ exports.githubCallback = async (req, res, next) => {
     client_secret: config.gitAuth.mentee_secret
   }
 
-  console.log(data)
   // Use code, client_id and client_secret to get access_token from github
   const accessToken = await github.accessToken(data);
   // get git user with accessToken

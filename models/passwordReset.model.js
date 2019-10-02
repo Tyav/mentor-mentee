@@ -27,7 +27,6 @@ const ForgotPasswordSchema = new mongoose.Schema(
 );
 
 ForgotPasswordSchema.pre('save', function(next, id) {
-  console.log(id)
   const forgotPassword = this;
   forgotPassword.token = encodeToken(forgotPassword.email, forgotPassword._id);
   next();
