@@ -31,7 +31,7 @@ exports.createSchedule = async (req, res, next) => {
         status: httpStatus.UNAUTHORIZED
       });
     }
-    const { day, time, slots, isClosed, poolSize, isInstant } = req.body;
+    const { day, time, slots, isClosed, poolSize, isInstant, channel } = req.body;
 
     const schedule = new Schedule({
       day,
@@ -40,7 +40,8 @@ exports.createSchedule = async (req, res, next) => {
       isClosed,
       mentor: req.sub,
       poolSize,
-      isInstant: isInstant || false
+      isInstant: isInstant || false,
+      channel
     });
 
     await schedule.save();

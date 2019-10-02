@@ -13,6 +13,7 @@ module.exports = {
       isClosed: Joi.boolean(),
       isInstant: Joi.boolean(),
       poolSize: Joi.number(),
+      channel: Joi.string()
     },
   },
   update: {
@@ -24,7 +25,9 @@ module.exports = {
       }),
       slots: Joi.number(),
       isClosed: Joi.boolean(),
-      poolSize: Joi.number()
+      isInstant: Joi.boolean(),
+      poolSize: Joi.number(),
+      channel: Joi.string()
     }
   }
 };
