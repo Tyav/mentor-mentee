@@ -27,18 +27,75 @@ exports.create = async (req, res, next) => {
     const requested = await Request.getBy({
       mentee: req.sub,
       schedule: scheduleId,
+      status: 'Approved'
     });
     if (requested.length > 0)
-      throw new APIError({
-        message: 'You have already requested for this slot',
-        status: httpStatus.BAD_REQUEST,
-      });
-
+    throw new APIError({
+      message: 'You have already requested for this slot',
+      status: httpStatus.BAD_REQUEST,
+    });
+    // check if schedule is closed
     if (schedule.isClosed)
-      throw new APIError({
-        message: 'Sorry, this schedule is not open at the moment',
-        status: httpStatus.BAD_REQUEST,
+    throw new APIError({
+      message: 'Sorry, this schedule is not open at the moment',
+      status: httpStatus.BAD_REQUEST,
+    });
+    // if schedule is instant approval type
+    if (schedule.isInstant) {
+      let request = {}
+      
+      // get count of approved requests
+      let requestCount = await Request.countDocuments({
+        schedule: scheduleId,
+        status: 'Approved',
       });
+      // check if approved request has reached schedule slot size
+      
+      if (
+        schedule.slots <= requestCount
+        ) {
+          schedule.isClosed = true;
+          await schedule.save();
+          return res.json(sendResponse(httpStatus.NOT_MODIFIED, 'Maximum approval reached or request is closed'));
+        }
+        // check if mentor and mentee have a contact
+        let contacts = await Contact.getBy({
+          mentee: request.mentee,
+          mentor: schedule.mentor._id,
+        });
+        // get contact from array
+        let [contact] = contacts;
+        if (!contact) { // create contact if not existing
+          // create mentee request 
+          request = new Request({
+            mentee: req.sub,
+            schedule: scheduleId,
+            message,
+            status: 'Approved'
+          });
+          await request.save(); // save request
+          contact = new Contact({
+            mentee: request.mentee,
+            mentor: schedule.mentor._id,
+          });
+          // messages = 'Contact created';
+          contact.schedule = schedule._id.toHexString();
+        }
+        //if the req.query.status === approved... create or get a contact and save the request
+          // message = 'Mentor is already on your schedule.';
+          console.log(schedule)
+        await contact.save();
+        // increament request count
+        requestCount++;
+  
+      //save the contact and the updated request...  
+      if (schedule.slots <= requestCount) { // check if request count is greater than schedule slot
+        schedule.isClosed = true; // set schedule to closed
+        await schedule.save();
+      }
+      return res.json(sendResponse(httpStatus.OK, 'Request successfully approved', request));
+    }
+
     const request = new Request({
       mentee: req.sub,
       schedule: scheduleId,
