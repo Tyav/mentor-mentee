@@ -32,6 +32,11 @@ router
   .put(
     validate(requestValidate.update, { abortEarly: false }),
     requestCtrl.approveRequests,
+  )
+  .delete(
+    requestCtrl.deleteRequest
   ); 
+
+
 
 module.exports = router;

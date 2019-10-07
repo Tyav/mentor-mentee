@@ -140,7 +140,7 @@ exports.getUserRequests = async (req, res, next) => {
     }
 
     const mentee = req.sub;
-    let requests = await Request.getBy({ mentee });
+    let requests = await Request.getBy({ mentee , deleted: false});
     return res.json(sendResponse(httpStatus.OK, 'Success', requests));
   } catch (error) {
     next(
@@ -216,3 +216,12 @@ exports.approveRequests = async (req, res, next) => {
     next(error);
   }
 };
+
+
+exports.deleteRequest = async (req, res)=>{
+  const request = req.request;
+  request.deleted = true;
+  await request.save();
+  const message = 'Request deleted'
+  return res.json(sendResponse(httpStatus.OK, message));
+}
