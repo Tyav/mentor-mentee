@@ -26,8 +26,12 @@ const RequestSchema = new mongoose.Schema({
     enum: ['Pending', 'Approved', 'Rejected', 'Cancelled'],
     default: 'Pending',
     required: true
+  },
+  deleted: {
+    type: Boolean,
+    default: false
   }
-});
+},{timestamps: true});
 
 RequestSchema.methods = {};
 
@@ -57,6 +61,7 @@ RequestSchema.statics = {
             select: '_id name avatar skills'
           }
         })
+        .sort('field -createAt')
         .exec();
     } catch (error) {
       throw new APIError({
