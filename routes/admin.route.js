@@ -22,7 +22,7 @@ router
   .get(userCtrl.getUsers)
   /** POST /api/v1/admin - creae a user */
   .post(
-    validate(paramValidation.createUser, { abortEarly: false }),
+    validate(paramValidation.createAdmin, { abortEarly: false }),
     adminCtrl.createAdmin
   );
 

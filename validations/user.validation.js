@@ -22,6 +22,23 @@ module.exports = {
       isMentor: Joi.boolean(),
     },
   },
+  createAdmin: {
+    body: {
+      name: Joi.string()
+        .min(1)
+        .max(120)
+        .required(),
+      email: Joi.string()
+        .email()
+        .required(),
+      password: Joi.string()
+        .min(6)
+        .max(20)
+        .required(),
+      isSuper: Joi.boolean(),
+      isMentor: Joi.boolean(),
+    },
+  },
   // PUT /api/users/:userId
   updateUser: {
     body: {
