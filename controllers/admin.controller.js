@@ -13,6 +13,8 @@ const escapeString = require('../helpers/escapeString');
 
 exports.createAdmin = async (req, res, next) => {
   try {
+    if (!req.user.isSuper) return res.json(sendResponse(httpStatus.UNAUTHORIZED, 'Unapproved User', null));
+
     const { email } = req.body;
     let isSuper = req.user.isSuper? req.body.isSuper : false;
     //check if user exists
