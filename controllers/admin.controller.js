@@ -25,7 +25,7 @@ exports.createAdmin = async (req, res, next) => {
       userExist.isSuper = isSuper;
       await userExist.save();
       return res.json(
-        sendResponse(httpStatus.OK, 'Admin created', userExist)
+        sendResponse(httpStatus.OK, 'Existing User has been made an admin', userExist)
       );
     }
 
