@@ -7,6 +7,7 @@ const scheduleRoutes = require('./schedule.route');
 const requestRoutes = require('./request.route');
 const contactRoutes = require('./contact.route');
 const adminRoutes = require('./admin.route');
+const idpRoutes = require('./idp.route');
 
 const router = express.Router(); // eslint-disable-line new-cap
 
@@ -32,5 +33,8 @@ router.use('/request', requestRoutes);
 
 //mount contact route
 router.use('/contact', contactRoutes);
+
+//mount idp route
+router.use('/idp', idpRoutes)
 
 module.exports = router;
