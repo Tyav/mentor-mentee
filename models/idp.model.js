@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const httpStstus = require('http-status')
 const APIError = require('../helpers/APIError');
 
 
@@ -40,6 +41,10 @@ const IdpSchema = new Schema ({
     type: String,
     default: '',
     maxlength: 500
+  },
+  deleted: {
+    type: Boolean,
+    default: false
   }
 }, { timestamps: true });
 
@@ -58,13 +63,17 @@ IdpSchema.methods = {};
  * statics
  */
 IdpSchema.statics = {
-  async get(option) {
+  async getMany(option) {
     try {
-      const idp = await this.find(option).exec();
-      return idp;
+      const idps = await this.find(option).exec();
+      return idps;
     } catch (error) {
       throw new APIError({...error, isPublic: false});
     }
+  },
+  async get(id) {
+    const idp = await this.findOne({_id:id, deleted: false}).exec();
+    return idp;
   }
 };
 
