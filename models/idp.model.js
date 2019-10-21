@@ -72,7 +72,7 @@ IdpSchema.statics = {
     }
   },
   async get(id) {
-    const idp = await this.findOne({_id:id, deleted: false}).exec();
+    const idp = await this.findOne({_id:id, deleted: false});
     return idp;
   }
 };

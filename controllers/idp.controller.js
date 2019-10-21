@@ -11,7 +11,7 @@ exports.load = async (req, res, next, id) => {
       req.idp = idp;
       return next();
     }
-    return res.json(sendResponse(httpStatus.NOT_FOUND, 'No such user exists!', null, null));
+    return res.json(sendResponse(httpStatus.NOT_FOUND, 'No such idp exists!', null, null));
   } catch (error) {
     next(error);
   }
@@ -49,11 +49,11 @@ exports.update = async (req, res) => {
   const { comment, goal, plan, outcome, result } = req.body
   // update fields conditionally to avoid a user type updating the wrong field
   // set fields according to user type
-  if (user.isMentor && idp.mentor === user._id) { 
+  if (user.isMentor && idp.mentor.toHexString() === user._id.toHexString()) { 
     // set for mentor as mentor can only comment on IDP
     idp.comment = comment;
   }
-  if (!user.isMentor && idp.mentor === user._id) { 
+  if (!user.isMentor && idp.mentee.toHexString() === user._id.toHexString()) { 
     // set for mentee
     idp.goal = goal
     idp.plan = plan
@@ -64,3 +64,15 @@ exports.update = async (req, res) => {
   res.json(sendResponse(httpStatus.OK, "Update successful", idp))
 }
 
+//delete idp by mentee
+
+exports.delete = async (req, res) => {
+  const idp = req.idp; // get idp instance from response object
+  const userId = req.sub; // get user
+  if (idp.mentee.toHexString() === userId){
+    idp.deleted = true;
+    await idp.save();
+    return res.json(sendResponse(httpStatus.OK, "IDP deleted successfully", idp));
+  }
+  res.json(sendResponse(httpStatus.UNAUTHORIZED, 'Unauthorized', null));
+}

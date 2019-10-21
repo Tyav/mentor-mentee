@@ -14,5 +14,6 @@ router.route('/')
 
 router.route('/:id')
   .put(validate(paramValidation.updateIdp, {abortEarly: false}), idpController.update)
+  .delete(validate(paramValidation.deleteIdp, { abortEarly: false}), idpController.delete)
 
 module.exports = router
