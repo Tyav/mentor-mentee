@@ -9,7 +9,8 @@ describe('# SCHEDULES TEST', () => {
     name: 'testMentor',
     email: 'mentor@test.com',
     password: 'mentorpass',
-    isMentor: true
+    isMentor: true,
+    isVerified: true
   });
   beforeAll(async () => {
     await user.save();
@@ -18,28 +19,27 @@ describe('# SCHEDULES TEST', () => {
     await User.deleteMany();
     await Schedule.deleteMany();
   });
-
-  describe('POST /api/v1/schedules  #Create Schedules', () => {
-   
+  
+  describe('POST /api/v1/schedule  #Create Schedules', () => {
+    
     it('should return the post...', () => {
       const newSchedule = {
-        day: 'thursday',
+        day: 'Thursday',
         time: {
-          from: new Date(),
-          to: new Date()
+          from: '04:00',
+          to: '11:00'
         },
         isClosed: false,
         slots: 4,
-        mentorId: user._id
+        isInstant: true,
       };
-
       return request(app)
-        .post('/api/v1/schedules')
+        .post('/api/v1/schedule')
         .send(newSchedule)
+        .set('Authorization', `Bearer ${user.token()}`)
         .expect(200)
         .then(res => {
-          console.log(res.body)
-          expect(res.body.payload.mentorId).toBe(user._id.toString());
+          expect(res.body.payload.mentor).toBe(user._id.toString());
         });
     });
   });
