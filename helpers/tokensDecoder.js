@@ -9,5 +9,9 @@ module.exports = req => {
     throw new APIError({ message: 'Unauthorized', status: httpStatus.UNAUTHORIZED });
   }
   let token = authorization.split(' ')[1];
-  return { token, decodeToken: jwt.decode(token, jwtSecret) };
+  try {
+    return { token, decodeToken: jwt.decode(token, jwtSecret) };
+  } catch (error) {
+    throw new APIError({ message: 'Token may have expired', status: httpStatus.BAD_REQUEST })
+  }
 };

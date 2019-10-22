@@ -13,7 +13,6 @@ const escapeString = require('../helpers/escapeString');
 
 exports.createAdmin = async (req, res, next) => {
   try {
-    if (!req.user.isSuper) return res.json(sendResponse(httpStatus.UNAUTHORIZED, 'Unapproved User', null));
 
     const { email } = req.body;
     let isSuper = req.user.isSuper? req.body.isSuper : false;
@@ -26,7 +25,7 @@ exports.createAdmin = async (req, res, next) => {
       userExist.isSuper = isSuper;
       await userExist.save();
       return res.json(
-        sendResponse(httpStatus.OK, 'Admin created', userExist)
+        sendResponse(httpStatus.OK, 'Existing User has been made an admin', userExist)
       );
     }
 
