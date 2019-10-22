@@ -39,21 +39,19 @@ ForgotPasswordSchema.statics = {
    * @returns {Promise<PasswordResetSchema, APIError>}
    */
   async verify(req) {
-    try {
       const { token, decodeToken } = tokenDecoder(req);
+      if (!decodeToken) throw new APIError({
+        status: httpStatus.BAD_REQUEST,
+        message: 'Token may have expired',
+      })
       const { email } = decodeToken;
       const forgotPassword = await this.findOne({
         email,
         token,
       }).exec();
+      console.log(forgotPassword)
       if (forgotPassword) return forgotPassword;
       throw new Error('Password reset link is invalid or has expired');
-    } catch (error) {
-      throw new APIError({
-        status: httpStatus.NOT_FOUND,
-        message: error.message,
-      });
-    }
   },
 };
 

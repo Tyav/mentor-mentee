@@ -39,14 +39,14 @@ router.post(
 router.get('/github/callback',oauthCtrl.githubCallback)
 router.get('/github/mentorcallback',oauthCtrl.mentorCallbackSupport,oauthCtrl.githubCallback)
 //'i need to pus something in here...that comes from the auth ctrl'
-router.use(decode);
-router.route('/verify').put(authCtrl.verify);
 router
   .route('/reset-password')
   .post(
     validate(authValidation.resetPassword, { abortEarly: false }),
     authCtrl.resetPassword
   );
+router.use(decode);
+router.route('/verify').put(authCtrl.verify);
 router
   .route('/change-password')
   .put(

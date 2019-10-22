@@ -44,6 +44,7 @@ exports.resetPassword = async (req, res, next) => {
   try {
     //verify password checks if there exist a request for that password
     const forgotPassword = await ForgotPassword.verify(req);
+    console.log(forgotPassword)
     //delete all instances in the db...
     await ForgotPassword.deleteMany({ email: forgotPassword.email });
     //if forgotPassword.exp < the current date...then the link has expired...
@@ -55,7 +56,7 @@ exports.resetPassword = async (req, res, next) => {
     user.password = req.body.password;
     await user.save();
     sendMail(user.email, messages.resetPassword(user.email));
-    return res.json(sendResponse(httpStatus.OK, 'Password was successfully changed'));
+    return res.json(sendResponse(httpStatus.OK, 'Password has been changed'));
   } catch (error) {
     next(error);
   }

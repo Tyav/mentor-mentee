@@ -164,7 +164,7 @@ UserSchema.statics = {
       if (user && (await user.passwordMatches(password))) {
         return { user, accessToken: user.token() };
       }
-      err.message = 'Incorrect username or password';
+      err.message = 'Incorrect email or password';
     }
     throw new APIError(err);
   },
