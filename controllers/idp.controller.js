@@ -46,7 +46,7 @@ exports.update = async (req, res) => {
   const idp = req.idp;
   const user = req.user;
 
-  const { comment, goal, plan, outcome, result } = req.body
+  const { comment, goal, plan, outcome, result, title } = req.body
   // update fields conditionally to avoid a user type updating the wrong field
   // set fields according to user type
   if (user.isMentor && idp.mentor.toHexString() === user._id.toHexString()) { 
@@ -55,6 +55,7 @@ exports.update = async (req, res) => {
   }
   if (!user.isMentor && idp.mentee.toHexString() === user._id.toHexString()) { 
     // set for mentee
+    idp.title = title
     idp.goal = goal
     idp.plan = plan
     idp.outcome = outcome
