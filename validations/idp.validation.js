@@ -16,7 +16,7 @@ module.exports = {
   },
   updateIdp: {
     body: {
-      title: Joi.string().max(500),
+      title: Joi.string().max(50),
       goal: Joi.string().max(500),
       plan: Joi.string().max(500),
       outcome: Joi.string().max(500),
