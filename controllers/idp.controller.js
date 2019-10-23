@@ -22,9 +22,11 @@ exports.create = async (req, res) => {
   if (req.user.isMentor) {
     return res.json(sendResponse(httpStatus.UNAUTHORIZED, "Only a mentee can create IDP"))
   }
-  const idp = new Idp({
+  let menteeIdp = {
     ...req.body, mentee: req.sub
-  });
+  }
+  delete menteeIdp.comment
+  const idp = new Idp(menteeIdp);
   await idp.save();
   res.json(sendResponse(httpStatus.CREATED, "Created", idp,))    
 }
@@ -46,7 +48,7 @@ exports.update = async (req, res) => {
   const idp = req.idp;
   const user = req.user;
 
-  const { comment, goal, plan, outcome, result, title } = req.body
+  const { comment, goal, deadline, outcome } = req.body
   // update fields conditionally to avoid a user type updating the wrong field
   // set fields according to user type
   if (user.isMentor && idp.mentor.toHexString() === user._id.toHexString()) { 
@@ -57,9 +59,8 @@ exports.update = async (req, res) => {
     // set for mentee
     idp.title = title
     idp.goal = goal
-    idp.plan = plan
     idp.outcome = outcome
-    idp.result = result
+    idp.deadline = deadline
   }
   await idp.save()
   res.json(sendResponse(httpStatus.OK, "Update successful", idp))

@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
-const httpStstus = require('http-status');
+const httpStstus = require('http-status')
 const APIError = require('../helpers/APIError');
+
+
 
 const Schema = mongoose.Schema;
 
-const IdpSchema = new Schema ({
+const ReportSchema = new Schema ({
   mentor: {
     type: Schema.Types.ObjectId,
     ref: 'User',
@@ -15,21 +17,12 @@ const IdpSchema = new Schema ({
     ref: 'User',
     required: true
   },
-  title: {
-    type: String,
-    maxlength: 50,
-    required: true
-  },
   goal: {
     type: String,
     default: '',
     maxlength: 500
   },
-  deadline: {
-    type: Date,
-    required: true
-  },
-  outcome: {
+  takeaway: {
     type: String,
     default: '',
     maxlength: 500
@@ -52,26 +45,26 @@ const IdpSchema = new Schema ({
 
 /**
  * methods
- *
+ * 
  */
-IdpSchema.methods = {};
+ReportSchema.methods = {};
 
 /**
  * statics
  */
-IdpSchema.statics = {
+ReportSchema.statics = {
   async getMany(option) {
     try {
-      const idps = await this.find(option).exec();
-      return idps;
+      const reports = await this.find(option).exec();
+      return reports;
     } catch (error) {
-      throw new APIError({ ...error, isPublic: false });
+      throw new APIError({...error, isPublic: false});
     }
   },
   async get(id) {
-    const idp = await this.findOne({ _id: id, deleted: false });
-    return idp;
-  },
+    const report = await this.findOne({_id:id, deleted: false});
+    return report;
+  }
 };
 
-module.exports = mongoose.model('Idp', IdpSchema);
+module.exports = mongoose.model("Report", ReportSchema);

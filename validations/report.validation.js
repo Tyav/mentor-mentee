@@ -1,24 +1,20 @@
 const { Joi } = require('celebrate');
 
 module.exports = {
-  createIdp: {
+  createReport: {
     body: {
       mentor: Joi.string()
         .regex(/^[a-fA-F0-9]{24}$/)
         .required(),
-      title: Joi.string().max(50).required(),
       goal: Joi.string().max(500),
-      outcome: Joi.string().max(500),
-      deadline: Joi.string(),
+      takeaway: Joi.string().max(500),
       comment: Joi.string().max(500),
     },
   },
-  updateIdp: {
+  updateReport: {
     body: {
-      title: Joi.string().max(50),
       goal: Joi.string().max(500),
-      outcome: Joi.string().max(500),
-      deadline: Joi.string(),
+      takeaway: Joi.string().max(500),
       comment: Joi.string().max(500),
     },
     params: {
@@ -27,7 +23,7 @@ module.exports = {
         .required(),
     },
   },
-  deleteIdp: {
+  deleteReport: {
     params: {
       id: Joi.string()
         .regex(/^[a-fA-F0-9]{24}$/)
