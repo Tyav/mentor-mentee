@@ -8,6 +8,7 @@ const requestRoutes = require('./request.route');
 const contactRoutes = require('./contact.route');
 const adminRoutes = require('./admin.route');
 const idpRoutes = require('./idp.route');
+const reportRoutes = require('./report.route');
 
 const router = express.Router(); // eslint-disable-line new-cap
 
@@ -35,6 +36,9 @@ router.use('/request', requestRoutes);
 router.use('/contact', contactRoutes);
 
 //mount idp route
-router.use('/idp', idpRoutes)
+router.use('/idp', idpRoutes);
+
+//mount report route
+router.use('/report', reportRoutes);
 
 module.exports = router;
