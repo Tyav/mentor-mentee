@@ -17,22 +17,21 @@ const IdpSchema = new Schema ({
     ref: 'User',
     required: true
   },
+  title: {
+    type: String,
+    maxlength: 50,
+    required: true
+  },
   goal: {
     type: String,
     default: '',
     maxlength: 500
   },
-  plan: {
-    type: String,
-    default: '',
-    maxlength: 500
+  deadline: {
+    type: Date,
+    required: true
   },
   outcome: {
-    type: String,
-    default: '',
-    maxlength: 500
-  },
-  result: {
     type: String,
     default: '',
     maxlength: 500
