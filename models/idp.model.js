@@ -4,46 +4,52 @@ const APIError = require('../helpers/APIError');
 
 const Schema = mongoose.Schema;
 
-const IdpSchema = new Schema ({
-  mentor: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+const IdpSchema = new Schema(
+  {
+    mentor: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    mentee: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    title: {
+      type: String,
+      maxlength: 50,
+      required: true,
+    },
+    goal: {
+      type: String,
+      default: '',
+      maxlength: 500,
+    },
+    deadline: {
+      type: Date,
+      required: true,
+    },
+    outcome: {
+      type: String,
+      default: '',
+      maxlength: 500,
+    },
+    comment: {
+      type: String,
+      default: '',
+      maxlength: 500,
+    },
+    deleted: {
+      type: Boolean,
+      default: false,
+    },
+    isTied: {
+      type: Boolean,
+      default: false,
+    },
   },
-  mentee: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  title: {
-    type: String,
-    maxlength: 50,
-    required: true
-  },
-  goal: {
-    type: String,
-    default: '',
-    maxlength: 500
-  },
-  deadline: {
-    type: Date,
-    required: true
-  },
-  outcome: {
-    type: String,
-    default: '',
-    maxlength: 500
-  },
-  comment: {
-    type: String,
-    default: '',
-    maxlength: 500
-  },
-  deleted: {
-    type: Boolean,
-    default: false
-  }
-}, { timestamps: true });
+  { timestamps: true },
+);
 
 /**
  * Create hooks
