@@ -19,6 +19,10 @@ const ContactSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Schedule',
   },
+  idp: {
+    type: mongoose.Types.ObjectId,
+    ref: 'Idp',
+  },
 });
 
 ContactSchema.methods = {
