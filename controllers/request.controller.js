@@ -3,6 +3,7 @@ const sendResponse = require('../helpers/response');
 const Request = require('../models/request.model');
 const Schedule = require('../models/schedule.model');
 const Contact = require('../models/contact.model');
+const Idp = require('../models/idp.model');
 const APIError = require('../helpers/APIError');
 
 exports.load = async (req, res, next, id) => {
@@ -20,94 +21,119 @@ exports.load = async (req, res, next, id) => {
 
 exports.create = async (req, res, next) => {
   try {
-    const { schedule: scheduleId, message } = req.body;
+    const { schedule: scheduleId, message, idp: idpId } = req.body;
     // check if schedule exist
     const schedule = await Schedule.get(scheduleId);
+    //Check if IDP exist
+    const idp = await Idp.get(idpId);
     // check if mentee has already requested
     const requested = await Request.getBy({
       mentee: req.sub,
       schedule: scheduleId,
-      status: 'Approved'
+      status: 'Approved',
     });
     if (requested.length > 0)
-    throw new APIError({
-      message: 'You have already requested for this slot',
-      status: httpStatus.BAD_REQUEST,
-    });
+      throw new APIError({
+        message: 'You have already requested for this slot',
+        status: httpStatus.BAD_REQUEST,
+      });
     // check if schedule is closed
     if (schedule.isClosed)
-    throw new APIError({
-      message: 'Sorry, this schedule is not open at the moment',
-      status: httpStatus.BAD_REQUEST,
-    });
+      throw new APIError({
+        message: 'Sorry, this schedule is not open at the moment',
+        status: httpStatus.BAD_REQUEST,
+      });
+    //Check if IDP is already tied to a request
+    if (idp.isTied) {
+      throw new APIError({
+        message: 'This is IDP is already tied to a request',
+        status: httpStatus.BAD_REQUEST,
+      });
+    }
     // if schedule is instant approval type
     if (schedule.isInstant) {
-      let request = {}
-      
+      let request = {};
+
       // get count of approved requests
       let requestCount = await Request.countDocuments({
         schedule: scheduleId,
         status: 'Approved',
       });
       // check if approved request has reached schedule slot size
-      
-      if (
-        schedule.slots <= requestCount
-        ) {
-          schedule.isClosed = true;
-          await schedule.save();
-          return res.json(sendResponse(httpStatus.NOT_MODIFIED, 'Maximum approval reached or request is closed'));
-        }
-        // check if mentor and mentee have a contact
-        let contacts = await Contact.getBy({
+
+      if (schedule.slots <= requestCount) {
+        schedule.isClosed = true;
+        await schedule.save();
+        return res.json(
+          sendResponse(
+            httpStatus.NOT_MODIFIED,
+            'Maximum approval reached or request is closed',
+          ),
+        );
+      }
+      // check if mentor and mentee have a contact
+      let contacts = await Contact.getBy({
+        mentee: request.mentee,
+        mentor: schedule.mentor._id,
+      });
+      // get contact from array
+      let [contact] = contacts;
+      if (!contact) {
+        // create contact if not existing
+        // create mentee request
+        idp.isTied = true;
+        request = new Request({
+          mentee: req.sub,
+          schedule: scheduleId,
+          idp: idpId,
+          message,
+          status: 'Approved',
+        });
+        await idp.save();
+        await request.save(); // save request
+        contact = new Contact({
           mentee: request.mentee,
           mentor: schedule.mentor._id,
+          idp: idpId,
         });
-        // get contact from array
-        let [contact] = contacts;
-        if (!contact) { // create contact if not existing
-          // create mentee request 
-          request = new Request({
-            mentee: req.sub,
-            schedule: scheduleId,
-            message,
-            status: 'Approved'
-          });
-          await request.save(); // save request
-          contact = new Contact({
-            mentee: request.mentee,
-            mentor: schedule.mentor._id,
-          });
-          // messages = 'Contact created';
-          contact.schedule = schedule._id.toHexString();
-          await contact.save();
-          requestCount++;
-        }
-        //if the req.query.status === approved... create or get a contact and save the request
-          // message = 'Mentor is already on your schedule.';
-        // increament request count
-  
-      //save the contact and the updated request...  
-      if (schedule.slots <= requestCount) { // check if request count is greater than schedule slot
+        // messages = 'Contact created';
+        contact.schedule = schedule._id.toHexString();
+        await contact.save();
+        requestCount++;
+      }
+      //if the req.query.status === approved... create or get a contact and save the request
+      // message = 'Mentor is already on your schedule.';
+      // increament request count
+
+      //save the contact and the updated request...
+      if (schedule.slots <= requestCount) {
+        // check if request count is greater than schedule slot
         schedule.isClosed = true; // set schedule to closed
         await schedule.save();
       }
-      return res.json(sendResponse(httpStatus.OK, 'Request successfully approved', request));
+      return res.json(
+        sendResponse(httpStatus.OK, 'Request successfully approved', request),
+      );
     }
 
     const request = new Request({
       mentee: req.sub,
       schedule: scheduleId,
+      idp: idpId,
       message,
     });
+    idp.isTied = true;
     await request.save();
-    res.json(sendResponse(httpStatus.OK, 'Request successfully submitted', request));
+    await idp.save();
+    res.json(
+      sendResponse(httpStatus.OK, 'Request successfully submitted', request),
+    );
   } catch (error) {
     next(
       new APIError({
         message: error.message,
         status: httpStatus.BAD_REQUEST,
-      })
+      }),
     );
   }
 };
@@ -117,7 +143,10 @@ exports.getScheduleRequests = async (req, res, next) => {
     const schedule = req.schedule._id;
     let requests = [];
     // check if schedule is closed
-    if (req.schedule.isClosed) return res.json(sendResponse(httpStatus.OK, 'The schedule is closed', requests));
+    if (req.schedule.isClosed)
+      return res.json(
+        sendResponse(httpStatus.OK, 'The schedule is closed', requests),
+      );
     requests = await Request.getBy({ schedule, status: 'Pending' });
     return res.json(sendResponse(httpStatus.OK, 'Success', requests));
   } catch (error) {
@@ -125,7 +154,7 @@ exports.getScheduleRequests = async (req, res, next) => {
       new APIError({
         message: error.message,
         status: httpStatus.BAD_REQUEST,
-      })
+      }),
     );
   }
 };
@@ -140,14 +169,14 @@ exports.getUserRequests = async (req, res, next) => {
     }
 
     const mentee = req.sub;
-    let requests = await Request.getBy({ mentee , deleted: false});
+    let requests = await Request.getBy({ mentee, deleted: false });
     return res.json(sendResponse(httpStatus.OK, 'Success', requests));
   } catch (error) {
     next(
       new APIError({
         message: error.message,
         status: httpStatus.BAD_REQUEST,
-      })
+      }),
     );
   }
 };
@@ -176,7 +205,12 @@ exports.approveRequests = async (req, res, next) => {
     ) {
       schedule.isClosed = true;
       await schedule.save();
-      return res.json(sendResponse(httpStatus.NOT_MODIFIED, 'Maximum approval reached or request is closed'));
+      return res.json(
+        sendResponse(
+          httpStatus.NOT_MODIFIED,
+          'Maximum approval reached or request is closed',
+        ),
+      );
     }
     //if the req.query.status === approved... create or get a contact and save the request
     if (isApprovedQuery) {
@@ -195,7 +229,7 @@ exports.approveRequests = async (req, res, next) => {
         message = 'Contact created';
         contact.schedule = schedule._id.toHexString();
       } else {
-        req.query.status = 'Rejected'
+        req.query.status = 'Rejected';
       }
       await contact.save();
       // increament request count
@@ -217,11 +251,10 @@ exports.approveRequests = async (req, res, next) => {
   }
 };
 
-
-exports.deleteRequest = async (req, res)=>{
+exports.deleteRequest = async (req, res) => {
   const request = req.request;
   request.deleted = true;
   await request.save();
-  const message = 'Request deleted'
+  const message = 'Request deleted';
   return res.json(sendResponse(httpStatus.OK, message));
-}
+};
