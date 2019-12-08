@@ -17,24 +17,40 @@ router
   /** GET /api/v1/users - get all users */
   .get(userCtrl.getUsers)
   /** POST /api/v1/user - creae a user */
-  .post(validate(paramValidation.createUser, { abortEarly: false }), userCtrl.signup);
+  .post(
+    validate(paramValidation.createUser, { abortEarly: false }),
+    userCtrl.signup,
+  );
+
+/**GET api.v1/users/mentors - get all mentors */
+router.route('/mentors').get(userCtrl.getMentors);
 
 router.use(decode);
 router
   .route('/signupUpdate')
   /** PUT /api/v1/user/signupUpdate update only a user type (isMentor: true || false) and his skills */
-  .put(validate(paramValidation.signupUpdate, { abortEarly: false }), userCtrl.signupUpdate);
+  .put(
+    validate(paramValidation.signupUpdate, { abortEarly: false }),
+    userCtrl.signupUpdate,
+  );
 router
   .route('/me')
   .get(userCtrl.getCurrentUser)
   /** PUT /api/v1/user/userId update a user information */
-  .put(validate(paramValidation.updateUser, { abortEarly: false }), userCtrl.updateProfile);
+  .put(
+    validate(paramValidation.updateUser, { abortEarly: false }),
+    userCtrl.updateProfile,
+  );
 
 //ROUTE for mentor to get his schedule....
 router.get('/me/schedules', scheduleCtrl.getUserSchedules);
 
 /** PUT /api/v1/users/:userId/avatar */
-router.put('/:userId/images', upload('avatar').single('avatar'), userCtrl.updateAvatar);
+router.put(
+  '/:userId/images',
+  upload('avatar').single('avatar'),
+  userCtrl.updateAvatar,
+);
 
 router
   .route('/:userId')

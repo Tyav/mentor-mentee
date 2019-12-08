@@ -1,7 +1,8 @@
 const httpStatus = require('http-status');
 const User = require('../models/user.model');
 const sendResponse = require('../helpers/response');
-const updateUserValidation = require('../validations/user.validation').updateUser;
+const updateUserValidation = require('../validations/user.validation')
+  .updateUser;
 const Schedule = require('../models/schedule.model');
 const Request = require('../models/request.model');
 const { Joi } = require('celebrate');
@@ -20,7 +21,9 @@ exports.load = async (req, res, next, id) => {
       req.user = user;
       return next();
     }
-    return res.json(sendResponse(httpStatus.NOT_FOUND, 'No such user exists!', null, null));
+    return res.json(
+      sendResponse(httpStatus.NOT_FOUND, 'No such user exists!', null, null),
+    );
   } catch (error) {
     next(error);
   }
@@ -30,7 +33,31 @@ exports.getUsers = async (req, res, next) => {
   try {
     let users = await User.find({});
     users = [...users].map(user => user.transform());
-    return res.json(sendResponse(httpStatus[200], 'Request for all users sucessful', users, null));
+    return res.json(
+      sendResponse(
+        httpStatus[200],
+        'Request for all users sucessful',
+        users,
+        null,
+      ),
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getMentors = async (req, res, next) => {
+  try {
+    let users = await User.find({ isMentor: true });
+    users = [...users].map(user => user.transform());
+    return res.json(
+      sendResponse(
+        httpStatus[200],
+        'Request for mentors successfull',
+        users,
+        null,
+      ),
+    );
   } catch (error) {
     next(error);
   }
@@ -45,8 +72,8 @@ exports.signup = async (req, res, next) => {
     if (userExist) {
       return res.json(
         sendResponse(httpStatus.BAD_REQUEST, 'Bad Request', null, {
-          msg: 'Email already in use!'
-        })
+          msg: 'Email already in use!',
+        }),
       );
     }
 
@@ -56,7 +83,11 @@ exports.signup = async (req, res, next) => {
     await user.save();
     const token = await user.token();
 
-    sendMail(user.email, 'Mentor Dev, Verification', message.verifyRegistration(token));
+    sendMail(
+      user.email,
+      'Mentor Dev, Verification',
+      message.verifyRegistration(token),
+    );
 
     res.json(sendResponse(httpStatus.OK, user.email));
   } catch (error) {
@@ -69,7 +100,6 @@ exports.getUser = async (req, res) =>
 
 exports.updateAvatar = async (req, res, next) => {
   try {
-   
     let user = req.user;
     let avatar = req.file ? req.file.url : user.avatar; //assign imageUrl to avatar
     user.avatar = avatar;
@@ -77,12 +107,19 @@ exports.updateAvatar = async (req, res, next) => {
     // Delete previous avatar file to seve space
     if (req.oldAvatar) {
       const oldUrl = req.oldAvatar.split('.')[0];
-      req.cloudinary.v2.api.delete_resources(oldUrl, function(error,result) {
+      req.cloudinary.v2.api.delete_resources(oldUrl, function(error, result) {
         // Perform logic here with error or result
-      });    
-
+      });
     }
-    res.json(sendResponse(httpStatus.OK, 'Upload Successful', user.transform(), null, null));
+    res.json(
+      sendResponse(
+        httpStatus.OK,
+        'Upload Successful',
+        user.transform(),
+        null,
+        null,
+      ),
+    );
   } catch (error) {
     next(error);
   }
@@ -94,7 +131,9 @@ exports.updateProfile = async (req, res) => {
     const user = await req.user.update(req.body);
     res.json(sendResponse(httpStatus.OK, 'succesful', user.transform()));
   } catch (error) {
-    res.json(sendResponse(httpStatus.INTERNAL_SERVER_ERROR, 'Something went wrong'));
+    res.json(
+      sendResponse(httpStatus.INTERNAL_SERVER_ERROR, 'Something went wrong'),
+    );
   }
 };
 //updates user's profile...
@@ -103,7 +142,9 @@ exports.signupUpdate = async (req, res) => {
     const user = await req.user.update(req.body);
     res.json(sendResponse(httpStatus.OK, 'succesfully', user.transform()));
   } catch (error) {
-    res.json(sendResponse(httpStatus.INTERNAL_SERVER_ERROR, 'Something went wrong'));
+    res.json(
+      sendResponse(httpStatus.INTERNAL_SERVER_ERROR, 'Something went wrong'),
+    );
   }
 };
 
@@ -113,7 +154,10 @@ exports.createScheduleMock = async (req, res) => {
     const result = await shcedule.save();
     if (!result) {
       return res.json(
-        sendResponse(httpStatus.INTERNAL_SERVER_ERROR, 'An error occured submiting schedule')
+        sendResponse(
+          httpStatus.INTERNAL_SERVER_ERROR,
+          'An error occured submiting schedule',
+        ),
       );
     }
     return res.json(sendResponse(httpStatus.OK, 'Request submitted'));
@@ -126,13 +170,15 @@ exports.bookSlot = async (req, res) => {
   try {
     const requestMade = await Request.findOne({
       scheduleId: req.params.scheduleID,
-      menteeId: req.body.menteeId
+      menteeId: req.body.menteeId,
     });
     if (requestMade) {
-      return res.json(sendResponse(httpStatus.NOT_FOUND, 'request already made'));
+      return res.json(
+        sendResponse(httpStatus.NOT_FOUND, 'request already made'),
+      );
     }
     const schedule = await Schedule.findOne({
-      _id: req.params.scheduleID
+      _id: req.params.scheduleID,
     });
     if (!schedule) {
       return res.json(sendResponse(httpStatus.NOT_FOUND, 'Schedule not found'));
@@ -140,55 +186,65 @@ exports.bookSlot = async (req, res) => {
 
     const request = new Request({
       scheduleId: req.params.scheduleID,
-      menteeId: req.body.menteeId
+      menteeId: req.body.menteeId,
     });
     const requestResult = await request.save();
     if (!requestResult) {
-      return res.json(sendResponse(httpStatus.NOT_FOUND, 'the request was not submitted'));
+      return res.json(
+        sendResponse(httpStatus.NOT_FOUND, 'the request was not submitted'),
+      );
     }
     return res.json(sendResponse(httpStatus.OK, 'Request submitted'));
   } catch {
     return res.json(
       sendResponse(
         httpStatus.INTERNAL_SERVER_ERROR,
-        'something went wrong while submitting request'
-      )
+        'something went wrong while submitting request',
+      ),
     );
   }
 };
 
-
 exports.login = async (req, res, next) => {
-
   try {
     const { user, accessToken } = await User.loginAndGenerateToken(req.body);
-    
-    res.cookie('mentordev_token', accessToken)
+
+    res.cookie('mentordev_token', accessToken);
     return res.json(
-      sendResponse(200, 'Successfully logged in', user.transform(), null, accessToken)
+      sendResponse(
+        200,
+        'Successfully logged in',
+        user.transform(),
+        null,
+        accessToken,
+      ),
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.search = async (req, res, next) => {
+  try {
+    const results = await User.searchUsers(req.query.search);
+
+    return res.json(sendResponse(httpStatus.OK, 'Users found', results));
+  } catch (error) {
+    next(error);
+  }
+};
+exports.getCurrentUser = async (req, res, next) => {
+  let user = req.user;
+  try {
+    if (!user) {
+      return res.json(
+        sendResponse(httpStatus.NOT_FOUND, 'No such user exists!', null, null),
       );
-    } catch (error) {
-      next(error);
     }
-  };
-  
-  exports.search = async (req, res, next) => {
-    try {
-      const results = await User.searchUsers(req.query.search);
-      
-      return res.json(sendResponse(httpStatus.OK, 'Users found', results));
-    } catch (error) {
-      next(error);
-    }
-  };
-  exports.getCurrentUser = async (req, res, next) => {
-    let user = req.user;
-    try {
-      if (!user) {
-        return res.json(sendResponse(httpStatus.NOT_FOUND, 'No such user exists!', null, null));
-      }      
-      if (user.isMentor) res.cookie('validateType', true)
-    return res.json(sendResponse(200, 'Successfully', user.transform(), null, null));
+    if (user.isMentor) res.cookie('validateType', true);
+    return res.json(
+      sendResponse(200, 'Successfully', user.transform(), null, null),
+    );
   } catch (error) {
     next(error);
   }
