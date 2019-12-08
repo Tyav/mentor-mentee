@@ -57,6 +57,7 @@ exports.update = async (req, res) => {
   }
   if (!user.isMentor && idp.mentee.toHexString() === user._id.toHexString()) { 
     // set for mentee
+    idp.title = title
     idp.goal = goal
     idp.outcome = outcome
     idp.deadline = deadline

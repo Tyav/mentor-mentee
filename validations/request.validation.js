@@ -7,15 +7,16 @@ module.exports = {
       schedule: Joi.string()
         .hex()
         .required(),
-      message: Joi.string()
-    }
+      idp: Joi.string().required(),
+      message: Joi.string(),
+    },
   },
   update: {
     body: {
-      response: Joi.string().max(250)
+      response: Joi.string().max(250),
     },
     params: {
-      id: Joi.string().hex()
-    }
-  }
+      id: Joi.string().hex(),
+    },
+  },
 };

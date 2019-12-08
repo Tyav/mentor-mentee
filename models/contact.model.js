@@ -19,11 +19,15 @@ const ContactSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Schedule',
   },
+  idp: {
+    type: mongoose.Types.ObjectId,
+    ref: 'Idp',
+  },
 });
 
 ContactSchema.methods = {
   transform(user) {
-    let contact = pick(['mentor', 'mentee', 'schedule', 'id'], this);
+    let contact = pick(['mentor', 'mentee', 'schedule', 'idp','id'], this);
     contact.contact = contact[user];
     delete contact.mentor;
     delete contact.mentee;
@@ -44,6 +48,7 @@ ContactSchema.statics = {
           select: '_id name email phone avatar skills isMentor',
         })
         .populate({ path: 'schedule' })
+        .populate({ path: 'idp' })
         .exec();
     } catch (error) {
       throw new APIError({
@@ -64,6 +69,7 @@ ContactSchema.statics = {
           select: '_id name email phone avatar skills isMentor',
         })
         .populate({ path: 'schedule' })
+        .populate({ path: 'idp' })
         .exec();
     } catch (error) {
       throw new APIError({

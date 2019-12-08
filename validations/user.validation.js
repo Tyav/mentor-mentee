@@ -51,16 +51,18 @@ module.exports = {
         .required(),
       phone: Joi.string(),
       connection: Joi.object(),
-      bio: Joi.string().max(250),
+      bio: Joi.string().max(5000),
       location: Joi.string(),
-      skills: Joi.array().items(Joi.string())
-    }
+      skills: Joi.array().items(Joi.string()),
+    },
   },
   signupUpdate: {
     body: {
       isMentor: Joi.boolean().required(),
-      skills: Joi.array().items(Joi.string()).required()
-    }
-  }
+      skills: Joi.array()
+        .items(Joi.string())
+        .required(),
+    },
+  },
   //added login validation
 };
