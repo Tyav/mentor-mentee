@@ -27,16 +27,14 @@ router
   /** route for mentee to get all request made*/
   .get(requestCtrl.getUserRequests);
 
+/**Route for mentor to get all received request */
+
 router
   .route('/:id')
   .put(
     validate(requestValidate.update, { abortEarly: false }),
     requestCtrl.approveRequests,
   )
-  .delete(
-    requestCtrl.deleteRequest
-  ); 
-
-
+  .delete(requestCtrl.deleteRequest);
 
 module.exports = router;
