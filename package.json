@@ -9,7 +9,7 @@
     "yarn": ">=1.13.0"
   },
   "scripts": {
-    "start": "nodemon --exec node index.js",
+    "start": "node index.js",
     "start:dev": "nodemon index.js",
     "start:debug": "cross-env DEBUG=express-mongoose-es6-rest-api:* yarn start",
     "lint": "esw *.js config --color",
